@@ -3,8 +3,10 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    output: "standalone",
+  output: "export",
+  distDir: "dist",
+  images: {
+    unoptimized: true,
   },
 };
 
