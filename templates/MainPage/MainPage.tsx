@@ -1,3 +1,4 @@
+import { Header } from "@/components/Header/Header";
 import { Bestsellers } from "./Bestsellers";
 import { InspireMe } from "./InspireMe";
 import { LatestNews } from "./LatestNews";
@@ -10,6 +11,7 @@ interface MainPageProps {}
 const MainPage = ({}: MainPageProps) => {
   return (
     <MainPageContainer>
+      <Header />
       <WelcomePage />
       <ShopNow />
       <Bestsellers />

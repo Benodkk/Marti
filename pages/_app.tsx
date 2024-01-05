@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <StyledComponentsRegistry>
         <ThemeProvider theme={theme}>
           <StyledAppContainer>
-            <Header />
+            {/* <Header /> */}
             <StyledApp>
               <Component {...pageProps} />
             </StyledApp>
