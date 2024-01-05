@@ -7,8 +7,7 @@ import { ShopNow } from "./ShopNow";
 import { WelcomePage } from "./WelcomePage";
 
 interface MainPageProps {}
-
-export const MainPage = ({}: MainPageProps) => {
+const MainPage = ({}: MainPageProps) => {
   return (
     <MainPageContainer>
       <WelcomePage />
@@ -20,3 +19,5 @@ export const MainPage = ({}: MainPageProps) => {
     </MainPageContainer>
   );
 };
+
+export default MainPage;
