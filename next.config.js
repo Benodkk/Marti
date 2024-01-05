@@ -5,15 +5,15 @@ const nextConfig = {
   },
   // output: "export",
   distDir: "dist",
-  images: {
-    unoptimized: true,
-  },
+  // images: {
+  //   unoptimized: true,
+  // },
   async rewrites() {
     return [
       {
         source: "/wp-:path*",
         destination: "/wp-:path*",
-        permanent: false,
+        // permanent: false,
       },
     ];
   },
