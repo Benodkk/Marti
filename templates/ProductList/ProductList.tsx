@@ -17,9 +17,9 @@ export const ProductList = ({}: ProductListProps) => {
   const [testState, setTestState] = useState<any>("");
   const bebe = async () => {
     const api = new WooCommerceRestApi({
-      url: "https://martibikini.com",
-      consumerKey: "ck_89664f145338d0c58c27786112f1ad59ffd7d92a",
-      consumerSecret: "cs_36b77b72051fa130eba78fd8898c5d25a54e2e81",
+      url: "http://panel.martibikini.com",
+      consumerKey: "ck_0d62184ebd8b521eee92dc372b9dea9fb1461fe4",
+      consumerSecret: "cs_1caae09f86e2c00f474c08cf1f262ceadeb307ce",
       version: "wc/v3",
     });
     api
