@@ -3,11 +3,11 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  // output: "export",
+  output: "export",
   distDir: "dist",
-  // images: {
-  //   unoptimized: true,
-  // },
+  images: {
+    unoptimized: true,
+  },
   async rewrites() {
     return [
       {
