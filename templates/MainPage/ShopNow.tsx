@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { StyledShopNowContainer } from "./MainPage.styled";
 import { OneShopNow } from "./components/OneShopNow";
 import ForMen from "@/assets/ForMen.png";
@@ -26,6 +27,9 @@ export const ShopNow = ({}: ShopNowProps) => {
         console.log(error);
       });
   };
+  useEffect(() => {
+    bebe();
+  }, []);
   return (
     <StyledShopNowContainer>
       <OneShopNow backgroundColor="#C44370" imageSrc={ForMen.src} label="Men" />
