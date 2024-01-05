@@ -11,16 +11,9 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/wp-admin/:path*",
-        destination: "/wp-admin/:path*",
-      },
-      {
-        source: "/wp-admin",
-        destination: "/wp-admin",
-      },
-      {
-        source: "/wp-login.php",
-        destination: "/wp-login.php",
+        source: "/wp-:path*",
+        destination: "/wp-:path*",
+        permanent: false,
       },
     ];
   },
