@@ -19,28 +19,13 @@ import WelcomeSign from "@/assets/WelcomeSign.svg";
 import { ArrowButton } from "@/components/ArrowButton/ArrowButton";
 import GoldenCircle from "@/assets/GoldenCircle.png";
 import { useEffect } from "react";
+import { getCategories } from "@/API/categories";
 
-const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 interface WelcomePageProps {}
 
 export const WelcomePage = ({}: WelcomePageProps) => {
   const bebe = async () => {
-    const api = new WooCommerceRestApi({
-      url: "http://admin.martibikini.com/",
-      consumerKey: "ck_211e22b49a4bf4dc2df6f09ad84b6ca3d5382df4",
-      consumerSecret: "cs_17ea066ea4211692d0af2380c58da6ad350451e6",
-      version: "wc/v3",
-    });
-    api
-      .get("products")
-      .then((response: any) => {
-        // Log the response data to the console
-        console.log(response.data);
-      })
-      .catch((error: any) => {
-        // Log the error response data to the console
-        console.log(error);
-      });
+    getCategories();
   };
   useEffect(() => {
     bebe();
