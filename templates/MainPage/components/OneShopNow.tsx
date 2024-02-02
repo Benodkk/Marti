@@ -10,19 +10,21 @@ interface OneShopNowProps {
   imageSrc: string;
   backgroundColor: string;
   label: string;
+  onClick?: any;
 }
 
 export const OneShopNow = ({
   imageSrc,
   backgroundColor,
   label,
+  onClick,
 }: OneShopNowProps) => {
   return (
-    <StyledOneShopNow backgroundColor={backgroundColor}>
+    <StyledOneShopNow $backgroundColor={backgroundColor}>
       <StyledOneShopPhoto src={imageSrc} />
       <StyledOneShopRight>
         <StyledOneShopRightContent>{label}</StyledOneShopRightContent>
-        <ArrowButton>SHOP NOW</ArrowButton>
+        <ArrowButton onClick={onClick}>SHOP NOW</ArrowButton>
       </StyledOneShopRight>
     </StyledOneShopNow>
   );

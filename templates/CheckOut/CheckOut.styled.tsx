@@ -9,8 +9,10 @@ export const StyledCheckOutContainer = styled.div`
 
 export const StyledCheckOut = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 1020px;
-  margin-top: 150px;
+  margin-top: 50px;
 `;
 
 // sign in
@@ -19,7 +21,6 @@ export const StyledSignInCheckOut = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
-  padding: 0 50px;
 `;
 
 export const StyledCheckOutTitle = styled.h2`
@@ -27,7 +28,8 @@ export const StyledCheckOutTitle = styled.h2`
   font-size: 36px;
   font-weight: 600;
   line-height: 36px; /* 100% */
-  margin-bottom: 20px;
+  margin: 30px 0;
+  text-align: center;
 `;
 
 export const StyledBackToBag = styled.div`
@@ -35,9 +37,12 @@ export const StyledBackToBag = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 16px; /* 100% */
-  text-decoration-line: underline;
+
   cursor: pointer;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
+  &:hover {
+    text-decoration-line: underline;
+  }
 `;
 
 export const StyledInput = styled.input`
@@ -141,4 +146,39 @@ export const StyledSummary = styled.div`
   font-size: 20px;
   font-weight: 600;
   line-height: 20px; /* 100% */
+`;
+
+export const StyledOr = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #4b5563;
+  font-size: 16px;
+  margin: 20px 0;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #4b5563;
+  }
+
+  &::before {
+    margin-right: 10px;
+  }
+
+  &::after {
+    margin-left: 10px;
+  }
+`;
+export const StyledAsGuestButton = styled.button`
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 16px; /* 100% */
+  background: #1f2937;
+  width: 50%;
+  padding: 20px;
 `;

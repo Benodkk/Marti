@@ -1,7 +1,9 @@
-import { ProductTemplate } from "@/templates/Product/Product";
+import dynamic from "next/dynamic";
 
-const Product = () => {
-  return <ProductTemplate />;
-};
+const ProductImport = dynamic(() => import("@/templates/Product/Product"), {
+  ssr: false,
+});
 
-export default Product;
+export default function Product() {
+  return <ProductImport />;
+}

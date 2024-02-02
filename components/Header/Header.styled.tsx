@@ -10,12 +10,12 @@ export const StyledHeaderContainer = styled.header<HeaderProps>`
   flex-direction: column;
   justify-content: center;
   box-shadow: rgba(0, 0, 0, 0.137) 0px 1px 4px;
-  position: fixed;
+  position: absolute;
   background-color: #fff;
   top: 0;
-  z-index: 900000;
+  z-index: 100;
   transition: 0.5s;
-  top: ${(props) => (props.$scroll ? "0px" : "-160px")};
+  /* top: ${(props) => (props.$scroll ? "0px" : "-160px")}; */
 `;
 
 export const StyledTopHeaderContainer = styled.div`
@@ -42,6 +42,7 @@ export const StyledLogo = styled.img`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  cursor: pointer;
 `;
 
 export const StyledGroupIconsHeader = styled.div`
@@ -71,17 +72,18 @@ export const StyledBottomButtons = styled.div`
 // header button
 
 interface ButtonColor {
-  bgColor?: string;
+  $bgColor?: string;
 }
 
-export const StyledHeaderButton = styled.button<ButtonColor>`
+export const StyledHeaderButton = styled.div<ButtonColor>`
   font-weight: 600;
   color: #232323;
   padding: 15px 20px;
   border-left: 1px solid #f5f5f5;
   border-right: 1px solid #f5f5f5;
   position: relative;
-  background-color: ${(props) => props.bgColor};
+  background-color: ${(props) => props.$bgColor};
+  cursor: pointer;
 `;
 
 interface HeaderButtonColor {
@@ -115,14 +117,20 @@ export const StyledWomanOptionsContainer = styled.div<Options>`
   left: 0;
   overflow: hidden;
   align-items: start;
+  cursor: default;
 `;
 
-export const StyledRealContent = styled.div<Options>`
+interface RealContentProps {
+  open?: boolean;
+  $color: string;
+}
+
+export const StyledRealContent = styled.div<RealContentProps>`
   display: flex;
   flex-direction: column;
   padding: 30px;
   align-items: start;
-  background-color: #c44370;
+  background-color: ${(props) => props.$color};
   transition: all 0.3s;
   transform: ${(props) =>
     props.open ? "translateY(0%)" : "translateY(-100%)"};
@@ -182,6 +190,7 @@ export const StyledBoldLink = styled.div<LinkContainer>`
   font-weight: 600;
   line-height: normal;
   margin-bottom: 16px;
+  cursor: pointer;
   padding: ${(props) =>
     props.$firstChild
       ? "0px 20px 0px 0px"
@@ -193,6 +202,7 @@ export const StyledBoldLink = styled.div<LinkContainer>`
 export const StyledLink = styled.div`
   color: #fff;
   font-family: Roboto;
+  cursor: pointer;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;

@@ -34,47 +34,121 @@ import { SearchButton } from "../SearchButton/SearchButton";
 import { translation } from "../../translation";
 import { HeaderButton } from "./HeaderButton";
 import { useEffect, useState } from "react";
-import { WomanCategories } from "./WomanCategories";
-import { ManCategories } from "./ManCategories";
+import { Categories } from "./Categories";
+import { useRouter } from "next/router";
+import { getCategories } from "@/API/categories";
+import { ShopButton } from "../ShopButton/ShopButton";
+import { useSelector } from "react-redux";
+import { selectTotalItems } from "@/redux/cartSlice";
+import { MoonLoader } from "react-spinners";
 
 interface HeaderProps {}
 
-export const Header = ({}: HeaderProps) => {
+const Header = ({}: HeaderProps) => {
+  const totalItems = useSelector(selectTotalItems);
+  const router = useRouter();
+
   const [showMenu, setShowMenu] = useState(false);
-  const [lastScrollPosition, setLastScrollPosition] = useState(0);
+  // const [lastScrollPosition, setLastScrollPosition] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [openWomanCategories, setOpenWomanCategories] = useState(false);
   const [openManCategories, setOpenManCategories] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPosition = window.pageYOffset;
+  // cateogories for header
+  const [womenCategories, setWomenCategories] = useState();
+  const [menCategories, setMenCategories] = useState();
 
-      if (
-        currentScrollPosition > lastScrollPosition &&
-        currentScrollPosition > 150
-      ) {
-        // Scroll w dół
-        setHeaderVisible(false);
-      } else if (currentScrollPosition < lastScrollPosition - 20) {
-        // Scroll w górę o więcej niż 20px
-        setHeaderVisible(true);
+  // id for categories
+  const [allWomenProducts, setAllWomenProducts] = useState<any>();
+  const [allMenProducts, setAllMenProducts] = useState<any>();
+
+  const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollPosition = window.pageYOffset;
+
+  //     if (
+  //       currentScrollPosition > lastScrollPosition &&
+  //       currentScrollPosition > 150
+  //     ) {
+  //       // Scroll w dół
+  //       setHeaderVisible(false);
+  //     } else if (currentScrollPosition < lastScrollPosition - 20) {
+  //       // Scroll w górę o więcej niż 20px
+  //       setHeaderVisible(true);
+  //     }
+
+  //     setLastScrollPosition(currentScrollPosition);
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [lastScrollPosition, headerVisible]);
+
+  // useEffect(() => {
+  //   if (!headerVisible && showMenu) {
+  //     setShowMenu(false);
+  //   }
+  // }, [headerVisible]);
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
+  const getAllCategories = async () => {
+    setLoading(true);
+    try {
+      const categories: any = await getCategories();
+
+      if (categories) {
+        const womenCategoryId = categories.find(
+          (category: any) => category.slug == "women"
+        ).id;
+        setAllWomenProducts(womenCategoryId);
+        const womenCategories = categories
+          .filter((category: any) => category.parent == womenCategoryId)
+          .sort((a: any, b: any) => a.menu_order - b.menu_order);
+        const allWomenCategories = womenCategories.map((womenCategory: any) => {
+          const each = categories.filter(
+            (category: any) => category.parent == womenCategory.id
+          );
+
+          return { category: womenCategory, under: each };
+        });
+
+        const menCategoryId = categories.find(
+          (category: any) => category.slug == "men"
+        ).id;
+        setAllMenProducts(menCategoryId);
+        const menCategories = categories
+          .filter((category: any) => category.parent == menCategoryId)
+          .sort((a: any, b: any) => a.menu_order - b.menu_order);
+        const allMenCategories = menCategories.map((menCategory: any) => {
+          const each = categories.filter(
+            (category: any) => category.parent == menCategory.id
+          );
+
+          return { category: menCategory, under: each };
+        });
+
+        setWomenCategories(allWomenCategories);
+        setMenCategories(allMenCategories);
       }
-
-      setLastScrollPosition(currentScrollPosition);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [lastScrollPosition, headerVisible]);
-
-  useEffect(() => {
-    if (!headerVisible && showMenu) {
-      setShowMenu(false);
+    } catch {
+    } finally {
+      setLoading(false);
     }
-  }, [headerVisible]);
+  };
+
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <>
@@ -83,7 +157,7 @@ export const Header = ({}: HeaderProps) => {
         <StyledTopHeaderContainer>
           <StyledTopHeader>
             <StyledGroupIconsHeader>
-              <SearchButton />
+              {/* <SearchButton /> */}
               <IconButton>
                 <FaFacebookF />
               </IconButton>
@@ -91,15 +165,14 @@ export const Header = ({}: HeaderProps) => {
                 <FaInstagram />
               </IconButton>
             </StyledGroupIconsHeader>
-            <StyledLogo src={HeaderLogo.src} alt="logo" />
+            <StyledLogo
+              onClick={() => router.push("/")}
+              src={HeaderLogo.src}
+              alt="logo"
+            />
             <StyledGroupIconsHeader>
-              <IconButton>
-                <AiOutlineShopping />
-              </IconButton>
-              <IconButton>
-                <FaRegHeart />
-              </IconButton>
-              <IconButton>
+              <ShopButton totalItems={totalItems} />
+              <IconButton onClick={() => router.push("/SignUp")}>
                 <FaRegUser />
               </IconButton>
             </StyledGroupIconsHeader>
@@ -113,25 +186,47 @@ export const Header = ({}: HeaderProps) => {
                 color={openWomanCategories ? "white" : "#232323"}
                 bgColor={openWomanCategories ? "#c44370" : "white"}
                 label={translation["en"].women}
-                onClick={() => setOpenWomanCategories(!openWomanCategories)}
+                onMouseEnter={() =>
+                  setOpenWomanCategories(!openWomanCategories)
+                }
               >
                 <AiOutlineWoman />
-                <WomanCategories openCategories={openWomanCategories} />
+                <Categories
+                  categories={womenCategories}
+                  openCategories={openWomanCategories}
+                  bgColor="#c44370"
+                  allLinkId={allWomenProducts}
+                  loading={loading}
+                />
               </HeaderButton>
               <HeaderButton
                 onMouseLeave={() => setOpenManCategories(false)}
                 color={openManCategories ? "white" : "#232323"}
                 bgColor={openManCategories ? "#75939E" : "white"}
                 label={translation["en"].men}
-                onClick={() => setOpenManCategories(!openManCategories)}
+                onMouseEnter={() => setOpenManCategories(!openManCategories)}
               >
                 <AiOutlineMan />
-                <ManCategories openCategories={openManCategories} />
+                <Categories
+                  categories={menCategories}
+                  openCategories={openManCategories}
+                  bgColor="#75939E"
+                  allLinkId={allMenProducts}
+                  loading={loading}
+                />
               </HeaderButton>
-              <HeaderButton label={translation["en"].sportswear} />
+              <HeaderButton
+                onClick={() => {
+                  window.location.href = "https://www.marti-store.pl";
+                }}
+                label={translation["en"].sportswear}
+              />
             </StyledBottomButtons>
             <StyledBottomButtons>
-              <HeaderButton label={translation["en"].contact} />
+              <HeaderButton
+                onClick={scrollToBottom}
+                label={translation["en"].contact}
+              />
             </StyledBottomButtons>
           </StyledBottomHeader>
         </StyledBottomHeaderContainer>
@@ -158,3 +253,5 @@ export const Header = ({}: HeaderProps) => {
     </>
   );
 };
+
+export default Header;

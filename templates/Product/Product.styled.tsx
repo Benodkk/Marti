@@ -5,6 +5,7 @@ export const StyledProductContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 50vh;
 `;
 
 export const StyledProduct = styled.div`
@@ -23,7 +24,7 @@ export const StyledProduct = styled.div`
 export const StyledPhotos = styled.div`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 50%;
   @media (max-width: 1020px) {
     width: 100%;
     align-items: center;
@@ -60,6 +61,10 @@ export const StyledSmallPhoto = styled.img`
   object-position: center;
   border: 1px solid #00000020;
   border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #caa871;
+  }
 `;
 
 // styled info
@@ -67,7 +72,7 @@ export const StyledSmallPhoto = styled.img`
 export const StyledInfo = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 50%;
   @media (max-width: 1020px) {
     width: 100%;
     padding: 20px;
@@ -139,7 +144,7 @@ export const StyledSeeAllReviews = styled.div`
   font-style: normal;
   font-weight: 400;
   text-decoration-line: underline;
-  cursor: pointer;
+  /* cursor: pointer; */
 `;
 
 export const StyledLabel = styled.div`
@@ -216,6 +221,18 @@ export const StyledMoreInfo = styled.div`
   margin-top: 10px;
 `;
 
+export const StyledInTotal = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: #1d1d1f;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.36px;
+  padding: 8px;
+`;
+
 export const StyledAddToBagButton = styled.button`
   padding: 16px 20px;
   gap: 8px;
@@ -240,5 +257,131 @@ export const StyledAddToWishlist = styled.button`
   @media (max-width: 1020px) {
     padding: 12px 16px;
     font-size: 13px;
+  }
+`;
+
+// bikini details
+
+interface BikiniDetailsContainerProps {
+  $display: string;
+}
+
+export const StyledBikiniDetailsContainer = styled.div<BikiniDetailsContainerProps>`
+  /* display: flex; */
+  flex-direction: column;
+  display: ${(props) => props.$display};
+`;
+
+export const StyledBikiniDetails = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+
+// yes or no
+
+export const StyledYesOrNoContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+`;
+
+export const StyledOneChoice = styled.img`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  /* border: 1px solid #d1d5db; */
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  overflow: hidden;
+  margin-bottom: 5px;
+  transition: 0.2s all;
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+export const StyledOneChoiceColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+interface OneChoiceProps {
+  $active?: boolean;
+}
+
+export const StyledOneChoiceContainer = styled.div<OneChoiceProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 110px;
+  border: 1px solid #d1d5db;
+  height: 110px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: ${(props) =>
+    props.$active ? "4px solid #caa871" : "1px solid #d1d5db"};
+  &:hover {
+    border: ${(props) =>
+      props.$active ? "4px solid #caa871" : "2px solid #caa871"};
+  }
+`;
+
+export const StyledShowDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: #1d1d1f;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.36px;
+  border-bottom: 1px solid #d2d2d7;
+  padding: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: #fafafa;
+  }
+`;
+
+interface StyledShowDetailsArrowProps {
+  open: boolean;
+  height?: string;
+}
+
+export const StyledShowDetailsArrow = styled.img<StyledShowDetailsArrowProps>`
+  /* transition: 0.5s; */
+  transform: ${(props) => (props.open ? `rotateX(180deg)` : "")};
+`;
+
+interface TextareaProps {
+  $display: string;
+}
+
+export const StyledTextarea = styled.textarea<TextareaProps>`
+  display: ${(props) => props.$display};
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none; // Opcja, aby użytkownik nie mógł zmieniać rozmiaru textarea
+  font-size: 16px;
+  margin: 10px 0;
+  font-family: Roboto;
+
+  &:focus {
+    outline: none;
+    border-color: #caa871;
+    box-shadow: 0 0 2px #caa871;
   }
 `;

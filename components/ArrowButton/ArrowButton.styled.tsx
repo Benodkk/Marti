@@ -12,7 +12,7 @@ export const StyledButtonContainer = styled.button`
   transition: all 0.3s;
   color: #252525;
   &:hover {
-    background-color: #252525;
+    background-color: #00111a;
     color: #f0f0f0;
   }
   @media (max-width: 1020px) {
@@ -28,4 +28,7 @@ export const StyledButtonText = styled.div`
 
 export const StyledArrows = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

@@ -7,6 +7,7 @@ interface HeaderButtonProps {
   bgColor?: string;
   color?: string;
   onMouseLeave?: any;
+  onMouseEnter?: any;
 }
 
 export const HeaderButton = ({
@@ -16,11 +17,13 @@ export const HeaderButton = ({
   bgColor,
   color,
   onMouseLeave,
+  onMouseEnter,
 }: HeaderButtonProps) => {
   return (
     <StyledHeaderButton
-      bgColor={bgColor}
+      $bgColor={bgColor}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <StyledHeaderButtonContent color={color}>

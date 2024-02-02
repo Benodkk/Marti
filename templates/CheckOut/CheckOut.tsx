@@ -1,11 +1,12 @@
 import { useState } from "react";
 import {
+  StyledAsGuestButton,
   StyledBackToBag,
   StyledCheckOut,
   StyledCheckOutContainer,
   StyledCheckOutTitle,
-  StyledInput,
   StyledOneAction,
+  StyledOr,
   StyledOrderRow,
   StyledOrderRowLabel,
   StyledOrderRowValue,
@@ -18,8 +19,18 @@ import {
   StyledSummary,
   StyledSummaryTotalRow,
 } from "./CheckOut.styled";
+import {
+  FormField,
+  FormGroup,
+  FormLabel,
+  StyledInput,
+} from "@/components/helpers/Helpers.styled";
+import { Input } from "@/components/Input/Input";
+import { useRouter } from "next/router";
+import { StyledBlackButton } from "@/components/BlackButton/BlackButton.styled";
 
-export const CheckOutTemplate = () => {
+export default function CheckOutTemplate() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,6 +39,7 @@ export const CheckOutTemplate = () => {
     if (!email || !password) {
       alert("Proszę wprowadzić nazwę użytkownika i hasło!");
     } else {
+      router.push("/Adress");
       // Tutaj możesz dodać logikę logowania
       console.log("Logging in with:", email, password);
       // Na przykład wysyłając dane do API serwera...
@@ -38,29 +50,42 @@ export const CheckOutTemplate = () => {
     <StyledCheckOutContainer>
       <StyledCheckOut>
         <StyledSignInCheckOut>
+          <StyledBackToBag onClick={() => router.push("/cart")}>
+            {"< Back to my bag"}
+          </StyledBackToBag>
           <StyledCheckOutTitle>Check out</StyledCheckOutTitle>
-          <StyledBackToBag>Back to my bag</StyledBackToBag>
+
           <form onSubmit={handleLogin}>
-            <StyledInput
+            <Input
               type="text"
               value={email}
               onChange={(e: any) => setEmail(e.target.value)}
-              placeholder="E-mail"
+              label="E-mail"
             />
-            <StyledInput
+            <Input
               type="text"
               value={password}
               onChange={(e: any) => setPassword(e.target.value)}
-              placeholder="Hasło"
+              label="Password"
             />
-            <StyledSignInButton type="submit">Sign In</StyledSignInButton>
+
+            <StyledBlackButton margin={"16px 0 4px"} type="submit">
+              Sign In
+            </StyledBlackButton>
           </form>
           <StyledOtherActions>
-            <StyledOneAction>Zapomniałeś hasło?</StyledOneAction>
-            <StyledOneAction>Stwórz konto</StyledOneAction>
+            <StyledOneAction>Forgot Password?</StyledOneAction>
+            <StyledOneAction onClick={() => router.push("/SignUp")}>
+              Create account
+            </StyledOneAction>
           </StyledOtherActions>
+          <StyledOr>Or</StyledOr>
+          <StyledBlackButton onClick={() => router.push("/Adress")}>
+            Continue as guest
+          </StyledBlackButton>
         </StyledSignInCheckOut>
-        <StyledOrderSum>
+
+        {/* <StyledOrderSum>
           <StyledOrderSumTitle>Order Summary</StyledOrderSumTitle>
           <StyledRowsContainer>
             <StyledOrderRow>
@@ -85,8 +110,8 @@ export const CheckOutTemplate = () => {
             <StyledSummary>Estimated Total</StyledSummary>
             <StyledSummary>5696,55 zł</StyledSummary>
           </StyledSummaryTotalRow>
-        </StyledOrderSum>
+        </StyledOrderSum> */}
       </StyledCheckOut>
     </StyledCheckOutContainer>
   );
-};
+}

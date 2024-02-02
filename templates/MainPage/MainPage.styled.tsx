@@ -30,7 +30,13 @@ export const StyledMainPageSectionGold = styled.h3`
 
 // welcome page
 
-export const WelcomePageContainer = styled.div`
+interface WelcomePageContainerProps {
+  $bgImage: string;
+}
+export const WelcomePageContainer = styled.div<WelcomePageContainerProps>`
+  background-image: url(${(props) => props.$bgImage});
+  background-size: cover;
+  background-position: center;
   display: flex;
   background-color: #f1f1f1;
   position: relative;
@@ -44,7 +50,8 @@ export const WelcomePageLeft = styled.div`
   display: flex;
   flex-direction: column;
   width: 45%;
-  justify-content: center;
+  /* justify-content: center; */
+  padding-top: 100px;
   align-items: end;
   @media (max-width: 1020px) {
     width: 100%;
@@ -80,12 +87,16 @@ export const StyledTitleContainer = styled.h2`
   padding-top: 10px;
 `;
 
-export const StyledTitle = styled.div`
+interface TitleProps {
+  $color: string;
+}
+
+export const StyledTitle = styled.div<TitleProps>`
   font-size: 60px;
   line-height: 95%;
   font-family: "Jost";
   font-weight: 600;
-  color: #1f1f1f;
+  color: ${(props) => props.$color};
   display: flex;
   flex-direction: column;
   @media (max-width: 1020px) {
@@ -100,8 +111,12 @@ export const StyledWelcomePageTextContainer = styled.div`
   gap: 5px;
 `;
 
-export const StyledWelcomePageText = styled.div`
-  color: #696969;
+interface WelcomePageTextProps {
+  $color: string;
+}
+
+export const StyledWelcomePageText = styled.div<WelcomePageTextProps>`
+  color: ${(props) => props.$color};
   white-space: nowrap;
   @media (max-width: 1020px) {
     white-space: wrap;
@@ -113,7 +128,7 @@ export const StyledGoldenCircleImage = styled.img`
   left: 0;
   bottom: 0;
   transform: translateX(-50%) translateY(50%);
-  width: 20vw;
+  width: 15vw;
   @media (max-width: 1020px) {
     width: 30vw;
     transform: translateX(-50%) translateY(20%);
@@ -133,8 +148,8 @@ export const WelcomePageRight = styled.div`
   }
 `;
 export const WelcomePageRightContent = styled.div`
-  display: flex;
-  right: 0;
+  position: relative;
+  width: 100%;
 `;
 
 export const ImageContainer = styled.div`
@@ -156,7 +171,7 @@ export const StyledShopNowContainer = styled.div`
 // one shop one
 
 interface StyledOneShopNowProps {
-  backgroundColor: string;
+  $backgroundColor: string;
 }
 
 export const StyledOneShopNow = styled.div<StyledOneShopNowProps>`
@@ -164,7 +179,7 @@ export const StyledOneShopNow = styled.div<StyledOneShopNowProps>`
   align-items: center;
   justify-content: space-between;
   height: 200px;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) => props.$backgroundColor};
   margin-top: 150px;
   padding: 0 30px;
   gap: 20px;
@@ -178,6 +193,7 @@ export const StyledOneShopNow = styled.div<StyledOneShopNowProps>`
 
 export const StyledOneShopPhoto = styled.img`
   max-height: 280px;
+  max-width: 200px;
   align-self: flex-end;
   @media (max-width: 1020px) {
     max-height: 200px;
@@ -208,6 +224,7 @@ export const StyledBestsellers = styled.div`
   flex-direction: column;
   align-items: start;
   margin-top: 150px;
+  min-width: 1020px;
   @media (max-width: 1020px) {
     margin-top: 50px;
   }
@@ -225,7 +242,11 @@ export const StyledBestsellersHeaderRight = styled.div`
   gap: 10px;
 `;
 
-export const StyledOneBestsellersHeaderType = styled.div`
+interface OneBestsellersHeaderTypeProps {
+  $active: boolean;
+}
+
+export const StyledOneBestsellersHeaderType = styled.div<OneBestsellersHeaderTypeProps>`
   color: #282c2c;
   font-family: "Jost";
   font-size: 13px;
@@ -234,7 +255,12 @@ export const StyledOneBestsellersHeaderType = styled.div`
   line-height: normal;
   letter-spacing: 1.3px;
   text-transform: uppercase;
+  text-decoration: ${(props) => (props.$active ? "underline" : "")};
   cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    text-shadow: 2px 2px 3px rgba(109, 109, 109, 0.5);
+  }
   @media (max-width: 1020px) {
     font-size: 10px;
   }
@@ -256,7 +282,8 @@ export const StyledOneBestsellersHeaderTypeGold = styled.div`
 
 export const StyledProductsContainer = styled.div`
   display: flex;
-  gap: 130px;
+  width: 100%;
+  justify-content: space-between;
   margin-top: 40px;
   @media (max-width: 1020px) {
     max-width: 100vw;
@@ -269,13 +296,32 @@ export const StyledOneProduct = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+  max-width: 200px;
+`;
+
+export const StyledOneProductPhotoContainer = styled.div`
+  max-width: 200px;
+  max-height: 300px;
+  overflow: hidden;
+  z-index: 1;
+
+  @media (max-width: 1020px) {
+    max-width: 120px;
+    max-height: 180px;
+  }
 `;
 
 export const StyledOneProductPhoto = styled.img`
   width: 200px;
   height: 300px;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
   @media (max-width: 1020px) {
     width: 120px;
     height: 180px;
@@ -288,7 +334,7 @@ export const StyledProductType = styled.div`
   font-size: 12px;
   font-style: normal;
   font-weight: 600;
-  letter-spacing: 2.4px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   margin-top: 10px;
   @media (max-width: 1020px) {
@@ -305,6 +351,11 @@ export const StyledProductName = styled.div`
   font-weight: 500;
   line-height: 28px;
   margin-top: 5px;
+  /* cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    text-shadow: 2px 2px 3px rgba(109, 109, 109, 0.5);
+  } */
   @media (max-width: 1020px) {
     font-size: 15px;
     line-height: 18px;
@@ -317,7 +368,7 @@ export const StyledProductPrize = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 
 export const StyledIconContainer = styled.div`
@@ -487,36 +538,4 @@ export const StyledOneNewsTitle = styled.div`
   @media (max-width: 1020px) {
     font-size: 16px;
   }
-`;
-
-// Inspire me
-export const StyledInspireMe = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin-top: 150px;
-`;
-
-export const StyledInspireMeTitleContainer = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
-  gap: 5px;
-`;
-
-export const StyledInspireMePhotoContainer = styled.div`
-  display: grid;
-  width: 100vw;
-  grid-template-columns: repeat(5, 20%);
-  grid-auto-rows: 0;
-  grid-template-rows: 1fr;
-  margin-top: 50px;
-`;
-
-export const StyledOneInspieMePhoto = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
 `;

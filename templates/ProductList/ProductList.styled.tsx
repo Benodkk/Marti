@@ -89,6 +89,18 @@ export const StyledOneFiltersGroupContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const StyledOneFiltersContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: #1d1d1f;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.36px;
+  /* border-bottom: 1px solid #d2d2d7; */
+  padding: 8px;
+`;
 
 export const StyledOneFiltersGroupNameContainer = styled.div`
   display: flex;
@@ -119,7 +131,7 @@ export const StyledOneFiltersGroupNameArrow = styled.img<StyledOneFiltersGroupNa
 
 export const StyledOneFiltersGroup = styled.div<StyledOneFiltersGroupNameArrowProps>`
   overflow: hidden;
-  max-height: ${(props) => (props.open ? `0px` : "")}; // Przykładowa wartość
+  max-height: ${(props) => (props.open ? `` : "0px")}; // Przykładowa wartość
 `;
 
 // Filters filter
@@ -196,6 +208,19 @@ export const StyledColorrFilterContainer = styled.div``;
 
 export const StyledOneColorrFilterContainer = styled.div``;
 
+export const StyledFilterButton = styled.button`
+  padding: 16px 20px;
+  gap: 8px;
+  width: 100%;
+  background: #1f2937;
+  color: white;
+  margin-top: 20px;
+  @media (max-width: 1020px) {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+`;
+
 // body list
 
 export const StyledBodyList = styled.div`
@@ -205,6 +230,13 @@ export const StyledBodyList = styled.div`
   @media (max-width: 1020px) {
     width: 100%;
   }
+`;
+
+export const StyledLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 0;
 `;
 
 export const StyledProductsContainer = styled.div`
@@ -237,12 +269,31 @@ export const StyledFavourite = styled.img`
   cursor: pointer;
 `;
 
+export const StyledOneProductPhotoContainer = styled.div`
+  max-width: 200px;
+  max-height: 300px;
+  overflow: hidden;
+  z-index: 1;
+
+  @media (max-width: 1020px) {
+    max-width: 120px;
+    max-height: 180px;
+  }
+`;
+
 export const StyledOneProductPhoto = styled.img`
   width: 200px;
   height: 300px;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   border-radius: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
   @media (max-width: 1020px) {
     width: 150px;
     height: 225px;
@@ -262,6 +313,7 @@ export const StyledOneProductName = styled.div`
   font-style: normal;
   font-weight: 500;
   letter-spacing: -0.36px;
+  cursor: pointer;
 `;
 
 export const StyledOneProductShortDesc = styled.div`
@@ -269,6 +321,14 @@ export const StyledOneProductShortDesc = styled.div`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
+`;
+
+export const StyledOneProductPrice = styled.div`
+  color: #1d1d1f;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: -0.36px;
 `;
 
 // sort
@@ -279,7 +339,7 @@ export const StyledInputSliderContainer = styled.div`
   justify-content: space-around;
   width: 100%;
   gap: 10px;
-  padding: 16px 8px;
+  padding: 0 0 8px;
 `;
 
 export const StyledPriceInput = styled.input`

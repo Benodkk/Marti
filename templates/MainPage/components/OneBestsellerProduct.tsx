@@ -2,25 +2,47 @@ import {
   StyledIconContainer,
   StyledOneProduct,
   StyledOneProductPhoto,
+  StyledOneProductPhotoContainer,
   StyledProductName,
   StyledProductPrize,
   StyledProductType,
 } from "../MainPage.styled";
 import BestsellersPhoto from "@/assets/BestSellersPhoto.png";
+import { useRouter } from "next/router";
 import { AiOutlineShopping } from "react-icons/ai";
 
-interface OneBestsellerProductProps {}
+interface OneBestsellerProductProps {
+  name: string;
+  type: string;
+  price: string;
+  image: string;
+  id: any;
+}
 
-export const OneBestsellerProduct = ({}: OneBestsellerProductProps) => {
+export const OneBestsellerProduct = ({
+  name,
+  type,
+  price,
+  image,
+  id,
+}: OneBestsellerProductProps) => {
+  const router = useRouter();
+
+  const pushToList = (product: any) => {
+    router.push({
+      pathname: `/product/${product}`,
+    });
+  };
   return (
     <StyledOneProduct>
-      <StyledOneProductPhoto src={BestsellersPhoto.src} />
-      <StyledProductType>WOMEN FITNESS</StyledProductType>
-      <StyledProductName>Classic Leggings</StyledProductName>
-      <StyledProductPrize>159,00 zł</StyledProductPrize>
-      <StyledIconContainer>
-        <AiOutlineShopping size={20} color="white" />
-      </StyledIconContainer>
+      <StyledOneProductPhotoContainer>
+        <StyledOneProductPhoto onClick={() => pushToList(id)} src={image} />
+      </StyledOneProductPhotoContainer>
+      <StyledProductType>{type}</StyledProductType>
+      <StyledProductName onClick={() => pushToList(id)}>
+        {name.toUpperCase()}
+      </StyledProductName>
+      <StyledProductPrize>{price} zł</StyledProductPrize>
     </StyledOneProduct>
   );
 };

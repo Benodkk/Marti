@@ -20,63 +20,55 @@ import { ArrowButton } from "@/components/ArrowButton/ArrowButton";
 import GoldenCircle from "@/assets/GoldenCircle.png";
 import { useEffect } from "react";
 import { getCategories } from "@/API/categories";
+import defaultWelcomePageImage from "@/assets/defaultWelcomePageImage.png";
+import { useRouter } from "next/router";
+interface WelcomePageProps {
+  linkId: string;
+}
 
-interface WelcomePageProps {}
+export const WelcomePage = ({ linkId }: WelcomePageProps) => {
+  const router = useRouter();
 
-export const WelcomePage = ({}: WelcomePageProps) => {
-  const bebe = async () => {
-    getCategories();
+  const pushToList = (category: any) => {
+    router.push({
+      pathname: "/products",
+      query: {
+        category: category,
+      },
+    });
   };
-  useEffect(() => {
-    bebe();
-  }, []);
 
   return (
-    <WelcomePageContainer>
+    <WelcomePageContainer $bgImage={defaultWelcomePageImage.src}>
       <WelcomePageLeft>
         <WelcomePageLeftContent>
-          <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo>
+          {/* <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo> */}
           <StyledTitleContainer>
-            <StyledTitle>Autumn</StyledTitle>
-            <StyledTitle>Collection</StyledTitle>
+            <StyledTitle $color={"#FFF"}>Marti Bikini</StyledTitle>
+            <StyledTitle $color={"#FFF"}>Collection</StyledTitle>
           </StyledTitleContainer>
 
           <StyledWelcomePageTextContainer>
-            <StyledWelcomePageText>
-              Upgrade Your Autumn Sportswear with Our Exclusive Collection,
-            </StyledWelcomePageText>
-            <StyledWelcomePageText>
-              where Fashion Meets Functionality!
+            <StyledWelcomePageText $color={"#FFF"}>
+              Your lucky bikini created with passion!
             </StyledWelcomePageText>
           </StyledWelcomePageTextContainer>
 
-          <ArrowButton>SHOW MORE</ArrowButton>
+          <ArrowButton onClick={() => pushToList(linkId)}>
+            SHOW MORE
+          </ArrowButton>
           <StyledGoldenCircleImage src={GoldenCircle.src} />
         </WelcomePageLeftContent>
       </WelcomePageLeft>
       <WelcomePageRight>
         <WelcomePageRightContent>
           <StyledImage
-            $height="120px"
-            src={GoldenLeaf.src}
-            $position="relative"
-            $top="50px"
-            $left="50px"
-            $zIndex={1}
-          />
-          <StyledImage
-            $height="100%"
-            src={WelcomeWoman.src}
-            $position="relative"
-            $left="0px"
-            $zIndex={2}
-          />
-          <StyledImage
             $height="300px"
             src={WelcomeSign.src}
             $zIndex={3}
-            $position="relative"
-            $right="50px"
+            $position="absolute"
+            $right="0px"
+            $bottom="10%"
           />
         </WelcomePageRightContent>
       </WelcomePageRight>

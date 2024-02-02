@@ -1,7 +1,9 @@
-import { CheckOutTemplate } from "@/templates/CheckOut/CheckOut";
+import dynamic from "next/dynamic";
 
-const CheckOut = () => {
-  return <CheckOutTemplate />;
-};
+const CheckOutImport = dynamic(() => import("@/templates/CheckOut/CheckOut"), {
+  ssr: false,
+});
 
-export default CheckOut;
+export default function CheckOut() {
+  return <CheckOutImport />;
+}
