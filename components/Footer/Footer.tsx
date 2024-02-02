@@ -49,8 +49,8 @@ const Footer = ({}: FooterProps) => {
       <StyledFooterLinksContainer>
         <StyledFooterText>
           Our online store is all about empowering your fitness journey, with
-          quality bodybuilding attire and accessories. We're not just about the
-          products; we're about the people who wear them.
+          quality bodybuilding attire and accessories. We&apos;re not just about
+          the products; we&apos;re about the people who wear them.
         </StyledFooterText>
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>Customer care</StyledFooterLinksTitle>

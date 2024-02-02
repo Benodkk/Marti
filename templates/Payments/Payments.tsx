@@ -39,7 +39,7 @@ export const PaymentsTemplate = ({}: PaymentsProps) => {
   return (
     <StyledPaymentContainer>
       <StyledPayments>
-        <BackButton />
+        {/* <BackButton /> */}
         <StyledPaymentsTitle>Payment</StyledPaymentsTitle>
         <StyledPaymentListContainer>
           <StyledPaymentList>

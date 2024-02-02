@@ -7,8 +7,6 @@ interface BackButtonProps {}
 export const BackButton = ({}: BackButtonProps) => {
   const router = useRouter();
   return (
-    <StyledBackButton onClick={() => router.back()}>
-      <img src={Back.src} /> Back
-    </StyledBackButton>
+    <StyledBackButton onClick={() => router.back()}>Back</StyledBackButton>
   );
 };

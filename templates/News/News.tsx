@@ -18,7 +18,7 @@ export const NewsTemplate = () => {
   return (
     <StyledNewsContainer>
       <StyledNews>
-        <BackButton />
+        {/* <BackButton /> */}
         <StyledNewsType>FITNESS</StyledNewsType>
         <StyledNewsTitleContainer>
           <StyledNewsDateConainer>

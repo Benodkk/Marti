@@ -14,7 +14,7 @@ export const AboutTemplate = () => {
     <StyledAboutContainer>
       <StyledAbout>
         <StyledTitleContainer>
-          <BackButton />
+          {/* <BackButton /> */}
           <StyledAboutTitle>About us</StyledAboutTitle>
         </StyledTitleContainer>
 
