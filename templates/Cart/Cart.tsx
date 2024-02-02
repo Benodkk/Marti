@@ -198,9 +198,7 @@ export default function Cart({}: CartProps) {
                   </StyledTotalContainer>
                   <BlackButton
                     margin={"12px 0 0"}
-                    onClick={() => {
-                      router.push("/CheckOut");
-                    }}
+                    onClick={() => router.push("/checkOut")}
                   >
                     Checkout
                   </BlackButton>
