@@ -22,7 +22,7 @@ export const ProductListHeader = ({
       <StyledProductListHeader>
         <StyledListHeaderPhoto src={photoSource} />
         <StyledListHeaderTitleContainer>
-          {listType.split(" ").map((word) => {
+          {listType?.split(" ").map((word) => {
             return (
               <StyledListHeaderTitle key={word}>{word}</StyledListHeaderTitle>
             );

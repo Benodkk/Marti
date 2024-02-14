@@ -6,6 +6,7 @@ import {
 import { ProductListHeader } from "./ProductListHeader";
 import { ProductListBody } from "./ProductListBody";
 import womenMain from "@/assets/womenMain.png";
+import menMain from "@/assets/menMain.png";
 import { ListCategories } from "./ListCategories";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -179,9 +180,11 @@ export default function ProductList({}: ProductListProps) {
   return (
     <ProductListContainer>
       <ProductListHeader
-        color="#C44370"
-        listType="Women"
-        photoSource={womenMain.src}
+        color={rootCategory?.attributes.name == "Men" ? "#75939E" : `#C44370`}
+        listType={rootCategory?.attributes.name}
+        photoSource={
+          rootCategory?.attributes.name == "Men" ? menMain.src : womenMain.src
+        }
       />
       <StyledBodyContainer>
         <StyledBodyFilters>
