@@ -201,7 +201,7 @@ export const StyledOneDetailFromList = styled.div`
   font-family: Roboto;
   font-size: 14px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   padding-left: 5px;
 `;
 
@@ -210,7 +210,7 @@ export const StyledEmpty = styled.div`
   font-family: Roboto;
   width: 100%;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   display: flex;
   justify-content: center;
   padding: 100px 0;

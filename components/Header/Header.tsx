@@ -41,6 +41,7 @@ import { ShopButton } from "../ShopButton/ShopButton";
 import { useSelector } from "react-redux";
 import { selectTotalItems } from "@/redux/cartSlice";
 import { MoonLoader } from "react-spinners";
+import { fetchAllCategories } from "@/API/strapiConfig";
 
 interface HeaderProps {}
 
@@ -101,40 +102,50 @@ const Header = ({}: HeaderProps) => {
   const getAllCategories = async () => {
     setLoading(true);
     try {
-      const categories: any = await getCategories();
-
+      const categories: any = await fetchAllCategories();
       if (categories) {
-        const womenCategoryId = categories.find(
-          (category: any) => category.slug == "women"
+        const womenCategoryId: any = categories.find(
+          (category: any) => category.attributes.name == "Women"
         ).id;
         setAllWomenProducts(womenCategoryId);
         const womenCategories = categories
-          .filter((category: any) => category.parent == womenCategoryId)
-          .sort((a: any, b: any) => a.menu_order - b.menu_order);
+          .filter(
+            (category: any) =>
+              category?.attributes?.parent?.data?.id == womenCategoryId
+          )
+          .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
         const allWomenCategories = womenCategories.map((womenCategory: any) => {
           const each = categories.filter(
-            (category: any) => category.parent == womenCategory.id
+            (category: any) =>
+              category?.attributes?.parent?.data?.id == womenCategory.id
+          );
+
+          return { category: womenCategory, under: each };
+        });
+        const menCategoryId: any = categories.find(
+          (category: any) => category.attributes.name == "Men"
+        ).id;
+
+        setAllMenProducts(menCategoryId);
+
+        const menCategories: any = categories.filter(
+          (category: any) =>
+            category?.attributes?.parent?.data?.id == menCategoryId
+        );
+
+        // .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
+
+        const allMenCategories = menCategories.map((womenCategory: any) => {
+          const each = categories.filter(
+            (category: any) =>
+              category?.attributes?.parent?.data?.id == womenCategory.id
           );
 
           return { category: womenCategory, under: each };
         });
 
-        const menCategoryId = categories.find(
-          (category: any) => category.slug == "men"
-        ).id;
-        setAllMenProducts(menCategoryId);
-        const menCategories = categories
-          .filter((category: any) => category.parent == menCategoryId)
-          .sort((a: any, b: any) => a.menu_order - b.menu_order);
-        const allMenCategories = menCategories.map((menCategory: any) => {
-          const each = categories.filter(
-            (category: any) => category.parent == menCategory.id
-          );
-
-          return { category: menCategory, under: each };
-        });
-
         setWomenCategories(allWomenCategories);
+
         setMenCategories(allMenCategories);
       }
     } catch {
@@ -165,14 +176,10 @@ const Header = ({}: HeaderProps) => {
                 <FaInstagram />
               </IconButton>
             </StyledGroupIconsHeader>
-            <StyledLogo
-              onClick={() => router.push("/")}
-              src={HeaderLogo.src}
-              alt="logo"
-            />
+            <StyledLogo onClick={() => router.push("/")} src={HeaderLogo.src} />
             <StyledGroupIconsHeader>
               <ShopButton totalItems={totalItems} />
-              <IconButton onClick={() => router.push("/SignUp")}>
+              <IconButton onClick={() => router.push("/SignIn")}>
                 <FaRegUser />
               </IconButton>
             </StyledGroupIconsHeader>
@@ -235,7 +242,6 @@ const Header = ({}: HeaderProps) => {
       {/* <MediaQuery maxWidth={reactDevice.desktop.minWidth}> */}
       {/* <StyledHeaderContainerMobile>
         <StyledHeaderTopContainerMobile>
-          <StyledLogoMobile src={HeaderLogo.src} alt="logo" />
           <StyledIconsMobile>
             <IconButton>
               <AiOutlineShopping />

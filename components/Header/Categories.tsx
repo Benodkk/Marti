@@ -32,10 +32,10 @@ export const Categories = ({
       pathname: "/products",
       query: {
         category: category,
+        fromHeader: "true",
       },
     });
   };
-
   return (
     <StyledWomanOptionsContainer open={openCategories}>
       <StyledRealContent open={openCategories} $color={bgColor}>
@@ -52,13 +52,13 @@ export const Categories = ({
             categories &&
             categories.map((category: any, index: any) => {
               return (
-                <StyledOneLinkColumn key={category.id}>
+                <StyledOneLinkColumn key={category.category.id}>
                   <StyledBoldLink
                     $firstChild={index === 0}
                     $oneChild={categories.length == 1}
                     onClick={() => pushToList(category.category.id)}
                   >
-                    {category.category.name}
+                    {category.category.attributes.name}
                   </StyledBoldLink>
                   <StyledLinkContainer
                     $firstChild={index === 0}
@@ -71,7 +71,7 @@ export const Categories = ({
                           onClick={() => pushToList(underCategory.id)}
                           key={underCategory.id}
                         >
-                          {underCategory.name}
+                          {underCategory.attributes.name}
                         </StyledLink>
                       );
                     })}

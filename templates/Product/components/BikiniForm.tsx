@@ -32,14 +32,8 @@ const formPoles = [
 ];
 
 interface BikiniFormProps {
-  formData: {
-    [key: string]: string;
-  };
-  setFormData: Dispatch<
-    SetStateAction<{
-      [key: string]: string;
-    }>
-  >;
+  formData: any;
+  setFormData: any;
   show: any;
 }
 
@@ -48,22 +42,27 @@ export const BikiniForm = ({
   setFormData,
   show,
 }: BikiniFormProps) => {
-  const handleInputChange = (e: any) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const updateItemValueById = (itemId: any, newValue: any) => {
+    const updatedItems = formData.map((item: any) => {
+      if (item.id === itemId) {
+        return { ...item, value: newValue }; // Zaktualizuj wartość dla elementu o danym id
+      }
+      return item; // Zwróć element bez zmian, jeśli nie pasuje
     });
+
+    setFormData(updatedItems); // Ustaw nową tablicę jako stan
   };
 
   return (
     <StyledForm $display={show ? "flex" : "none"}>
-      {formPoles.map((field, index) => (
+      {formData?.map((field: any, index: any) => (
         <StyledInputContainer key={index}>
           <Input
-            type={field.type}
+            type={field.input_photos ? "text" : "text"}
             label={field.name}
-            value={formData[field.name] || ""}
-            onChange={handleInputChange}
+            value={field.value}
+            onChange={(e: any) => updateItemValueById(field.id, e.target.value)}
+            obligatory={field.obligatory}
           />
         </StyledInputContainer>
       ))}

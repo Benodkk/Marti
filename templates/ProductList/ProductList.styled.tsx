@@ -327,7 +327,7 @@ export const StyledOneProductPrice = styled.div`
   color: #1d1d1f;
   font-size: 18px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.36px;
 `;
 

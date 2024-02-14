@@ -5,9 +5,16 @@ interface InputProps {
   value: any;
   onChange: any;
   type: any;
+  obligatory?: boolean;
 }
 
-export const Input = ({ label, value, onChange, type }: InputProps) => {
+export const Input = ({
+  label,
+  value,
+  onChange,
+  type,
+  obligatory,
+}: InputProps) => {
   return (
     <FormGroup className="form__group field">
       <FormField
@@ -20,7 +27,7 @@ export const Input = ({ label, value, onChange, type }: InputProps) => {
         id={label}
       />
       <FormLabel htmlFor={label} className="form__label">
-        {label}
+        {label + `${obligatory ? "*" : ""}`}
       </FormLabel>
     </FormGroup>
   );

@@ -6,6 +6,10 @@ import { NewReleases } from "./NewReleases";
 import { ShopNow } from "./ShopNow";
 import { WelcomePage } from "./WelcomePage";
 import { useEffect, useState } from "react";
+import {
+  fetchAllCategories,
+  fetchAllCategoriesWithProductDetails,
+} from "@/API/strapiConfig";
 
 interface MainPageProps {}
 const MainPage = ({}: MainPageProps) => {
@@ -15,71 +19,45 @@ const MainPage = ({}: MainPageProps) => {
   const [womenLinkId, setWomenLinkId] = useState<any>();
   const [menLinkId, setMenLinkId] = useState<any>();
   const [heelsLinkId, setHeelsLinkId] = useState<any>();
-  const [accesoriesLinkId, setAccesoriesLinkId] = useState<any>();
-  const [bestsellersLinkId, setBestsellersLinkId] = useState<any>();
 
-  // under categories
-  const [allUnderCategories, setAllUnderCategories] = useState<any>();
+  // bestsellers
+  const [bestsellers, setBestsellers] = useState<any>([]);
 
   useEffect(() => {
     getProperLinks();
   }, []);
 
   const getProperLinks = async () => {
-    const response: any = await getCategories();
+    const response: any = await fetchAllCategoriesWithProductDetails();
+    console.log(response);
+
     if (response) {
       const newWelcomePageLinkId = response.find(
-        (category: any) => category.slug == "bikini"
-      ).id;
-      setWelcomePageLinkId(newWelcomePageLinkId);
+        (category: any) => category.attributes.welcome_page
+      );
+      if (newWelcomePageLinkId) setWelcomePageLinkId(newWelcomePageLinkId.id);
 
       const newWomenLinkId = response.find(
-        (category: any) => category.slug == "women"
+        (category: any) => category.attributes.name == "Women"
       ).id;
       setWomenLinkId(newWomenLinkId);
 
       const newMenLinkId = response.find(
-        (category: any) => category.slug == "men"
+        (category: any) => category.attributes.name == "Men"
       ).id;
       setMenLinkId(newMenLinkId);
 
       const newHeelsLinkId = response.find(
-        (category: any) => category.slug == "heels"
+        (category: any) => category.attributes.name == "Heels"
       ).id;
       setHeelsLinkId(newHeelsLinkId);
 
-      const newAccesoriesLinkId = response.find(
-        (category: any) => category.slug == "accesories"
-      ).id;
-      setAccesoriesLinkId(newAccesoriesLinkId);
-
-      const newBestSellersLinkId = response.find(
-        (category: any) => category.slug == "bestsellers"
-      ).id;
-      setBestsellersLinkId(newBestSellersLinkId);
-
-      const womenCategoryId = response.find(
-        (category: any) => category.slug == "women"
-      ).id;
-      const womenCategories = response.filter(
-        (category: any) => category.parent == womenCategoryId
-      );
-      const each = response.filter((category: any) =>
-        womenCategories.some((women: any) => women.id == category.parent)
-      );
-      const menCategoryId = response.find(
-        (category: any) => category.slug == "men"
-      ).id;
-      const menCategories = response.filter(
-        (category: any) => category.parent == menCategoryId
-      );
-      const eachMen = response.filter((category: any) =>
-        menCategories.some((men: any) => men.id == category.parent)
-      );
-      setAllUnderCategories([...each, ...eachMen]);
+      const bestSellers = response
+        .filter((category: any) => category.attributes.bestseller)
+        .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
+      setBestsellers(bestSellers);
     }
   };
-  // category.parent == womenCategory.id
   return (
     <MainPageContainer>
       <WelcomePage linkId={welcomePageLinkId} />
@@ -88,13 +66,7 @@ const MainPage = ({}: MainPageProps) => {
         menLinkId={menLinkId}
         heelsLinkId={heelsLinkId}
       />
-      <Bestsellers
-        womenLinkId={womenLinkId}
-        menLinkId={menLinkId}
-        accesoriesLinkId={accesoriesLinkId}
-        bestsellersLinkId={bestsellersLinkId}
-        underCategories={allUnderCategories}
-      />
+      <Bestsellers bestsellers={bestsellers} />
       <NewReleases />
       <LatestNews />
     </MainPageContainer>

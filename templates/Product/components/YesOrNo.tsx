@@ -8,9 +8,9 @@ import { StyledName } from "./OneDetail.styled";
 
 interface YesOrNoProps {
   firstOnClick?: any;
-  firstImage: string;
+  firstImage?: string;
   secondOnClick?: any;
-  secondImage: string;
+  secondImage?: string;
   active: boolean;
 }
 
@@ -24,16 +24,24 @@ export const YesOrNo = ({
   return (
     <StyledYesOrNoContainer>
       <StyledOneChoiceColumn>
-        <StyledOneChoiceContainer $active={!active}>
-          <StyledOneChoice onClick={firstOnClick} src={firstImage} />
+        <StyledOneChoiceContainer onClick={firstOnClick} $active={!active}>
+          {firstImage ? (
+            <StyledOneChoice src={firstImage} />
+          ) : (
+            <StyledName>NO</StyledName>
+          )}
         </StyledOneChoiceContainer>
-        <StyledName>NO</StyledName>
+        {firstImage && <StyledName>NO</StyledName>}
       </StyledOneChoiceColumn>
       <StyledOneChoiceColumn>
-        <StyledOneChoiceContainer $active={active}>
-          <StyledOneChoice onClick={secondOnClick} src={secondImage} />
+        <StyledOneChoiceContainer onClick={secondOnClick} $active={active}>
+          {secondImage ? (
+            <StyledOneChoice src={secondImage} />
+          ) : (
+            <StyledName>YES</StyledName>
+          )}
         </StyledOneChoiceContainer>
-        <StyledName>YES</StyledName>
+        {secondImage && <StyledName>YES</StyledName>}
       </StyledOneChoiceColumn>
     </StyledYesOrNoContainer>
   );

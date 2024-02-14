@@ -2,50 +2,33 @@ import { useEffect, useState } from "react";
 import { StyledBikiniCaseContainer } from "./BikiniCase.styled";
 import { getProductsByCategoriesId } from "@/API/product";
 import { OneDetail } from "./OneDetail";
+import { OneBikiniCase } from "./OneBikiniCase";
 
 interface BikiniCaseProps {
   show: boolean;
-  categories: any;
-  bikiniCaseName: any;
+  etuis: any;
   chosenBikiniCase: any;
   setChosenBikiniCase: any;
 }
 
 export const BikiniCase = ({
   show,
-  categories,
-  bikiniCaseName,
   chosenBikiniCase,
   setChosenBikiniCase,
+  etuis,
 }: BikiniCaseProps) => {
-  const [bikiniCases, setBikiniCases] = useState<any>();
-
-  useEffect(() => {
-    if (categories) getData();
-  }, [bikiniCaseName]);
-
-  const getProductsDetails = async (type: string) => {
-    if (categories) {
-      const id = categories.find((category: any) => category.slug === type)?.id;
-
-      const details: any = await getProductsByCategoriesId(id);
-      return details;
-    }
-  };
-  const getData = async () => {
-    const bikiniCase: any = await getProductsDetails(bikiniCaseName);
-    if (bikiniCase) setBikiniCases(bikiniCase);
-  };
-
   return (
     <StyledBikiniCaseContainer $display={show ? "grid" : "none"}>
-      {bikiniCases?.map((element: any) => {
+      {etuis?.map((element: any) => {
         return (
-          <OneDetail
+          <OneBikiniCase
             details={element}
-            onClick={() => setChosenBikiniCase(element)}
+            onClick={() =>
+              chosenBikiniCase?.id === element.id
+                ? setChosenBikiniCase(null)
+                : setChosenBikiniCase(element)
+            }
             active={chosenBikiniCase?.id === element.id}
-            image={true}
           />
         );
       })}

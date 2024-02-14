@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import DOMPurify from "dompurify";
 import {
   StyledAddToBagButton,
   StyledAddToWishlist,
+  StyledDescription,
   StyledInTotal,
   StyledInfo,
   StyledMainPhoto,
@@ -22,6 +24,7 @@ import {
   StyledStars,
   StyledTextarea,
   StyledType,
+  StyledTypeOne,
 } from "./Product.styled";
 import StarFull from "@/assets/StarFull.svg";
 import StarEmpty from "@/assets/StarEmpty.svg";
@@ -45,6 +48,14 @@ import Error from "@/components/Error/Error";
 import { StyledErrorTitle } from "@/components/Error/Error.styled";
 import Success from "@/components/Success/Success";
 import { StyledSuccessTitle } from "@/components/Success/Success.styled";
+import { OtherAttributes } from "./components/OtherAttributes";
+import { RobeDetails } from "./components/RobeDetails";
+import {
+  fetchBikiniDetailsByName,
+  fetchProductById,
+  fetchProductsByCategoryName,
+  fetchRobe,
+} from "@/API/strapiConfig";
 
 interface ProductProps {}
 
@@ -66,24 +77,30 @@ export default function ProductTemplate({}: ProductProps) {
   const [productData, setProductData] = useState<any>();
 
   // product details
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
-  const [detailsData, setDetailsData] = useState<any>();
+  const [chosenBikiniDetails, setChosenBikiniDetails] = useState<any>([]);
+
+  const [formData, setFormData] = useState<any>([]);
   const [chosenBikiniCase, setChosenBikiniCase] = useState<any>();
 
-  const [categories, setCategories] = useState<any>();
+  // robe
 
-  const [braStyle, setBraStyle] = useState<any>();
+  const [robeFont, setRobeFont] = useState<any>([]);
+  const [showRobeDetails, setShowRobeDetails] = useState(false);
+  const [configureFontDetails, setConfigureFontDetails] = useState(false);
+  const [robeText, setRobeText] = useState<any>();
+
+  // other attrubiute
+  const [otherAttributes, setOtherAttributes] = useState<any>();
+
   const [bikiniDetails, setBikiniDetails] = useState<any>();
-  const [productionTime, setProductionTime] = useState<any>();
-  const [etui, setEtui] = useState<any>();
+  const [etuis, setEtuis] = useState<any>();
   const [additionalNotes, setAdditionalNotes] = useState<any>();
-  const [chosenProductionTime, setChosenProductionTime] = useState<any>();
 
   const [inTotal, setInTotal] = useState<number>(0);
 
   const myRandomId = uuidv4();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // modal states
 
@@ -98,75 +115,129 @@ export default function ProductTemplate({}: ProductProps) {
 
   const [success, setSuccess] = useState(false);
 
+  const [description, setDescription] = useState<any>();
+
   useEffect(() => {
     if (router.query.product) {
       getProductData(Number(router.query.product));
     }
-    getCat();
   }, [router.query]);
 
   useEffect(() => {
     let addPrice = 0;
-    if (detailsData) {
-      Object.values(detailsData).forEach((value: any) => {
-        if (value.value) {
-          addPrice += Number(value.value.price);
-        }
+
+    if (chosenBikiniDetails) {
+      chosenBikiniDetails.forEach((detail: any) => {
+        addPrice += Number(detail.option.price_pln);
       });
     }
 
-    if (chosenProductionTime) {
-      addPrice += Number(chosenProductionTime.price);
+    if (otherAttributes) {
+      otherAttributes.forEach((detail: any) => {
+        if (detail.chosen) addPrice += Number(detail.chosen?.price_pln);
+      });
     }
+
     if (chosenBikiniCase) {
-      addPrice += Number(chosenBikiniCase.price);
+      addPrice += Number(chosenBikiniCase.attributes.price_pln);
     }
+    if (robeText && robeText.length > 0) {
+      let count = Math.ceil(robeText.length / 5);
+      addPrice += count * 100;
+    }
+
     if (productData) {
-      setInTotal(Number(productData?.price) + addPrice);
+      setInTotal(Number(productData?.price_pln) + addPrice);
     }
-  }, [detailsData, chosenProductionTime, chosenBikiniCase]);
+  }, [chosenBikiniDetails, otherAttributes, chosenBikiniCase, robeText]);
 
   const getProductData = async (id: number) => {
     setLoading(true);
     try {
-      const data: any = await getProductById(id);
-      if (data) {
+      const data: any = await fetchProductById(id);
+
+      if (data.attributes) {
         // show details check
-        setProductData(data);
-        setInTotal(Number(data.price));
-        setMainPhotoSrc(data.images[0].src);
-        if (
-          data.attributes?.some(
-            (attribute: any) => attribute.name === "bikini-details"
-          )
-        ) {
-          // set bikini details and bra style
-          const newBikiniDetails = data.attributes?.find(
-            (attribute: any) => attribute.name === "bikini-details"
-          );
-          if (newBikiniDetails) setBikiniDetails(newBikiniDetails.options[0]);
+        data.attributes.id = data.id;
+        setProductData(data.attributes);
 
-          const newBraStyle = data.attributes?.find(
-            (attribute: any) => attribute.name === "bra-style"
-          );
-          if (newBraStyle) setBraStyle(newBraStyle.options[0]);
+        setInTotal(Number(data.attributes.price_pln));
+        setMainPhotoSrc(data.attributes.main_photo.data.attributes.url);
 
-          const newProductionTime = data.attributes?.find(
-            (attribute: any) => attribute.name === "production-time"
-          );
-          if (newProductionTime)
-            setProductionTime(newProductionTime.options[0]);
+        if (data.attributes.form) {
+          const modifiedArray = data.attributes.form.map((element: any) => {
+            return {
+              ...element, // Kopiuje wszystkie istniejące pola z obecnego elementu
+              value: "", // Dodaje nowe pole 'show' z wartością 'false'
+            };
+          });
+          setFormData(modifiedArray);
+        }
 
-          const newEtui = data.attributes?.find(
-            (attribute: any) => attribute.name === "etui"
+        // looking for bikini details.
+        if (data.attributes.bikini_details) {
+          const bikiniDetails = await fetchBikiniDetailsByName(
+            data.attributes.bikini_details
           );
-          if (newEtui) setEtui("etui");
+          setBikiniDetails(bikiniDetails[0].attributes.bikini_details);
+        }
+
+        // lookig for robe details
+
+        if (data.attributes.robe_detail) {
+          const robe = await fetchRobe();
+          const modifiedArray = robe.map((element: any) => {
+            return {
+              ...element.attributes,
+              chosen: null,
+              id: element.id,
+            };
+          });
+          setRobeFont(modifiedArray);
+        }
+
+        if (data.attributes.bikini_case) {
+          const etuis = await fetchProductsByCategoryName("Etui");
+          setEtuis(etuis);
+        }
+
+        if (data.attributes.attributes) {
+          const modifiedArray = data.attributes.attributes.map(
+            (element: any) => {
+              return {
+                ...element,
+                show: false,
+                chosen: null,
+              };
+            }
+          );
+          setOtherAttributes(modifiedArray);
         }
       }
     } catch {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleShow = (id: any) => {
+    const updatedAttributes = otherAttributes.map((attribute: any) => {
+      if (attribute.id === id) {
+        return { ...attribute, show: !attribute.show };
+      }
+      return attribute;
+    });
+    setOtherAttributes(updatedAttributes);
+  };
+
+  const setChosenAttribute = (id: any, value: any) => {
+    const updatedAttributes = otherAttributes.map((attribute: any) => {
+      if (attribute.id === id) {
+        return { ...attribute, chosen: value };
+      }
+      return attribute;
+    });
+    setOtherAttributes(updatedAttributes);
   };
 
   const retrunStars = (stringValue: string) => {
@@ -187,120 +258,169 @@ export default function ProductTemplate({}: ProductProps) {
     return returnedStars;
   };
 
-  const getCat = async () => {
-    const categories: any = await getCategories();
-    if (categories) {
-      setCategories(categories);
-    }
-  };
-
   const add = () => {
     let errors = [];
-    console.log(formData);
-
-    if (!detailsData.braStyleType.value) {
-      errors.push("Personalization - Bra style");
-    }
-    if (!detailsData.cupSizeType.value) {
-      errors.push("Personalization - Cup size");
-    }
-    if (!detailsData.pushUpsType.value) {
-      errors.push("Personalization - Push up");
-    }
-    if (!detailsData.bottonBacksType.value) {
-      errors.push("Personalization - Bottom Back");
-    }
-    if (!detailsData.backStrapsType.value) {
-      errors.push("Personalization - Back straps");
-    } else if (detailsData.backStrapsType.value.slug == "connector") {
-      if (!detailsData.backStrapsConnectorsType.value) {
-        errors.push("Personalization - Back straps");
+    if (robeFont && robeText) {
+      if (robeText.length < 10) {
+        errors.push("Robe text - Min. 10 characters ");
       }
     }
-    if (!formData.Height || formData.Height.length < 0) {
-      errors.push("Details - Height");
-    }
-    if (
-      !formData["Bust Circumference"] ||
-      formData["Bust Circumference"].length < 0
-    ) {
-      errors.push("Details - Bust Circumference");
-    }
-    if (
-      !formData["Under Bust Circumference"] ||
-      formData["Under Bust Circumference"].length < 0
-    ) {
-      errors.push("Details - Under Bust Circumference");
+    otherAttributes.forEach((att: any) => {
+      if (att.chosen === 0) {
+        errors.push(capitalizeFirstLetter(att.name));
+      }
+    });
+    console.log(bikiniDetails);
+    console.log(chosenBikiniDetails);
+
+    if (bikiniDetails) {
+      if (
+        !chosenBikiniDetails.some(
+          (element: any) => element.typeName === "Bra Style"
+        )
+      ) {
+        errors.push("Personalization - Bra style");
+      }
+      if (
+        !chosenBikiniDetails.some(
+          (element: any) => element.typeName === "Cup Size"
+        )
+      ) {
+        errors.push("Personalization - Cup size");
+      }
+      if (
+        !chosenBikiniDetails.some(
+          (element: any) => element.typeName === "Push Up"
+        )
+      ) {
+        errors.push("Personalization - Push up");
+      }
+      if (
+        !chosenBikiniDetails.some(
+          (element: any) => element.typeName === "Bottom Backs"
+        )
+      ) {
+        errors.push("Personalization - Bottom Back");
+      }
+
+      const backStraps = chosenBikiniDetails.find(
+        (element: any) => element.typeName === "Back Straps"
+      );
+
+      if (
+        !backStraps ||
+        (backStraps.option.name == "Connectors" &&
+          !chosenBikiniDetails.some(
+            (element: any) => element.typeName === "Back Connectors"
+          ))
+      ) {
+        errors.push("Personalization - Back straps");
+      }
+
+      // form errors
+      formData.forEach((field: any) => {
+        if (field.obligatory == true && field.value.length == 0) {
+          errors.push(`Details - ${field.name}`);
+        }
+      });
     }
 
-    if (
-      !formData["Waist (circumference)"] ||
-      formData["Waist (circumference)"].length < 0
-    ) {
-      errors.push("Details - Waist (circumference)");
-    }
-    if (
-      !formData["Buttock (circumference)"] ||
-      formData["Buttock (circumference)"].length < 0
-    ) {
-      errors.push("Details - Buttock (circumference)");
-    }
-    if (!formData["Current Weight"] || formData["Current Weight"].length < 0) {
-      errors.push("Details - Current Weight");
-    }
-    if (
-      !formData["Weight on the Stage"] ||
-      formData["Weight on the Stage"].length < 0
-    ) {
-      errors.push("Details - Weight on the Stage");
-    }
-    if (!chosenProductionTime) {
-      errors.push("Production time");
-    }
+    otherAttributes &&
+      otherAttributes.forEach((attribute: any) => {
+        if (!attribute.chosen) {
+          errors.push(`${attribute.name}`);
+        }
+      });
 
     if (errors.length > 0) {
       setShowError(true);
       setErrors(errors);
     } else {
-      const perosonalizationArray = Object.values(detailsData);
-
       const personalization: any = [];
-      perosonalizationArray.forEach((element: any) => {
-        if (element.value) {
+      if (chosenBikiniDetails) {
+        chosenBikiniDetails.forEach((element: any) => {
           personalization.push({
-            type: element.name,
-            name: element.value.name,
-            price: element.value.price,
+            type: element.typeName,
+            name: element.option.name,
+            price_pln: element.option.price_pln,
+            price_eur: element.option.price_eur,
           });
-        }
+        });
+      }
+      const robeFontChosen = robeFont.find((font: any) => font.chosen != null);
+
+      if (robeFontChosen) {
+        let count = Math.ceil(robeText.length / 5);
+        const addPrice = count * robeFontChosen.price_pln;
+        personalization.push({
+          type: "Robe font",
+          name: robeFontChosen.name,
+          price: addPrice,
+        });
+
+        personalization.push({
+          type: "Robe text",
+          name: robeText,
+          price: "",
+        });
+      }
+
+      const details = otherAttributes.map((att: any) => {
+        return { name: capitalizeFirstLetter(att.name), value: att.chosen };
       });
-      const details = Object.entries(formData).map(([name, value]) => ({
-        name,
-        value,
-      }));
+
+      const formDetails =
+        formData && formData.filter((oneData: any) => oneData.value.length > 0);
 
       const product = {
         id: myRandomId,
-        wordpressId: productData.id,
-        image: productData.images[0].src,
+        strapiId: productData.id,
+        image: productData.main_photo.data.attributes.url,
         name: productData.name,
         price: inTotal.toFixed(2),
-        personalization: personalization,
+        personalization: personalization ? personalization : null,
         details: details,
-        productionTime: chosenProductionTime,
-        bikiniCase: chosenBikiniCase
-          ? {
-              name: chosenBikiniCase.name,
-              price: chosenBikiniCase.price,
-              id: chosenBikiniCase.id,
-            }
-          : null,
+        formDetails: formDetails,
+        bikiniCase: chosenBikiniCase ? chosenBikiniCase : null,
         additionalNotes: additionalNotes,
       };
+
       setSuccess(true);
       dispatch(addItem(product));
     }
   };
+  function capitalizeFirstLetter(str: any) {
+    if (!str) return str; // Sprawdzenie, czy string nie jest pusty lub undefined
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  function processTextToHtml(text: any) {
+    // Dzieli tekst na akapity przy podwójnych enterach i otacza każdy akapit tagiem <p>
+    let processed = text
+      .split("\n\n")
+      .map(
+        (paragraph: any) =>
+          `<p>${paragraph
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Zamienia tekst w ** na pogrubienie
+            .replace(/_(.*?)_/g, "<em>$1</em>")}  
+      </p>`
+      )
+      .join("");
+
+    return processed;
+  }
+
+  const setChosenRobeDetails = (robe: any) => {
+    const updatedRobeFont = robeFont.map((attribute: any) => {
+      if (attribute.id === robe?.id) {
+        return { ...attribute, chosen: robe };
+      }
+      return { ...attribute, chosen: null };
+    });
+    setRobeText("");
+    setRobeFont(updatedRobeFont);
+  };
+  console.log(productData);
 
   return (
     <StyledProductContainer>
@@ -313,30 +433,44 @@ export default function ProductTemplate({}: ProductProps) {
         ) : (
           <>
             <StyledPhotos>
-              <StyledMainPhoto src={mainPhotoSrc} />
+              <StyledMainPhoto
+                src={process.env.NEXT_PUBLIC_STRAPIBASEURL + mainPhotoSrc}
+              />
               <StyledPhotoRow>
                 {productData &&
-                  productData.images.map((image: any) => {
+                  [
+                    productData.main_photo.data,
+                    ...(Array.isArray(productData.photos.data)
+                      ? productData.photos.data
+                      : []),
+                  ].map((image: any) => {
                     return (
                       <StyledSmallPhoto
-                        onClick={() => setMainPhotoSrc(image.src)}
-                        src={image.src}
+                        onClick={() => setMainPhotoSrc(image.attributes.url)}
+                        src={
+                          process.env.NEXT_PUBLIC_STRAPIBASEURL +
+                          image.attributes.url
+                        }
                       />
                     );
                   })}
               </StyledPhotoRow>
             </StyledPhotos>
+
             <StyledInfo>
               <StyledType>
-                {productData && productData.categories[0].name}
+                {productData &&
+                  productData.categories.data.map((cat: any) => {
+                    return <StyledTypeOne>{cat.attributes.name}</StyledTypeOne>;
+                  })}
               </StyledType>
               <StyledProductName>
                 {productData && productData.name}
               </StyledProductName>
               <StyledPrize>
-                {productData && Number(productData.price).toFixed(2)} zł
+                {productData && Number(productData.price_pln).toFixed(2)} zł
               </StyledPrize>
-              <StyledOpinionRow>
+              {/* <StyledOpinionRow>
                 <StyledOpinion>
                   {productData && productData.average_rating == "0.00"
                     ? "-- "
@@ -350,7 +484,17 @@ export default function ProductTemplate({}: ProductProps) {
                 <StyledSeeAllReviews>
                   {productData && productData.rating_count} reviews
                 </StyledSeeAllReviews>
-              </StyledOpinionRow>
+              </StyledOpinionRow> */}
+              {productData.description && (
+                <StyledDescription
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      processTextToHtml(productData.description)
+                    ),
+                  }}
+                ></StyledDescription>
+              )}
+
               {/* *** Bikini details *** */}
               {bikiniDetails && (
                 <>
@@ -365,20 +509,48 @@ export default function ProductTemplate({}: ProductProps) {
                   </StyledShowDetails>
 
                   <BikiniDetails
-                    categories={categories}
                     show={toggleShowDetails}
-                    setDetailsData={setDetailsData}
-                    braStyleName={braStyle}
-                    bikiniDetailsName={bikiniDetails}
+                    bikiniDetails={bikiniDetails}
                     setModalContent={setModalContent}
                     setIsModalOpen={setIsModalOpen}
+                    setModalTitle={setModalTitle}
+                    chosenBikiniDetails={chosenBikiniDetails}
+                    setChosenBikiniDetails={setChosenBikiniDetails}
+                  />
+                </>
+              )}
+
+              {robeFont.length > 0 && (
+                <>
+                  <StyledShowDetails
+                    onClick={() => setShowRobeDetails(!showRobeDetails)}
+                  >
+                    Personalization
+                    <StyledShowDetailsArrow
+                      open={showRobeDetails}
+                      src={Arrow.src}
+                    />
+                  </StyledShowDetails>
+
+                  <RobeDetails
+                    show={showRobeDetails}
+                    robeFont={robeFont}
+                    setChosenRobeDetails={setChosenRobeDetails}
+                    configureFontDetails={configureFontDetails}
+                    setConfigureFontDetails={setConfigureFontDetails}
+                    robeText={robeText}
+                    setRobeText={setRobeText}
+                    setIsModalOpen={setIsModalOpen}
+                    setModalContent={setModalContent}
                     setModalTitle={setModalTitle}
                   />
                 </>
               )}
 
+              {/* any other attribute  */}
+
               {/* Form Details  */}
-              {bikiniDetails && (
+              {formData.length > 0 && (
                 <>
                   <StyledShowDetails
                     onClick={() => setToggleShowForm(!toggleShowForm)}
@@ -397,28 +569,31 @@ export default function ProductTemplate({}: ProductProps) {
                 </>
               )}
 
-              {/* production time */}
-
-              {bikiniDetails && (
+              {otherAttributes && (
                 <>
-                  <StyledShowDetails
-                    onClick={() =>
-                      setToggleShowProductionTime(!toggleShowProductionTime)
-                    }
-                  >
-                    Production time
-                    <StyledShowDetailsArrow
-                      open={toggleShowProductionTime}
-                      src={Arrow.src}
-                    />
-                  </StyledShowDetails>{" "}
-                  <ProductionTime
-                    categories={categories}
-                    productionTimeName={productionTime}
-                    show={toggleShowProductionTime}
-                    chosenProductionTime={chosenProductionTime}
-                    setChosenProductionTime={setChosenProductionTime}
-                  />
+                  {otherAttributes.map((attribute: any) => {
+                    return (
+                      <>
+                        <StyledShowDetails
+                          onClick={() => toggleShow(attribute.id)}
+                        >
+                          {capitalizeFirstLetter(attribute.name)}
+                          <StyledShowDetailsArrow
+                            open={attribute.show}
+                            src={Arrow.src}
+                          />
+                        </StyledShowDetails>
+                        <OtherAttributes
+                          otherAttributes={attribute.options}
+                          show={attribute.show}
+                          chosenOtherAttributes={attribute.chosen}
+                          setChosenOtherAttributes={(value: any) =>
+                            setChosenAttribute(attribute.id, value)
+                          }
+                        />
+                      </>
+                    );
+                  })}
                 </>
               )}
 
@@ -436,8 +611,7 @@ export default function ProductTemplate({}: ProductProps) {
                   </StyledShowDetails>
                   <BikiniCase
                     show={toggleBikiniCase}
-                    categories={categories}
-                    bikiniCaseName={etui}
+                    etuis={etuis}
                     chosenBikiniCase={chosenBikiniCase}
                     setChosenBikiniCase={setChosenBikiniCase}
                   />
@@ -461,35 +635,6 @@ export default function ProductTemplate({}: ProductProps) {
                 onChange={(e) => setAdditionalNotes(e.target.value)}
                 placeholder="Write here..."
               />
-
-              {/* <StyledLabel>Color</StyledLabel>
-          <StyledColorsRow>
-            <StyledOneColorContainer $active={true}>
-              <StyledOneColor $bgColor="black" />
-            </StyledOneColorContainer>
-            <StyledOneColorContainer $active={false}>
-              <StyledOneColor $bgColor="red" />
-            </StyledOneColorContainer>
-            <StyledOneColorContainer $active={false}>
-              <StyledOneColor $bgColor="green" />
-            </StyledOneColorContainer>
-            <StyledOneColorContainer $active={false}>
-              <StyledOneColor $bgColor="yellow" />
-            </StyledOneColorContainer>
-          </StyledColorsRow>
-          <StyledLabel>Size</StyledLabel>
-          <StyledSizeContainer>
-            <StyledOneSize $active={true}>Small</StyledOneSize>
-            <StyledOneSize $active={false}>Medium</StyledOneSize>
-            <StyledOneSize $active={false}>Large</StyledOneSize>
-          </StyledSizeContainer>
-          <StyledMoreInfo>Find the perfect size?</StyledMoreInfo>
-          <StyledLabel>Personalization</StyledLabel>
-          <StyledSizeContainer>
-            <StyledOneSize $active={true}>Chain (+ 20zł)</StyledOneSize>
-            <StyledOneSize $active={false}>Clasp</StyledOneSize>
-          </StyledSizeContainer>
-          <StyledMoreInfo>More about personalization</StyledMoreInfo> */}
               <StyledInTotal>In total: {inTotal.toFixed(2)} zł</StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
                 Add to Bag

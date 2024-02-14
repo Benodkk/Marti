@@ -28,25 +28,29 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
       pathname: `/product/${product}`,
     });
   };
+
   return (
     <StyledOneProductCart>
       {/* <StyledFavourite src={RedHeart.src} /> */}
       <StyledOneProductPhotoContainer>
         <StyledOneProductPhoto
           onClick={() => pushToProduct(product.id)}
-          src={product.images.length > 0 && product.images[0].src}
+          src={
+            process.env.NEXT_PUBLIC_STRAPIBASEURL +
+            product.attributes.main_photo.data?.attributes.url
+          }
         />
       </StyledOneProductPhotoContainer>
 
       {/* <StyledOneProductRedLabel>New In</StyledOneProductRedLabel> */}
       <StyledOneProductName onClick={() => pushToProduct(product.id)}>
-        {product.name.toUpperCase()}
+        {product.attributes.name.toUpperCase()}
       </StyledOneProductName>
-      <StyledOneProductShortDesc>
+      {/* <StyledOneProductShortDesc>
         A piece of short description goes in here
-      </StyledOneProductShortDesc>
+      </StyledOneProductShortDesc> */}
       <StyledOneProductPrice>
-        {parseFloat(product.price).toFixed(2)} zł
+        {parseFloat(product.attributes.price_pln).toFixed(2)} zł
       </StyledOneProductPrice>
     </StyledOneProductCart>
   );

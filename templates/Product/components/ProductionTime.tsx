@@ -29,7 +29,7 @@ export const ProductionTime = ({
   const [productionTime, setProductionTime] = useState<any>();
 
   useEffect(() => {
-    if (categories) getData();
+    getData();
   }, [productionTimeName]);
 
   const getProductsDetails = async (type: string) => {
@@ -43,6 +43,7 @@ export const ProductionTime = ({
   const getData = async () => {
     const production: any = await getProductsDetails(productionTimeName);
     if (production) setProductionTime(production);
+    console.log(production);
   };
 
   function stripHtml(html: any) {

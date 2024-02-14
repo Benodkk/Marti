@@ -43,6 +43,13 @@ export const StyledMainPhoto = styled.img`
   }
 `;
 
+export const StyledDescription = styled.div`
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
 export const StyledPhotoRow = styled.div`
   display: flex;
   gap: 10px;
@@ -67,6 +74,8 @@ export const StyledSmallPhoto = styled.img`
   }
 `;
 
+// description
+
 // styled info
 
 export const StyledInfo = styled.div`
@@ -88,6 +97,17 @@ export const StyledType = styled.div`
   line-height: normal;
   letter-spacing: 2.4px;
   text-transform: uppercase;
+  display: flex;
+  gap: 10px;
+`;
+export const StyledTypeOne = styled.div`
+  &::after {
+    content: ",";
+  }
+
+  &:last-child::after {
+    content: "";
+  }
 `;
 
 export const StyledProductName = styled.div`
@@ -272,6 +292,13 @@ export const StyledBikiniDetailsContainer = styled.div<BikiniDetailsContainerPro
   display: ${(props) => props.$display};
 `;
 
+export const StyledRobeDetailsContainer = styled.div<BikiniDetailsContainerProps>`
+  /* display: flex; */
+  flex-direction: column;
+  display: ${(props) => props.$display};
+  margin: 10px 0;
+`;
+
 export const StyledBikiniDetails = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -384,4 +411,17 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
     border-color: #caa871;
     box-shadow: 0 0 2px #caa871;
   }
+`;
+
+export const StyledRobeDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const StyledRobeText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 0;
+  margin-top: 20px;
 `;

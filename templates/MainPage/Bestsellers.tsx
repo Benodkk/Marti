@@ -24,92 +24,34 @@ import { MoonLoader } from "react-spinners";
 import { Loader } from "@/components/Loader/Loader";
 
 interface BestsellersProps {
-  womenLinkId: any;
-  menLinkId: any;
-  accesoriesLinkId: any;
-  bestsellersLinkId: any;
-  underCategories: any;
+  bestsellers: any;
 }
 
-export const Bestsellers = ({
-  womenLinkId,
-  menLinkId,
-  accesoriesLinkId,
-  bestsellersLinkId,
-  underCategories,
-}: BestsellersProps) => {
+export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
   const router = useRouter();
 
-  const [activeCategory, setActiveCategory] = useState<any>("women");
-
   // bestsellers lists
-  const [womenBestsellers, setWomenBestsellers] = useState<any>();
-  const [menBestsellers, setMenBestsellers] = useState<any>();
-  const [accesoriesBestsellers, setAccesoriesBestsellers] = useState<any>();
-
   const [currentBestsellers, setCurrentBestsellers] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getProducts();
-  }, [bestsellersLinkId]);
+    setCurrentBestsellers(bestsellers[0]);
+  }, [bestsellers]);
 
-  const getProducts = async () => {
-    setLoading(true);
-    try {
-      if (bestsellersLinkId) {
-        const bestsellers: any = await getProductsByCategoriesId(
-          bestsellersLinkId
-        );
-        const womenBestsellers = bestsellers.filter((product: any) =>
-          product.categories.some((category: any) => category.id == womenLinkId)
-        );
-        const menBestsellers = bestsellers.filter((product: any) =>
-          product.categories.some((category: any) => category.id == menLinkId)
-        );
-        const accesoriesBestsellers = bestsellers.filter((product: any) =>
-          product.categories.some(
-            (category: any) => category.id == accesoriesLinkId
-          )
-        );
-        setWomenBestsellers(womenBestsellers);
-        setMenBestsellers(menBestsellers);
-        setAccesoriesBestsellers(accesoriesBestsellers);
-        setCurrentBestsellers(womenBestsellers);
-      }
-    } catch {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const findCommonElementByid = (array1: any, array2: any) => {
-    for (let item1 of array1) {
-      const foundItem = array2.find((item2: any) => item2.id === item1.id);
-      console.log(foundItem);
-
-      if (foundItem) {
-        return foundItem.name;
-      }
-    }
-    return null;
-  };
-
-  const pushToList = () => {
-    const category =
-      activeCategory == "women"
-        ? womenLinkId
-        : activeCategory == "men"
-        ? menLinkId
-        : accesoriesLinkId;
-
+  const pushToList = (id: any) => {
     router.push({
       pathname: "/products",
       query: {
-        category: category,
+        category: id,
       },
     });
+  };
+  const findLowCategory = (categories: any) => {
+    const name = categories.find(
+      (category: any) => category.attributes.class == "bot"
+    );
+    return name.attributes.name;
   };
 
   return (
@@ -119,38 +61,19 @@ export const Bestsellers = ({
         <StyledMainPageSectionTitle>Bestsellers</StyledMainPageSectionTitle>
         <StyledBestsellersHeaderRight>
           <MediaQuery minWidth={reactDevice.desktop.minWidth}>
-            <StyledOneBestsellersHeaderType
-              $active={activeCategory == "women"}
-              onClick={() => {
-                setActiveCategory("women");
-                setCurrentBestsellers(womenBestsellers);
-              }}
-            >
-              women
-            </StyledOneBestsellersHeaderType>
-            <StyledOneBestsellersHeaderType
-              $active={activeCategory == "men"}
-              onClick={() => {
-                setActiveCategory("men");
-                setCurrentBestsellers(menBestsellers);
-              }}
-            >
-              men
-            </StyledOneBestsellersHeaderType>
-            <StyledOneBestsellersHeaderType
-              $active={activeCategory == "accessories"}
-              onClick={() => {
-                setActiveCategory("accessories");
-                setCurrentBestsellers(accesoriesBestsellers);
-              }}
-            >
-              accessories
-            </StyledOneBestsellersHeaderType>
+            {bestsellers.map((best: any) => {
+              return (
+                <StyledOneBestsellersHeaderType
+                  $active={currentBestsellers == best}
+                  onClick={() => {
+                    setCurrentBestsellers(best);
+                  }}
+                >
+                  {best.attributes.name}
+                </StyledOneBestsellersHeaderType>
+              );
+            })}
           </MediaQuery>
-
-          {/* <StyledOneBestsellersHeaderTypeGold>
-            show more
-          </StyledOneBestsellersHeaderTypeGold> */}
         </StyledBestsellersHeaderRight>
       </StyledBestsellersHeader>
 
@@ -159,26 +82,34 @@ export const Bestsellers = ({
           <Loader />
         ) : (
           currentBestsellers &&
-          currentBestsellers.map((product: any) => {
-            console.log(product);
-
-            return (
-              <OneBestsellerProduct
-                name={product.name}
-                type={findCommonElementByid(
-                  product.categories,
-                  underCategories
-                )}
-                price={parseFloat(product.price).toFixed(2)}
-                image={product.images.length > 0 && product.images[0].src}
-                id={product.id}
-              />
-            );
-          })
+          currentBestsellers.attributes.products.data
+            .slice(0, 4)
+            .map((product: any) => {
+              return (
+                <OneBestsellerProduct
+                  name={product.attributes.name}
+                  type={findLowCategory(product.attributes.categories.data)}
+                  price={parseFloat(product.attributes.price_pln).toFixed(2)}
+                  image={
+                    product.attributes.main_photo &&
+                    process.env.NEXT_PUBLIC_STRAPIBASEURL +
+                      product.attributes.main_photo.data.attributes.url
+                  }
+                  id={product.id}
+                  key={product.id}
+                />
+              );
+            })
         )}
       </StyledProductsContainer>
       <StyledMoreProductsButtonCotnainer>
-        <ArrowButton onClick={pushToList}>SHOW MORE PRODUCTS</ArrowButton>
+        <ArrowButton
+          onClick={() =>
+            currentBestsellers && pushToList(currentBestsellers.id)
+          }
+        >
+          SHOW MORE PRODUCTS
+        </ArrowButton>
       </StyledMoreProductsButtonCotnainer>
     </StyledBestsellers>
   );

@@ -16,6 +16,11 @@ import {
   getProductsByCategoryAndPrice,
 } from "@/API/product";
 import { ListFilters } from "./ListFilters";
+import {
+  fetchAllCat,
+  fetchAllCategories,
+  fetchProductsByCategoryId,
+} from "@/API/strapiConfig";
 
 interface ProductListProps {}
 
@@ -25,6 +30,7 @@ export default function ProductList({}: ProductListProps) {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [rootCategory, setRootCategory] = useState<any>();
   const [category, setCategory] = useState<any>();
   const [categories, setCategories] = useState<any>();
 
@@ -44,15 +50,16 @@ export default function ProductList({}: ProductListProps) {
   // const [sliderValue, setSliderValue] = useState([100, 200]);
 
   useEffect(() => {
-    getAllCategories(router.query.category);
-  }, []);
+    if (!category || router.query.fromHeader) {
+      getAllCategories(Number(router.query.category));
+    }
+  }, [router.query.category]);
 
   useEffect(() => {
     if (category) {
       setOpenFilters(false);
       setSliderMin("");
       setSliderMax("");
-      console.log(categories);
 
       const newUnderCategories = categories.find((mainCategory: any) => {
         if (mainCategory.category.id == category.id) {
@@ -75,23 +82,34 @@ export default function ProductList({}: ProductListProps) {
 
   const getAllCategories = async (categoryId: any) => {
     setLoadingCategories(true);
+
     try {
-      const categories: any = await getCategories();
+      // const products: any = await fetchProductsByCategoryId(Number(categoryId));
+
+      const categories: any = await fetchAllCategories();
+
       if (categories) {
         const currentCategory = categories.find(
           (category: any) => category.id == categoryId
         );
+
         setCategory(currentCategory);
         const rootId = findRoot(categoryId, categories);
+        console.log(rootId);
 
+        setRootCategory(rootId);
         if (rootId) {
           const womenCategories = categories
-            .filter((category: any) => category.parent == rootId.id)
-            .sort((a: any, b: any) => a.menu_order - b.menu_order);
+            .filter(
+              (category: any) =>
+                category?.attributes?.parent?.data?.id == rootId.id
+            )
+            .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
           const allCategories = womenCategories.map((womenCategory: any) => {
-            const each = categories
-              .filter((category: any) => category.parent == womenCategory.id)
-              .sort((a: any, b: any) => a.menu_order - b.menu_order);
+            const each = categories.filter(
+              (category: any) =>
+                category?.attributes?.parent?.data?.id == womenCategory.id
+            );
             return { category: womenCategory, under: each };
           });
           setMainCategories(womenCategories);
@@ -110,22 +128,24 @@ export default function ProductList({}: ProductListProps) {
     );
 
     // Jeśli nie znaleziono obiektu lub jest to "korzeń" (parent równy 0), zwróć obiekt
-    if (!item || item.parent === 0) {
+    if (!item || !item.attributes.parent.data) {
       return item;
     }
     // Jeśli obiekt ma parent różny od zera, szukaj rekurencyjnie obiektu nadrzędnego
-    return findRoot(id, items, item.parent);
+    return findRoot(id, items, item.attributes.parent.data.id);
   };
 
   const getProducts = async (id: any) => {
     setIsLoading(true);
     try {
-      const response = await getProductsByCategoriesId(id);
+      const response = await fetchAllCat(id);
+      console.log(response);
+      console.log(response[0].attributes.products.data);
+
       if (response) {
-        setProducts(response);
+        setProducts(response[0].attributes.products.data);
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -150,9 +170,7 @@ export default function ProductList({}: ProductListProps) {
       if (response) {
         setProducts(response);
       }
-      console.log(response);
     } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

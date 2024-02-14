@@ -52,6 +52,7 @@ export default function Cart({}: CartProps) {
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
+  console.log(cartItems);
 
   const remove = (id: any) => {
     dispatch(removeItem({ id: id }));
@@ -69,7 +70,9 @@ export default function Cart({}: CartProps) {
                 {cartItems.map((item: any) => {
                   return (
                     <StyledOneProduct key={item.id}>
-                      <StyledOneProductPhoto src={item.image} />
+                      <StyledOneProductPhoto
+                        src={process.env.NEXT_PUBLIC_STRAPIBASEURL + item.image}
+                      />
                       <StyleOneProductDetails>
                         <StyledTopDetails>
                           <StyledProductName>
@@ -87,21 +90,46 @@ export default function Cart({}: CartProps) {
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
                         <StyledProductListDetails>
-                          {item.personalization && (
+                          {item.personalization &&
+                            item.personalization.length > 0 && (
+                              <StyledOneDetailCheck
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  const content = item.personalization.map(
+                                    (element: any) => {
+                                      return (
+                                        <StyledOneDetailContainer>
+                                          {element.type}:{" "}
+                                          <StyledOneDetailFromList>
+                                            {" "}
+                                            {element.name}{" "}
+                                            {element.price_pln
+                                              ? ` +${element.price_pln}zł`
+                                              : ""}
+                                          </StyledOneDetailFromList>
+                                        </StyledOneDetailContainer>
+                                      );
+                                    }
+                                  );
+                                  setModalContent(content);
+                                }}
+                              >
+                                Personalization <IoEyeOutline size={18} />
+                              </StyledOneDetailCheck>
+                            )}
+
+                          {item.formDetails && item.formDetails.length > 0 && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
-                                const content = item.personalization.map(
+                                const content = item.formDetails.map(
                                   (element: any) => {
                                     return (
                                       <StyledOneDetailContainer>
-                                        {element.type}:{" "}
+                                        <strong>{element.name}:</strong>{" "}
                                         <StyledOneDetailFromList>
                                           {" "}
-                                          {element.name}{" "}
-                                          {element.price
-                                            ? ` +${element.price}zł`
-                                            : ""}
+                                          {element.value}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
                                     );
@@ -110,10 +138,10 @@ export default function Cart({}: CartProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Personalization <IoEyeOutline size={18} />
+                              Form Details <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.details && (
+                          {item.details && item.details.length > 0 && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
@@ -121,10 +149,13 @@ export default function Cart({}: CartProps) {
                                   (element: any) => {
                                     return (
                                       <StyledOneDetailContainer>
-                                        {element.name}:{" "}
+                                        <strong>{element.name}:</strong>{" "}
                                         <StyledOneDetailFromList>
                                           {" "}
-                                          {element.value}
+                                          {element.value.name}
+                                          {element.value.price_pln
+                                            ? ` +${element.value.price_pln}zł`
+                                            : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
                                     );
@@ -152,16 +183,6 @@ export default function Cart({}: CartProps) {
                               Additional notes <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.productionTime && (
-                            <StyledOneDetail>
-                              Production time:{" "}
-                              <StyledOneDetailBold>
-                                {item.productionTime.name},{" "}
-                                {item.productionTime.description &&
-                                  stripHtml(item.productionTime.description)}
-                              </StyledOneDetailBold>
-                            </StyledOneDetail>
-                          )}
                           {item.bikiniCase && (
                             <StyledOneDetail>
                               Bikini case:{" "}
@@ -172,7 +193,7 @@ export default function Cart({}: CartProps) {
                                   });
                                 }}
                               >
-                                {item.bikiniCase.name}
+                                {item.bikiniCase.attributes.name}
                               </StyledOneDetailBoldLink>
                             </StyledOneDetail>
                           )}
@@ -198,7 +219,7 @@ export default function Cart({}: CartProps) {
                   </StyledTotalContainer>
                   <BlackButton
                     margin={"12px 0 0"}
-                    onClick={() => router.push("/checkOut")}
+                    onClick={() => router.push("/CheckOut")}
                   >
                     Checkout
                   </BlackButton>

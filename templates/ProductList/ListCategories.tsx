@@ -90,7 +90,7 @@ export const ListCategories = ({
                             : Check.src
                         }
                       />
-                      {category.name}
+                      {category.attributes.name}
                     </StyledOneCateogryFilterContainer>
                   );
                 })}
@@ -144,7 +144,7 @@ export const ListCategories = ({
                             : Check.src
                         }
                       />
-                      {category.name}
+                      {category.attributes.name}
                     </StyledOneCateogryFilterContainer>
                   );
                 })}

@@ -16,7 +16,6 @@ import { FaCircleInfo } from "react-icons/fa6";
 import { IoEyeOutline } from "react-icons/io5";
 interface OneDetailProps {
   details: any;
-  image?: boolean;
   onClick: () => void;
   active: boolean;
   setModalContent?: any;
@@ -27,7 +26,6 @@ interface OneDetailProps {
 
 export const OneDetail = ({
   details,
-  image,
   active,
   onClick,
   setModalContent,
@@ -39,8 +37,15 @@ export const OneDetail = ({
     setIsModalOpen(true);
     let content = (
       <StyledModalContent>
-        {details.images[0]?.src && <StyledImage src={details.images[0]?.src} />}{" "}
-        {details.description && stripHtml(details.description)}
+        {details?.image?.data?.attributes.url && (
+          <StyledImage
+            src={
+              process.env.NEXT_PUBLIC_STRAPIBASEURL +
+              details?.image?.data.attributes.url
+            }
+          />
+        )}{" "}
+        {details.description_pl && stripHtml(details.description_pl)}
       </StyledModalContent>
     );
     setModalContent(content);
@@ -50,7 +55,6 @@ export const OneDetail = ({
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
-
   return (
     <StyledOneDetailContainer>
       {moreDetails && (
@@ -65,9 +69,16 @@ export const OneDetail = ({
       )}
       <StyledOneDetail $active={active} onClick={onClick}>
         <StyledDetailPhotoContainer>
-          {image ? (
+          {details?.image?.data ? (
             <StyledDetailPhoto
-              src={details?.images && details.images[0]?.src}
+              src={
+                details?.smallImage?.data
+                  ? process.env.NEXT_PUBLIC_STRAPIBASEURL +
+                    details?.smallImage?.data.attributes.url
+                  : details?.image &&
+                    process.env.NEXT_PUBLIC_STRAPIBASEURL +
+                      details?.image?.data.attributes.url
+              }
             />
           ) : (
             <StyledDetailLabel>{details?.name.toUpperCase()}</StyledDetailLabel>
@@ -75,8 +86,12 @@ export const OneDetail = ({
         </StyledDetailPhotoContainer>
       </StyledOneDetail>
 
-      {details?.price ? <StyledPrice>+{details?.price} zł</StyledPrice> : null}
-      {image ? <StyledName>{details?.name.toUpperCase()}</StyledName> : null}
+      {details?.price_pln ? (
+        <StyledPrice>+{details?.price_pln} zł</StyledPrice>
+      ) : null}
+      {details?.name && details?.image.data ? (
+        <StyledName>{details?.name.toUpperCase()}</StyledName>
+      ) : null}
     </StyledOneDetailContainer>
   );
 };

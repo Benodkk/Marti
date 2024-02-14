@@ -8,384 +8,163 @@ import {
 } from "../Product.styled";
 import { StyledDetailTitle } from "./OneDetail.styled";
 import { YesOrNo } from "./YesOrNo";
-
-import ConnectorsYes from "@/assets/connectorsYes.png";
-import ConnectorsNo from "@/assets/connectorsNo.png";
-
-import botConnectorsYes from "@/assets/botConnectorsYes.png";
-import botConnectorsNo from "@/assets/botConnectorsNo.png";
-
-import midConnectorsYes from "@/assets/midConnectorsYes.png";
-import midConnectorsNo from "@/assets/midConnectorsNo.png";
 import { Loader } from "@/components/Loader/Loader";
 
 interface BikiniDetailsProps {
   show: any;
-  setDetailsData: any;
-  categories: any;
-  braStyleName: string;
-  bikiniDetailsName: string;
-  setModalContent: any;
-  setIsModalOpen: any;
-  setModalTitle: any;
+  bikiniDetails: any;
+  setModalContent?: any;
+  setIsModalOpen?: any;
+  setModalTitle?: any;
+  chosenBikiniDetails: any;
+  setChosenBikiniDetails: any;
 }
 
 export const BikiniDetails = ({
   show,
-  setDetailsData,
-  categories,
-  braStyleName,
-  bikiniDetailsName,
+  bikiniDetails,
   setModalContent,
   setIsModalOpen,
   setModalTitle,
+  chosenBikiniDetails,
+  setChosenBikiniDetails,
 }: BikiniDetailsProps) => {
-  // arrays
-  const [braStyle, setBraStyle] = useState<any>();
-  const [cupSize, setCupSize] = useState<any>();
-  const [pushUps, setPushUps] = useState<any>();
-  const [connectors, setConnectors] = useState<any>();
-  const [bottomBacks, setBottomBacks] = useState<any>();
-  const [botConnectors, setBotConnectors] = useState<any>();
-  const [midConnectors, setMidConnectors] = useState<any>();
-  const [backStraps, setBackStraps] = useState<any>();
-  const [backStrapsConnectors, setBackStrapsConnectors] = useState<any>();
-  // choice
-  const [braStyleType, setBraStyleType] = useState<any>();
-  const [cupSizeType, setCupSizeType] = useState<any>();
-  const [pushUpsType, setPushUpsType] = useState<any>();
-  const [connectorsType, setConnectorsType] = useState<any>();
-  const [bottonBacksType, setBottonBacksType] = useState<any>();
-  const [botConnectorsType, setBotConnectorsType] = useState<any>();
-  const [midConnectorsType, setMidConnectorsType] = useState<any>();
-  const [backStrapsType, setBackStrapsType] = useState<any>();
-  const [backStrapsConnectorsType, setBackStrapsConnectorsType] =
-    useState<any>();
+  const [activeYesOrNo, setActiveYesOrNo] = useState<any>([]);
 
-  // yes or no decisions
-
-  const [configureConnectors, setConfigureConnectors] = useState(false);
-  const [configureBotConnectors, setConfigureBotConnectors] = useState(false);
-  const [configureMidConnectors, setConfigureMidConnectors] = useState(false);
-
-  useEffect(() => {
-    if (categories) {
-      getData();
-    }
-  }, [categories]);
-
-  useEffect(() => {
-    const stateObject = {
-      braStyleType: { value: braStyleType, name: "Bra style" },
-      cupSizeType: { value: cupSizeType, name: "Cup size" },
-      pushUpsType: { value: pushUpsType, name: "Push up" },
-      connectorsType: { value: connectorsType, name: "Connectors" },
-      bottonBacksType: { value: bottonBacksType, name: "Bottom Back" },
-      botConnectorsType: {
-        value: botConnectorsType,
-        name: "Bottom Connectors",
-      },
-      midConnectorsType: {
-        value: midConnectorsType,
-        name: "Middle Connectors",
-      },
-      backStrapsType: { value: backStrapsType, name: "Back Straps" },
-      backStrapsConnectorsType: {
-        value: backStrapsConnectorsType,
-        name: "Back Straps Connectors",
-      },
-    };
-    setDetailsData(stateObject);
-  }, [
-    braStyleType,
-    cupSizeType,
-    pushUpsType,
-    connectorsType,
-    bottonBacksType,
-    botConnectorsType,
-    midConnectorsType,
-    backStrapsType,
-    backStrapsConnectorsType,
-  ]);
-
-  const getProductsDetails = async (type: string) => {
-    if (categories) {
-      const id = categories.find((category: any) => category.slug === type)?.id;
-
-      const details: any = await getProductsByCategoriesId(id);
-      return details;
+  const yesOrNoToggle = (name: string, value: boolean, id: number) => {
+    if (activeYesOrNo.includes(name)) {
+      if (!value) {
+        const newDetails = chosenBikiniDetails.filter(
+          (option: any) => option.type !== id
+        );
+        setChosenBikiniDetails(newDetails);
+        setActiveYesOrNo(
+          activeYesOrNo.filter((element: any) => element !== name)
+        );
+      }
+    } else if (value) {
+      setActiveYesOrNo([...activeYesOrNo, name]);
     }
   };
 
-  const getData = async () => {
-    // get bra
-    const bra: any = await getProductsDetails(braStyleName);
-    if (bra) {
-      setBraStyle(bra);
-    }
-    // get cup size
-    const cupSizes: any = await getProductsDetails("cup-size");
-    if (cupSizes) {
-      cupSizes.sort((a: any, b: any) => a.menu_order - b.menu_order);
-      setCupSize(cupSizes);
-    }
+  const chosenToggle = (
+    selectedOption: any,
+    type: number,
+    typeName: string
+  ) => {
+    const newOption = { option: selectedOption, type, typeName };
 
-    // get pushUp
-    const pushUps: any = await getProductsDetails("push-up");
-    if (pushUps) {
-      setPushUps(pushUps);
-    }
-
-    // get connectors
-    const connectors: any = await getProductsDetails("connectors");
-    if (connectors) {
-      setConnectors(connectors);
-    }
-
-    // bottomBacks
-    const bottomBack: any = await getProductsDetails("bottom-back");
-    if (bottomBack) {
-      setBottomBacks(bottomBack);
-    }
-
-    const botConnectors: any = await getProductsDetails("bottom-connectors");
-    if (botConnectors) {
-      setBotConnectors(botConnectors);
-    }
-
-    const midConnectors: any = await getProductsDetails("mid-connectors");
-    if (midConnectors) {
-      setMidConnectors(midConnectors);
-    }
-
-    const backStraps: any = await getProductsDetails("back-straps");
-    if (backStraps) {
-      setBackStraps(backStraps);
-    }
-
-    const backStrapsConnectors: any = await getProductsDetails(
-      "back-straps-connectors"
+    const optionExist = chosenBikiniDetails.find(
+      (element: any) => element.type === type
     );
-    if (backStrapsConnectors) {
-      setBackStrapsConnectors(backStrapsConnectors);
+
+    let finalDetails;
+
+    if (optionExist) {
+      let newDetails = chosenBikiniDetails.filter(
+        (element: any) => element.type !== type
+      );
+
+      if (type === 11 && selectedOption.name !== "Connectors") {
+        newDetails = newDetails.filter((element: any) => element.type !== 12);
+      }
+
+      finalDetails = [...newDetails, newOption];
+    } else {
+      finalDetails = [...chosenBikiniDetails, newOption];
     }
+
+    setChosenBikiniDetails(finalDetails);
   };
 
   return (
     <StyledBikiniDetailsContainer $display={show ? "flex" : "none"}>
-      <StyledDetailTitle>Bra Style</StyledDetailTitle>
-      {braStyle ? (
-        <StyledBikiniDetails>
-          {braStyle?.map((element: any) => {
-            return (
-              <OneDetail
-                image={true}
-                details={element}
-                onClick={() => setBraStyleType(element)}
-                active={braStyleType?.id === element.id}
-                setModalContent={setModalContent}
-                setIsModalOpen={setIsModalOpen}
-                setModalTitle={setModalTitle}
-                moreDetails={true}
-              />
-            );
-          })}
-        </StyledBikiniDetails>
-      ) : (
-        <Loader />
-      )}
-
-      <StyledDetailTitle>Cup Size</StyledDetailTitle>
-      {cupSize ? (
-        <StyledBikiniDetails>
-          {cupSize?.map((element: any) => {
-            return (
-              <OneDetail
-                details={element}
-                onClick={() => setCupSizeType(element)}
-                active={cupSizeType?.id === element.id}
-              />
-            );
-          })}
-        </StyledBikiniDetails>
-      ) : (
-        <Loader />
-      )}
-
-      <StyledDetailTitle>Push Up</StyledDetailTitle>
-      {pushUps ? (
-        <StyledBikiniDetails>
-          {pushUps?.map((element: any) => {
-            return (
-              <OneDetail
-                details={element}
-                onClick={() => setPushUpsType(element)}
-                active={pushUpsType?.id === element.id}
-              />
-            );
-          })}
-        </StyledBikiniDetails>
-      ) : (
-        <Loader />
-      )}
-
-      <StyledDetailTitle>Connectors</StyledDetailTitle>
-      <YesOrNo
-        active={configureConnectors}
-        firstOnClick={() => {
-          setConfigureConnectors(false);
-          setConnectorsType(undefined);
-        }}
-        secondOnClick={() => setConfigureConnectors(true)}
-        firstImage={ConnectorsNo.src}
-        secondImage={ConnectorsYes.src}
-      />
-      {configureConnectors &&
-        (connectors ? (
-          <StyledBikiniDetails>
-            {connectors?.map((element: any) => {
-              return (
-                <OneDetail
-                  details={element}
-                  onClick={() => setConnectorsType(element)}
-                  active={connectorsType?.id === element.id}
-                  image={true}
-                  setModalContent={setModalContent}
-                  setIsModalOpen={setIsModalOpen}
-                  setModalTitle={setModalTitle}
-                  moreDetails={true}
-                />
-              );
-            })}
-          </StyledBikiniDetails>
-        ) : (
-          <Loader />
-        ))}
-      <StyledDetailTitle>Bottom backs</StyledDetailTitle>
-      {bottomBacks ? (
-        <StyledBikiniDetails>
-          {bottomBacks?.map((element: any) => {
-            return (
-              <OneDetail
-                details={element}
-                onClick={() => setBottonBacksType(element)}
-                active={bottonBacksType?.id === element.id}
-                image={true}
-              />
-            );
-          })}
-        </StyledBikiniDetails>
-      ) : (
-        <Loader />
-      )}
-
-      <StyledDetailTitle>Bottom connectors</StyledDetailTitle>
-      <YesOrNo
-        active={configureBotConnectors}
-        firstOnClick={() => {
-          setConfigureBotConnectors(false);
-          setBotConnectorsType(undefined);
-        }}
-        secondOnClick={() => setConfigureBotConnectors(true)}
-        firstImage={botConnectorsNo.src}
-        secondImage={botConnectorsYes.src}
-      />
-      {configureBotConnectors &&
-        (botConnectors ? (
-          <StyledBikiniDetails>
-            {botConnectors?.map((element: any) => {
-              return (
-                <OneDetail
-                  details={element}
-                  onClick={() => setBotConnectorsType(element)}
-                  active={botConnectorsType?.id === element.id}
-                  image={true}
-                  setModalContent={setModalContent}
-                  setIsModalOpen={setIsModalOpen}
-                  setModalTitle={setModalTitle}
-                  moreDetails={true}
-                />
-              );
-            })}
-          </StyledBikiniDetails>
-        ) : (
-          <Loader />
-        ))}
-      <StyledDetailTitle>Middle connetors</StyledDetailTitle>
-      <YesOrNo
-        active={configureMidConnectors}
-        firstOnClick={() => {
-          setConfigureMidConnectors(false);
-          setMidConnectorsType(undefined);
-        }}
-        secondOnClick={() => setConfigureMidConnectors(true)}
-        firstImage={midConnectorsNo.src}
-        secondImage={midConnectorsYes.src}
-      />
-      {configureMidConnectors &&
-        (midConnectors ? (
-          <StyledBikiniDetails>
-            {midConnectors?.map((element: any) => {
-              return (
-                <OneDetail
-                  details={element}
-                  onClick={() => setMidConnectorsType(element)}
-                  active={midConnectorsType?.id === element.id}
-                  image={true}
-                  setModalContent={setModalContent}
-                  setIsModalOpen={setIsModalOpen}
-                  setModalTitle={setModalTitle}
-                  moreDetails={true}
-                />
-              );
-            })}
-          </StyledBikiniDetails>
-        ) : (
-          <Loader />
-        ))}
-      <StyledDetailTitle>Back Straps</StyledDetailTitle>
-      {backStraps ? (
-        <StyledBikiniDetails>
-          {backStraps?.map((element: any) => {
-            return (
-              <OneDetail
-                details={element}
-                onClick={() => {
-                  setBackStrapsType(element);
-                  if (element.slug != "connector") {
-                    setBackStrapsConnectorsType(undefined);
-                  }
+      {bikiniDetails.map((detail: any) => {
+        return (
+          <>
+            {detail.name !== "Back Connectors" && (
+              <StyledDetailTitle>{detail.name}</StyledDetailTitle>
+            )}
+            {detail.yesOrNo && (
+              <YesOrNo
+                active={activeYesOrNo.some(
+                  (active: any) => active === detail.name
+                )}
+                firstOnClick={() => {
+                  yesOrNoToggle(detail.name, false, detail.id);
                 }}
-                active={backStrapsType?.id === element.id}
-                image={true}
+                secondOnClick={() =>
+                  yesOrNoToggle(detail.name, true, detail.id)
+                }
+                firstImage={detail.noImg.src}
+                secondImage={detail.yesImg.src}
               />
-            );
-          })}
-        </StyledBikiniDetails>
-      ) : (
-        <Loader />
-      )}
-      <StyledBikiniDetails>
-        {backStrapsType?.slug === "connector" &&
-          (backStrapsConnectors ? (
-            backStrapsConnectors?.map((element: any) => {
-              return (
-                <OneDetail
-                  details={element}
-                  onClick={() => setBackStrapsConnectorsType(element)}
-                  active={backStrapsConnectorsType?.id === element.id}
-                  image={true}
-                  setModalContent={setModalContent}
-                  setIsModalOpen={setIsModalOpen}
-                  setModalTitle={setModalTitle}
-                  moreDetails={true}
-                />
-              );
-            })
-          ) : (
-            <Loader />
-          ))}
-      </StyledBikiniDetails>
+            )}
+            <StyledBikiniDetails>
+              {((detail.name !== "Back Connectors" && !detail.yesOrNo) ||
+                activeYesOrNo.some((active: any) => active === detail.name)) &&
+                detail.options.map((option: any) => {
+                  return (
+                    <OneDetail
+                      key={option.name}
+                      details={option}
+                      onClick={() =>
+                        chosenToggle(option, detail.id, detail.name)
+                      }
+                      active={chosenBikiniDetails.some(
+                        (active: any) => active.option.id === option.id
+                      )}
+                      setModalContent={setModalContent}
+                      setModalTitle={setModalTitle}
+                      setIsModalOpen={setIsModalOpen}
+                      moreDetails={detail?.show_details}
+                    />
+                  );
+                })}
+            </StyledBikiniDetails>
+            {detail.name === "Back Straps" &&
+              chosenBikiniDetails.some(
+                (detail: any) =>
+                  detail.typeName == "Back Straps" &&
+                  detail.option.name == "Connectors"
+              ) && (
+                <StyledBikiniDetails>
+                  {bikiniDetails
+                    .find((detail: any) => detail.name == "Back Connectors")
+                    .options.map((option: any) => {
+                      return (
+                        <OneDetail
+                          key={option.name}
+                          details={option}
+                          onClick={() =>
+                            chosenToggle(
+                              option,
+                              bikiniDetails.find(
+                                (detail: any) =>
+                                  detail.name == "Back Connectors"
+                              ).id,
+                              "Back Connectors"
+                            )
+                          }
+                          active={chosenBikiniDetails.some(
+                            (active: any) => active.option.id === option.id
+                          )}
+                          setModalContent={setModalContent}
+                          setModalTitle={setModalTitle}
+                          setIsModalOpen={setIsModalOpen}
+                          moreDetails={
+                            bikiniDetails.find(
+                              (detail: any) => detail.name == "Back Connectors"
+                            )?.show_details
+                          }
+                        />
+                      );
+                    })}
+                </StyledBikiniDetails>
+              )}
+          </>
+        );
+      })}
     </StyledBikiniDetailsContainer>
   );
 };
