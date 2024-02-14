@@ -8,6 +8,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  reactStrictMode: true,
+  env: {
+    BASE_URL: process.env.NEXT_PUBLIC_STRAPICODE,
+  },
 };
 
 module.exports = nextConfig;
