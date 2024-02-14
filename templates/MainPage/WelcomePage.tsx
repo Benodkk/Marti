@@ -30,12 +30,12 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
   const router = useRouter();
 
   const pushToList = (category: any) => {
-    router.push({
-      pathname: "/products",
-      query: {
-        category: category,
-      },
-    });
+    // router.push({
+    //   pathname: "/products",
+    //   query: {
+    //     category: category,
+    //   },
+    // });
   };
 
   return (

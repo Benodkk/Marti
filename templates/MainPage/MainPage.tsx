@@ -60,7 +60,7 @@ const MainPage = ({}: MainPageProps) => {
   };
   return (
     <MainPageContainer>
-      {/* <WelcomePage linkId={welcomePageLinkId} />
+      <WelcomePage linkId={welcomePageLinkId} />
       <ShopNow
         womenLinkId={womenLinkId}
         menLinkId={menLinkId}
@@ -68,7 +68,7 @@ const MainPage = ({}: MainPageProps) => {
       />
       <Bestsellers bestsellers={bestsellers} />
       <NewReleases />
-      <LatestNews /> */}
+      <LatestNews />
     </MainPageContainer>
   );
 };
