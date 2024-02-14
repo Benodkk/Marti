@@ -67,7 +67,7 @@ const MainPage = ({}: MainPageProps) => {
         heelsLinkId={heelsLinkId}
       />
       <Bestsellers bestsellers={bestsellers} />
-      <NewReleases />
+      {/* <NewReleases /> */}
       <LatestNews />
     </MainPageContainer>
   );
