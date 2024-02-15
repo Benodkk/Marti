@@ -68,8 +68,8 @@ export const LatestNews = ({}: LatestNewsProps) => {
                 photoSource={
                   process.env.NEXT_PUBLIC_STRAPIBASEURL +
                   (item?.attributes?.small_photo?.data?.attributes
-                    ? item?.attributes?.small_photo.data?.attributes.url
-                    : item?.attributes?.big_photo.data.attributes.url)
+                    ? item?.attributes?.small_photo?.data?.attributes.url
+                    : item?.attributes?.big_photo?.data?.attributes.url)
                 }
                 day={extractDayAndMonth(
                   item.attributes.publishedAt
