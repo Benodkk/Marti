@@ -6,7 +6,9 @@ const nextConfig = {
   output: "export",
   distDir: "dist",
   images: {
-    unoptimized: true,
+    deviceSizes: [320, 420, 768, 1024, 1200],
+    loader: "default",
+    domains: ["res.cloudinary.com"],
   },
 };
 

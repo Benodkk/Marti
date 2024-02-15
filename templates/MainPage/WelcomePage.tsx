@@ -18,16 +18,27 @@ import WelcomeWoman from "@/assets/WelcomeWoman.png";
 import WelcomeSign from "@/assets/WelcomeSign.svg";
 import { ArrowButton } from "@/components/ArrowButton/ArrowButton";
 import GoldenCircle from "@/assets/GoldenCircle.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCategories } from "@/API/categories";
 import defaultWelcomePageImage from "@/assets/defaultWelcomePageImage.png";
 import { useRouter } from "next/router";
+import { fetchWelcomePageContent } from "@/API/strapiConfig";
 interface WelcomePageProps {
   linkId: string;
 }
 
 export const WelcomePage = ({ linkId }: WelcomePageProps) => {
   const router = useRouter();
+  const [content, setContent] = useState<any>();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data: any = await fetchWelcomePageContent();
+    if (data) setContent(data);
+  };
 
   const pushToList = (category: any) => {
     router.push({
@@ -39,24 +50,33 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
   };
 
   return (
-    <WelcomePageContainer $bgImage={defaultWelcomePageImage.src}>
+    <WelcomePageContainer
+      $bgImage={
+        content && content.attributes?.photo.data
+          ? process.env.NEXT_PUBLIC_STRAPIBASEURL +
+            content.attributes.photo.data[0].attributes.url
+          : defaultWelcomePageImage.src
+      }
+    >
       <WelcomePageLeft>
         <WelcomePageLeftContent>
           {/* <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo> */}
           <StyledTitleContainer>
-            <StyledTitle $color={"#FFF"}>Marti Bikini</StyledTitle>
-            <StyledTitle $color={"#FFF"}>Collection</StyledTitle>
+            <StyledTitle $color={"#FFF"}>
+              {content && content.attributes.title}
+            </StyledTitle>
           </StyledTitleContainer>
 
           <StyledWelcomePageTextContainer>
             <StyledWelcomePageText $color={"#FFF"}>
-              Your lucky bikini created with passion!
+              {content && content.attributes.first_line}
             </StyledWelcomePageText>
           </StyledWelcomePageTextContainer>
 
           <ArrowButton onClick={() => pushToList(linkId)}>
             SHOW MORE
           </ArrowButton>
+
           <StyledGoldenCircleImage src={GoldenCircle.src} />
         </WelcomePageLeftContent>
       </WelcomePageLeft>

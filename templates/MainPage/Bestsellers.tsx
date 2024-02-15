@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { getProductsByCategoriesId } from "@/API/product";
 import { MoonLoader } from "react-spinners";
 import { Loader } from "@/components/Loader/Loader";
+import { fetchBestsellerTitle } from "@/API/strapiConfig";
 
 interface BestsellersProps {
   bestsellers: any;
@@ -32,12 +33,22 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
 
   // bestsellers lists
   const [currentBestsellers, setCurrentBestsellers] = useState<any>();
+  const [bestsellerTitle, setBestsellerTitle] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    fetch();
+  }, []);
+
+  useEffect(() => {
     setCurrentBestsellers(bestsellers[0]);
   }, [bestsellers]);
+
+  const fetch = async () => {
+    const data: any = await fetchBestsellerTitle();
+    if (data) setBestsellerTitle(data);
+  };
 
   const pushToList = (id: any) => {
     router.push({
@@ -56,9 +67,13 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
 
   return (
     <StyledBestsellers>
-      <StyledSmallGoldText>NEW COLLECTION 2024</StyledSmallGoldText>
+      <StyledSmallGoldText>
+        {bestsellerTitle && bestsellerTitle.attributes.label.toUpperCase()}
+      </StyledSmallGoldText>
       <StyledBestsellersHeader>
-        <StyledMainPageSectionTitle>Bestsellers</StyledMainPageSectionTitle>
+        <StyledMainPageSectionTitle>
+          {bestsellerTitle && bestsellerTitle.attributes.title}
+        </StyledMainPageSectionTitle>
         <StyledBestsellersHeaderRight>
           <MediaQuery minWidth={reactDevice.desktop.minWidth}>
             {bestsellers.map((best: any) => {
@@ -93,7 +108,7 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
                   image={
                     product.attributes.main_photo &&
                     process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                      product.attributes.main_photo.data.attributes.url
+                      product.attributes?.main_photo?.data?.attributes?.url
                   }
                   id={product.id}
                   key={product.id}

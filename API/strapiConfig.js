@@ -1,17 +1,24 @@
 import axios from "axios";
 
-const apiAuthCode = `Bearer ${process.env.NEXT_PUBLIC_STRAPICODE}`;
+const localHostApi =
+  "ae78add67c38dcb471c86226700386fc06175826d31b10f3b58e8000b9f88bcad4e6482da506bb9b6cb9b6c5f4f3e05f21a8a45ccfa36a1348c7f27435e0126b7cdcb0aa9d8949997cc3de1c37a7ec7b941cace5d3005e4bee913cd489402393eeeeae6f4555d95834c49430e612e71c7412efd33f8bdb7153754bd3dba55194";
+const prodApi =
+  "c5c28d42d93aa104e97c649b6dc9668db6455611ac22fa636acb2e56ca8f45168265b3058b82bb74bab4708c2359f090350cd60cb72f778afe21c50549e1333c98d623b2495931b992b71e6e718841889e9357250f537d85135d9eea78fcc69c898e74972ddeea5db597be768ecb0ba4c01bd280ad1fc2ae9aa3449ed4b7ff8f";
+
+export const localHostUrl = "http://localhost:1337/";
+export const prodUrl = "https://marti-be-88d4b42da163.herokuapp.com/api/";
+
+export const useUrl = prodUrl;
+
+const apiAuthCode = `Bearer ${prodApi}`;
 
 const getData = async (endpoint) => {
   try {
-    const data = await axios.get(
-      `https://marti-be-88d4b42da163.herokuapp.com/api/${endpoint}`,
-      {
-        headers: {
-          Authorization: apiAuthCode,
-        },
-      }
-    );
+    const data = await axios.get(`${prodUrl}${endpoint}`, {
+      headers: {
+        Authorization: apiAuthCode,
+      },
+    });
     return data.data;
   } catch (error) {
     console.log(error);
@@ -21,15 +28,11 @@ const getData = async (endpoint) => {
 const postData = async (endpoint, payload) => {
   console.log(payload);
   try {
-    const data = await axios.post(
-      `https://marti-be-88d4b42da163.herokuapp.com/api/${endpoint}`,
-      payload,
-      {
-        headers: {
-          Authorization: apiAuthCode,
-        },
-      }
-    );
+    const data = await axios.post(`${prodUrl}${endpoint}`, payload, {
+      headers: {
+        Authorization: apiAuthCode,
+      },
+    });
     return data.data;
   } catch (error) {
     console.log(error);
@@ -147,4 +150,58 @@ export const signIn = async (email, password) => {
     console.error(error);
     throw error;
   }
+};
+
+// Main page
+
+export const fetchNews = async (id) => {
+  try {
+    const response = await getData(`newss??_sort=published_at:desc&populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchWelcomePageContent = async (id) => {
+  try {
+    const response = await getData(`welcome-page?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchBestsellerTitle = async (id) => {
+  try {
+    const response = await getData(`bestseller-title`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+// news
+
+export const fetchOneNews = async (id) => {
+  try {
+    const response = await getData(`newss/${id}?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+// info
+
+export const fetchFooterLinks = async () => {
+  try {
+    const response = await getData(`footer-links`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchInfo = async (id) => {
+  try {
+    const response = await getData(`footer-links/${id}?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
 };

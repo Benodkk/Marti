@@ -155,15 +155,18 @@ export default function ProductTemplate({}: ProductProps) {
     setLoading(true);
     try {
       const data: any = await fetchProductById(id);
+      console.log(data);
 
       if (data.attributes) {
         // show details check
+        console.log(data);
+
         data.attributes.id = data.id;
         setProductData(data.attributes);
 
         setInTotal(Number(data.attributes.price_pln));
-        setMainPhotoSrc(data.attributes.main_photo.data.attributes.url);
 
+        setMainPhotoSrc(data.attributes?.main_photo?.data?.attributes?.url);
         if (data.attributes.form) {
           const modifiedArray = data.attributes.form.map((element: any) => {
             return {
@@ -175,7 +178,10 @@ export default function ProductTemplate({}: ProductProps) {
         }
 
         // looking for bikini details.
+
         if (data.attributes.bikini_details) {
+          console.log(data);
+
           const bikiniDetails = await fetchBikiniDetailsByName(
             data.attributes.bikini_details
           );
@@ -186,6 +192,8 @@ export default function ProductTemplate({}: ProductProps) {
 
         if (data.attributes.robe_detail) {
           const robe = await fetchRobe();
+          console.log(robe);
+
           const modifiedArray = robe.map((element: any) => {
             return {
               ...element.attributes,
@@ -449,7 +457,7 @@ export default function ProductTemplate({}: ProductProps) {
                         onClick={() => setMainPhotoSrc(image.attributes.url)}
                         src={
                           process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                          image.attributes.url
+                          image?.attributes?.url
                         }
                       />
                     );

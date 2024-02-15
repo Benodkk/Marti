@@ -1,7 +1,9 @@
-import { NewsTemplate } from "@/templates/News/News";
+import dynamic from "next/dynamic";
 
-const News = () => {
-  return <NewsTemplate />;
-};
+const News = dynamic(() => import("@/templates/News/News"), {
+  ssr: false,
+});
 
-export default News;
+export default function Newss() {
+  return <News />;
+}

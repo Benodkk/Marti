@@ -5,6 +5,8 @@ import {
   StyledNewsContainer,
   StyledNewsContent,
   StyledNewsDateConainer,
+  StyledNewsSubtitle,
+  StyledNewsText,
   StyledNewsTitle,
   StyledNewsTitleContainer,
   StyledNewsType,
@@ -13,66 +15,124 @@ import {
 } from "./News.styled";
 
 import HeaderPhoto from "@/assets/NewReleases.png";
+import { useRouter } from "next/router";
+import { StyledBack } from "../Adress/Adress.styled";
+import { useEffect, useState } from "react";
+import { fetchOneNews } from "@/API/strapiConfig";
 
-export const NewsTemplate = () => {
+export default function NewsTemplate() {
+  const router = useRouter();
+
+  const [newsData, setNewsData] = useState<any>();
+
+  useEffect(() => {
+    getNews(router.query.news);
+  }, [router.query]);
+
+  const getNews = async (id: any) => {
+    const newNews: any = await fetchOneNews(id);
+    if (newNews) {
+      setNewsData(newNews);
+    }
+  };
+
+  function extractDayAndMonth(dateString: any) {
+    // Parsowanie stringa z datą do obiektu Date
+    const date = new Date(dateString);
+
+    // Pobieranie numeru dnia miesiąca
+    const day = date.getDate();
+
+    // Tablica z skróconymi nazwami miesięcy
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    // Pobieranie skróconej nazwy miesiąca z tablicy, używając miesiąca z obiektu Date (getMonth() zwraca wartość od 0 do 11)
+    const month = monthNames[date.getMonth()];
+
+    // Zwracanie numeru dnia i skróconej nazwy miesiąca
+    console.log(day);
+
+    return { day, month };
+  }
   return (
     <StyledNewsContainer>
       <StyledNews>
         {/* <BackButton /> */}
-        <StyledNewsType>FITNESS</StyledNewsType>
+        <StyledBack onClick={() => router.back()}>{"< Back"}</StyledBack>
+        <StyledNewsType>
+          {" "}
+          {newsData && newsData?.attributes?.type.toUpperCase()}
+        </StyledNewsType>
         <StyledNewsTitleContainer>
           <StyledNewsDateConainer>
             <StyledOneLatestDate>
-              <StyledOneLatestDay>24</StyledOneLatestDay>
-              <StyledOneLatestDay>Sep</StyledOneLatestDay>
+              <StyledOneLatestDay>
+                {newsData &&
+                  extractDayAndMonth(newsData.attributes.publishedAt).day}
+              </StyledOneLatestDay>
+              <StyledOneLatestDay>
+                {" "}
+                {newsData &&
+                  extractDayAndMonth(newsData.attributes.publishedAt).month}
+              </StyledOneLatestDay>
             </StyledOneLatestDate>
           </StyledNewsDateConainer>
           <StyledNewsTitle>
-            Workout Challenges and Tips for Busy Women.
+            {newsData && newsData?.attributes?.title}
           </StyledNewsTitle>
         </StyledNewsTitleContainer>
-        <StyledHeaderPhoto src={HeaderPhoto.src} />
+        {newsData &&
+          !newsData?.attributes.photo_on_bottom &&
+          newsData?.attributes?.big_photo?.data?.attributes?.url && (
+            <StyledHeaderPhoto
+              src={
+                process.env.NEXT_PUBLIC_STRAPIBASEURL +
+                (newsData &&
+                  newsData?.attributes?.big_photo?.data?.attributes?.url)
+              }
+            />
+          )}
+
         <StyledNewsContent>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-          cursus nisl, sed tincidunt nulla. Curabitur sit amet neque eget nunc
-          vehicula mollis. Sed neque enim, cursus in ex vel, hendrerit
-          scelerisque augue. In tempor arcu eget velit fringilla pulvinar. Cras
-          pretium augue arcu, ut mollis ipsum gravida efficitur. Etiam suscipit
-          nunc dolor, condimentum cursus sapien eleifend luctus. Mauris ut
-          rhoncus elit. Aliquam ac nulla quis odio auctor dictum eu ut ante.
-          Mauris ullamcorper dignissim imperdiet. In fringilla augue eget ligula
-          aliquet auctor. Integer rhoncus neque ut libero consequat tempus.
-          Phasellus fermentum pharetra massa, at euismod nibh fermentum et. Orci
-          varius natoque penatibus et magnis dis parturient montes, nascetur
-          ridiculus mus. Pellentesque id eros fringilla, tincidunt ipsum at,
-          malesuada elit. Nulla pretium lacus nisi, id gravida lacus pulvinar
-          in. Mauris ac ipsum pulvinar, luctus diam eget, eleifend dui. Nam id
-          sagittis dolor. Mauris vel sapien porttitor, molestie dolor vel,
-          feugiat massa. Fusce semper, quam quis lacinia imperdiet, mauris arcu
-          placerat nunc, vel auctor mi erat tristique massa. Sed eget arcu a
-          tortor ultricies tincidunt sit amet non leo. Ut non justo vel orci
-          consectetur pellentesque. Duis quis enim sapien. Mauris elementum
-          fringilla tortor vitae pulvinar. Donec sit amet finibus nisl. Aliquam
-          tempus sagittis nisi id placerat. Suspendisse sed ligula bibendum,
-          imperdiet nisi nec, dapibus arcu. Aliquam pretium sapien facilisis
-          dolor fermentum, vel mattis erat vestibulum. Vivamus consectetur arcu
-          eu massa aliquam imperdiet. Integer varius, neque ut ornare tincidunt,
-          dui libero varius diam, sed convallis eros metus et dui. Sed dapibus
-          nulla vitae posuere sagittis. Etiam lacinia, nisl id tempor aliquet,
-          eros ligula consequat nunc, sit amet pulvinar ligula massa a nisi.
-          Proin consequat, augue vel semper iaculis, tellus turpis congue justo,
-          sit amet varius nulla odio nec lorem. Proin sapien erat, cursus ac est
-          et, posuere dignissim purus. Mauris velit erat, placerat non ornare
-          et, ullamcorper sit amet lacus. Aliquam erat volutpat. Morbi ac mi
-          dui. Nulla maximus arcu quis sodales accumsan. Maecenas eu dui
-          malesuada, ultricies dui quis, elementum massa. Nunc quis metus vitae
-          risus sollicitudin blandit quis ut elit. Pellentesque dapibus blandit
-          risus, eu tincidunt arcu tempor eu. Morbi placerat est quis sodales
-          semper. Proin id fermentum augue, eu ullamcorper mi. Integer velit
-          ante, blandit eget mollis sed, dignissim ac ligula. Phasellus vel mi
-          arcu.
+          {newsData &&
+            newsData?.attributes?.contnet?.map((oneSection: any) => {
+              return (
+                <>
+                  <StyledNewsSubtitle>
+                    {oneSection.section_title}
+                  </StyledNewsSubtitle>
+                  {oneSection.content.map((paragraph: any) => {
+                    return paragraph.children.map((be: any) => {
+                      return <StyledNewsText>{be.text}</StyledNewsText>;
+                    });
+                  })}
+                </>
+              );
+            })}
         </StyledNewsContent>
+        {newsData && newsData?.attributes.photo_on_bottom && (
+          <StyledHeaderPhoto
+            src={
+              process.env.NEXT_PUBLIC_STRAPIBASEURL +
+              (newsData &&
+                newsData?.attributes?.big_photo?.data?.attributes?.url)
+            }
+          />
+        )}
       </StyledNews>
     </StyledNewsContainer>
   );
-};
+}

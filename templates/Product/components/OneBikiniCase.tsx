@@ -32,7 +32,7 @@ export const OneBikiniCase = ({
           <StyledDetailPhoto
             src={
               process.env.NEXT_PUBLIC_STRAPIBASEURL +
-              details?.attributes.main_photo?.data.attributes.url
+              details?.attributes.main_photo?.data?.attributes?.url
             }
           />
         </StyledDetailPhotoContainer>

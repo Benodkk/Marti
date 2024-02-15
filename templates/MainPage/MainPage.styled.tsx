@@ -532,6 +532,7 @@ export const StyledOneNewsTitle = styled.div`
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
+  align-self: flex-start;
   line-height: 125%;
   letter-spacing: -0.56px;
   padding: 15px 20px;

@@ -28,10 +28,31 @@ import {
   StyledMainPageSectionGold,
   StyledMainPageSectionTitle,
 } from "@/templates/MainPage/MainPage.styled";
+import { useEffect, useState } from "react";
+import { fetchFooterLinks, fetchNews } from "@/API/strapiConfig";
+import { useRouter } from "next/router";
 
 interface FooterProps {}
 
 const Footer = ({}: FooterProps) => {
+  const router: any = useRouter();
+  const [links, setLinks] = useState<any>();
+  const [newsId, setNewsId] = useState<any>();
+  useEffect(() => {
+    console.log("XD");
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data: any = await fetchFooterLinks();
+    const news: any = await fetchNews();
+    console.log(news);
+
+    if (data) setLinks(data);
+    if (news) setNewsId(news[0].id);
+    console.log(data);
+  };
+
   return (
     <StyledFooter>
       <StyledFooterTitleContainer>
@@ -55,15 +76,54 @@ const Footer = ({}: FooterProps) => {
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>Customer care</StyledFooterLinksTitle>
           <StyledOneFooterLink>Sign in</StyledOneFooterLink>
-          <StyledOneFooterLink>Buyer Protection</StyledOneFooterLink>
-          <StyledOneFooterLink>Payment Options</StyledOneFooterLink>
-          <StyledOneFooterLink>Shipping Policy</StyledOneFooterLink>
-          <StyledOneFooterLink>Return Policy</StyledOneFooterLink>
+          {links &&
+            links.map((element: any) => {
+              // Używamy instrukcji warunkowej if do sprawdzenia warunku
+              if (element.attributes.type === "Cusomer care") {
+                return (
+                  <StyledOneFooterLink
+                    key={element.id}
+                    onClick={() => {
+                      router.push("/info/" + element.id);
+                    }}
+                  >
+                    {" "}
+                    {element.attributes.title}
+                  </StyledOneFooterLink>
+                );
+              }
+              // Zwracamy null, gdy warunek nie jest spełniony, co oznacza, że żaden element nie zostanie wyrenderowany
+              return null;
+            })}
         </StyledFooterLinksCol>
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>Informations</StyledFooterLinksTitle>
-          <StyledOneFooterLink>About Us</StyledOneFooterLink>
-          <StyledOneFooterLink>News</StyledOneFooterLink>
+          <StyledOneFooterLink
+            onClick={() => {
+              newsId && router.push("/news/" + newsId);
+            }}
+          >
+            News
+          </StyledOneFooterLink>
+          {links &&
+            links.map((element: any) => {
+              // Używamy instrukcji warunkowej if do sprawdzenia warunku
+              if (element.attributes.type === "Informations") {
+                return (
+                  <StyledOneFooterLink
+                    key={element.id}
+                    onClick={() => {
+                      router.push("/info/" + element.id);
+                    }}
+                  >
+                    {" "}
+                    {element.attributes.title}
+                  </StyledOneFooterLink>
+                );
+              }
+              // Zwracamy null, gdy warunek nie jest spełniony, co oznacza, że żaden element nie zostanie wyrenderowany
+              return null;
+            })}
         </StyledFooterLinksCol>
         <StyledContactCol>
           <StyledFooterLinksTitle>Contact info</StyledFooterLinksTitle>

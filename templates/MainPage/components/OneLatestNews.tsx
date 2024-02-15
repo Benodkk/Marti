@@ -10,11 +10,12 @@ import {
 import TestPhoto from "@/assets/NewReleases.png";
 
 interface OneLatestNewsProps {
-  day: string;
-  month: string;
+  day: any;
+  month: any;
   photoSource: string;
   newsType: string;
   title: string;
+  onClick?: any;
 }
 
 export const OneLatestNews = ({
@@ -23,9 +24,12 @@ export const OneLatestNews = ({
   photoSource,
   newsType,
   title,
+  onClick,
 }: OneLatestNewsProps) => {
+  console.log(day);
+
   return (
-    <StyledOneLatestNews>
+    <StyledOneLatestNews onClick={onClick}>
       <StyledOneLatestDate>
         <StyledOneLatestDay>{day}</StyledOneLatestDay>
         <StyledOneLatestDay>{month}</StyledOneLatestDay>

@@ -1,20 +1,21 @@
 import styled from "styled-components";
 
-export const StyledNewsContainer = styled.div`
+export const StyledInfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
 `;
 
-export const StyledNews = styled.div`
+export const StyledInfo = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 1020px;
   margin-top: 50px;
 `;
 
-export const StyledNewsType = styled.div`
+export const StyledInfoType = styled.div`
   padding-left: 20%;
   color: #c28721;
   font-family: Roboto;
@@ -26,12 +27,12 @@ export const StyledNewsType = styled.div`
   transform: translateX(-10%);
 `;
 
-export const StyledNewsTitleContainer = styled.div`
+export const StyledInfoTitleContainer = styled.div`
   display: flex;
   transform: translateX(-10%);
 `;
 
-export const StyledNewsDateConainer = styled.div`
+export const StyledInfoDateConainer = styled.div`
   width: 20%;
   display: flex;
   justify-content: end;
@@ -57,7 +58,7 @@ export const StyledOneLatestDay = styled.div`
   line-height: 20px;
 `;
 
-export const StyledNewsTitle = styled.h2`
+export const StyledInfoTitle = styled.h2`
   color: #0c0c0c;
   font-family: Jost;
   font-size: 40px;
@@ -71,7 +72,7 @@ export const StyledHeaderPhoto = styled.img`
   margin-top: 50px;
 `;
 
-export const StyledNewsContent = styled.div`
+export const StyledInfoContent = styled.div`
   color: #696969;
   font-family: Roboto;
   font-size: 18px;
@@ -83,11 +84,11 @@ export const StyledNewsContent = styled.div`
   align-self: center;
 `;
 
-export const StyledNewsSubtitle = styled.h3`
+export const StyledInfoSubtitle = styled.h3`
   margin-top: 20px;
 `;
 
-export const StyledNewsText = styled.div`
+export const StyledInfoText = styled.div`
   color: #696969;
   font-family: Roboto;
   font-size: 18px;
