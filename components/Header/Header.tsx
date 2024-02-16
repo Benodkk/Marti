@@ -1,5 +1,6 @@
 import MediaQuery from "react-responsive";
 import { reactDevice } from "@/styles/deviceWith";
+import icon from "@/assets/GoldenCircle.png";
 import {
   StyledBottomHeader,
   StyledGroupIconsHeader,
@@ -42,6 +43,7 @@ import { useSelector } from "react-redux";
 import { selectTotalItems } from "@/redux/cartSlice";
 import { MoonLoader } from "react-spinners";
 import { fetchAllCategories } from "@/API/strapiConfig";
+import Head from "next/head";
 
 interface HeaderProps {}
 
@@ -188,6 +190,11 @@ const Header = ({}: HeaderProps) => {
 
   return (
     <>
+      <Head>
+        <title>Marti - Bikini Suits</title>
+        <link rel="icon" href={icon.src} />
+      </Head>
+
       {/* <MediaQuery minWidth={reactDevice.desktop.minWidth}> */}
       <StyledHeaderContainer $scroll={headerVisible}>
         <StyledTopHeaderContainer>
