@@ -69,6 +69,23 @@ export const fetchAllCat = async (id) => {
   } catch {}
 };
 
+export const fetchAllProdWithPriceRange = async (id, minPrice, maxPrice) => {
+  try {
+    // Dodawanie parametrów filtrowania ceny do URL
+    const priceFilter = `  ${
+      minPrice ? `&filters[price_pln][$gte]=${minPrice}` : ""
+    }${maxPrice ? `&filters[price_pln][$lte]=${maxPrice} ` : ""}`;
+    const url = `products?filters[categories][id][$in]=${id}&populate=*${priceFilter}`;
+    console.log(url);
+    const response = await getData(url);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+    throw error; // Rzucenie błędu pozwoli wywołującemu zareagować odpowiednio
+  }
+};
+
 // dobre
 export const fetchProductsByCategoryId = async (id) => {
   try {
@@ -154,15 +171,7 @@ export const signIn = async (email, password) => {
 
 // Main page
 
-export const fetchNews = async (id) => {
-  try {
-    const response = await getData(`newss??_sort=published_at:desc&populate=*`);
-    const data = response.data;
-    return data;
-  } catch {}
-};
-
-export const fetchWelcomePageContent = async (id) => {
+export const fetchWelcomePageContent = async () => {
   try {
     const response = await getData(`welcome-page?populate=*`);
     const data = response.data;
@@ -170,9 +179,17 @@ export const fetchWelcomePageContent = async (id) => {
   } catch {}
 };
 
-export const fetchBestsellerTitle = async (id) => {
+export const fetchBestsellerTitle = async () => {
   try {
     const response = await getData(`bestseller-title`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchNews = async (id) => {
+  try {
+    const response = await getData(`newss??_sort=published_at:desc&populate=*`);
     const data = response.data;
     return data;
   } catch {}
@@ -201,6 +218,24 @@ export const fetchFooterLinks = async () => {
 export const fetchInfo = async (id) => {
   try {
     const response = await getData(`footer-links/${id}?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+// footer
+
+export const fetchFooterText = async () => {
+  try {
+    const response = await getData(`footer-text`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchContacts = async () => {
+  try {
+    const response = await getData(`contacts`);
     const data = response.data;
     return data;
   } catch {}

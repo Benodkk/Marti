@@ -29,7 +29,12 @@ import {
   StyledMainPageSectionTitle,
 } from "@/templates/MainPage/MainPage.styled";
 import { useEffect, useState } from "react";
-import { fetchFooterLinks, fetchNews } from "@/API/strapiConfig";
+import {
+  fetchContacts,
+  fetchFooterLinks,
+  fetchFooterText,
+  fetchNews,
+} from "@/API/strapiConfig";
 import { useRouter } from "next/router";
 
 interface FooterProps {}
@@ -38,19 +43,38 @@ const Footer = ({}: FooterProps) => {
   const router: any = useRouter();
   const [links, setLinks] = useState<any>();
   const [newsId, setNewsId] = useState<any>();
+  const [footerText, setFooterText] = useState<any>();
+  const [contactsAdress, setContactsAdress] = useState<any>();
+  const [contactsPhone, setContactsPhone] = useState<any>();
+  const [contactsMail, setContactsMail] = useState<any>();
+
   useEffect(() => {
-    console.log("XD");
     fetchData();
   }, []);
 
   const fetchData = async () => {
     const data: any = await fetchFooterLinks();
     const news: any = await fetchNews();
-    console.log(news);
+    const footerText: any = await fetchFooterText();
+    const contacts: any = await fetchContacts();
 
     if (data) setLinks(data);
     if (news) setNewsId(news[0].id);
-    console.log(data);
+    if (footerText) setFooterText(footerText);
+    if (contacts) {
+      const adres: any = contacts.find(
+        (contact: any) => contact.attributes.type == "adress"
+      );
+      const phone: any = contacts.find(
+        (contact: any) => contact.attributes.type == "phone"
+      );
+      const mail: any = contacts.find(
+        (contact: any) => contact.attributes.type == "email"
+      );
+      setContactsAdress(adres);
+      setContactsPhone(phone);
+      setContactsMail(mail);
+    }
   };
 
   return (
@@ -69,9 +93,7 @@ const Footer = ({}: FooterProps) => {
       </StyledFooterPhotoContainer>
       <StyledFooterLinksContainer>
         <StyledFooterText>
-          Our online store is all about empowering your fitness journey, with
-          quality bodybuilding attire and accessories. We&apos;re not just about
-          the products; we&apos;re about the people who wear them.
+          {footerText && footerText.attributes.text}
         </StyledFooterText>
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>Customer care</StyledFooterLinksTitle>
@@ -116,12 +138,11 @@ const Footer = ({}: FooterProps) => {
                       router.push("/info/" + element.id);
                     }}
                   >
-                    {" "}
                     {element.attributes.title}
                   </StyledOneFooterLink>
                 );
               }
-              // Zwracamy null, gdy warunek nie jest spełniony, co oznacza, że żaden element nie zostanie wyrenderowany
+
               return null;
             })}
         </StyledFooterLinksCol>
@@ -132,8 +153,12 @@ const Footer = ({}: FooterProps) => {
               <FaLocationDot color="white" size={16} />
             </StyledGoldenCircle>
             <StyledContactRows>
-              <div>ul. Narutowicza 124</div>
-              <div>Warszawa, 00-111</div>
+              <div>
+                {contactsAdress && contactsAdress.attributes?.first_line}
+              </div>
+              <div>
+                {contactsAdress && contactsAdress.attributes?.second_line}
+              </div>
             </StyledContactRows>
           </StyledContactGroup>
           <StyledContactGroup>
@@ -141,8 +166,10 @@ const Footer = ({}: FooterProps) => {
               <FaPhoneVolume color="white" size={16} />
             </StyledGoldenCircle>
             <StyledContactRows>
-              <div>tel.: 680 120 120</div>
-              <div>tel.: 122 120 120</div>
+              <div>{contactsPhone && contactsPhone.attributes?.first_line}</div>
+              <div>
+                {contactsPhone && contactsPhone.attributes?.second_line}
+              </div>
             </StyledContactRows>
           </StyledContactGroup>
           <StyledContactGroup>
@@ -150,15 +177,15 @@ const Footer = ({}: FooterProps) => {
               <FaRegEnvelope color="white" size={16} />
             </StyledGoldenCircle>
             <StyledContactRows>
-              <div>emailmail@mail.com</div>
-              <div>another@mail.com</div>
+              <div>{contactsMail && contactsMail.attributes?.first_line}</div>
+              <div>{contactsMail && contactsMail.attributes?.second_line}</div>
             </StyledContactRows>
           </StyledContactGroup>
         </StyledContactCol>
       </StyledFooterLinksContainer>
       <StyledCopyrightContainer>
         <StyledCopyright>
-          Copyright © 2023. All rights reserved.
+          Copyright © 2024. All rights reserved.
         </StyledCopyright>
       </StyledCopyrightContainer>
     </StyledFooter>

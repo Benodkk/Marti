@@ -18,6 +18,15 @@ export const StyledInputContainer = styled.div`
   margin: 5px 0;
 `;
 
+export const StyledPhotoInputContainer = styled.div`
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin: 5px 0;
+`;
+
 export const StyledLabel = styled.label`
   color: #4b5563;
   font-family: Inter;

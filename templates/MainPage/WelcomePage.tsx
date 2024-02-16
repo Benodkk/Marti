@@ -23,6 +23,7 @@ import { getCategories } from "@/API/categories";
 import defaultWelcomePageImage from "@/assets/defaultWelcomePageImage.png";
 import { useRouter } from "next/router";
 import { fetchWelcomePageContent } from "@/API/strapiConfig";
+import { Loader } from "@/components/Loader/Loader";
 interface WelcomePageProps {
   linkId: string;
 }
@@ -30,14 +31,22 @@ interface WelcomePageProps {
 export const WelcomePage = ({ linkId }: WelcomePageProps) => {
   const router = useRouter();
   const [content, setContent] = useState<any>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const data: any = await fetchWelcomePageContent();
-    if (data) setContent(data);
+    setLoading(true);
+    try {
+      const data: any = await fetchWelcomePageContent();
+
+      if (data) setContent(data);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const pushToList = (category: any) => {
@@ -53,45 +62,56 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
     <WelcomePageContainer
       $bgImage={
         content && content.attributes?.photo.data
-          ? process.env.NEXT_PUBLIC_STRAPIBASEURL +
-            content.attributes.photo.data[0].attributes.url
-          : defaultWelcomePageImage.src
+          ? content.attributes.photo.data[0].attributes.url
+          : !loading
+          ? defaultWelcomePageImage.src
+          : ""
       }
     >
-      <WelcomePageLeft>
-        <WelcomePageLeftContent>
-          {/* <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo> */}
-          <StyledTitleContainer>
-            <StyledTitle $color={"#FFF"}>
-              {content && content.attributes.title}
-            </StyledTitle>
-          </StyledTitleContainer>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {" "}
+          <WelcomePageLeft>
+            <WelcomePageLeftContent>
+              {/* <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo> */}
+              <StyledTitleContainer>
+                <StyledTitle $color={"#FFF"}>
+                  {content && content.attributes.title}
+                </StyledTitle>
+              </StyledTitleContainer>
 
-          <StyledWelcomePageTextContainer>
-            <StyledWelcomePageText $color={"#FFF"}>
-              {content && content.attributes.first_line}
-            </StyledWelcomePageText>
-          </StyledWelcomePageTextContainer>
+              <StyledWelcomePageTextContainer>
+                <StyledWelcomePageText $color={"#FFF"}>
+                  {content && content.attributes.first_line}
+                </StyledWelcomePageText>
+              </StyledWelcomePageTextContainer>
 
-          <ArrowButton onClick={() => pushToList(linkId)}>
-            SHOW MORE
-          </ArrowButton>
-
-          <StyledGoldenCircleImage src={GoldenCircle.src} />
-        </WelcomePageLeftContent>
-      </WelcomePageLeft>
-      <WelcomePageRight>
-        <WelcomePageRightContent>
-          <StyledImage
-            $height="300px"
-            src={WelcomeSign.src}
-            $zIndex={3}
-            $position="absolute"
-            $right="0px"
-            $bottom="10%"
-          />
-        </WelcomePageRightContent>
-      </WelcomePageRight>
+              <ArrowButton onClick={() => pushToList(linkId)}>
+                SHOW MORE
+              </ArrowButton>
+              {content && content.attributes.decoration && (
+                <StyledGoldenCircleImage src={GoldenCircle.src} />
+              )}
+            </WelcomePageLeftContent>
+          </WelcomePageLeft>
+          {content && content.attributes.signature && (
+            <WelcomePageRight>
+              <WelcomePageRightContent>
+                <StyledImage
+                  $height="300px"
+                  src={WelcomeSign.src}
+                  $zIndex={3}
+                  $position="absolute"
+                  $right="0px"
+                  $bottom="10%"
+                />
+              </WelcomePageRightContent>
+            </WelcomePageRight>
+          )}
+        </>
+      )}
     </WelcomePageContainer>
   );
 };

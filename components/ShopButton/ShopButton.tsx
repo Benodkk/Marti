@@ -9,7 +9,7 @@ interface IconButtonProps {
 export const ShopButton = ({ totalItems }: IconButtonProps) => {
   const router = useRouter();
   return (
-    <StyledIconButton onClick={() => router.push("/cart")}>
+    <StyledIconButton onClick={() => router.push("/Cart")}>
       <AiOutlineShopping />
       <StyledCountProducts $display={totalItems == 0 ? "none" : "flex"}>
         {totalItems}

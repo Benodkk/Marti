@@ -57,7 +57,7 @@ export const LatestNews = ({}: LatestNewsProps) => {
 
   return (
     <StyledLatestNews>
-      <StyledMainPageSectionTitle>Latest News</StyledMainPageSectionTitle>
+      <StyledMainPageSectionTitle>Latest Posts</StyledMainPageSectionTitle>
       <StyledLatestNewsContaienr>
         {news &&
           news.map((item: any, index: number) => {
@@ -66,10 +66,9 @@ export const LatestNews = ({}: LatestNewsProps) => {
                 onClick={() => router.push("/news/" + item.id)}
                 key={index}
                 photoSource={
-                  process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                  (item?.attributes?.small_photo?.data?.attributes
+                  item?.attributes?.small_photo?.data?.attributes
                     ? item?.attributes?.small_photo?.data?.attributes.url
-                    : item?.attributes?.big_photo?.data?.attributes.url)
+                    : item?.attributes?.big_photo?.data?.attributes.url
                 }
                 day={extractDayAndMonth(
                   item.attributes.publishedAt

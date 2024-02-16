@@ -35,10 +35,7 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
       <StyledOneProductPhotoContainer>
         <StyledOneProductPhoto
           onClick={() => pushToProduct(product.id)}
-          src={
-            process.env.NEXT_PUBLIC_STRAPIBASEURL +
-            product.attributes.main_photo.data?.attributes.url
-          }
+          src={product?.attributes.main_photo?.data?.attributes.url}
         />
       </StyledOneProductPhotoContainer>
 

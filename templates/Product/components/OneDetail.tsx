@@ -38,12 +38,7 @@ export const OneDetail = ({
     let content = (
       <StyledModalContent>
         {details?.image?.data?.attributes.url && (
-          <StyledImage
-            src={
-              process.env.NEXT_PUBLIC_STRAPIBASEURL +
-              details?.image?.data.attributes.url
-            }
-          />
+          <StyledImage src={details?.image?.data.attributes.url} />
         )}{" "}
         {details.description_pl && stripHtml(details.description_pl)}
       </StyledModalContent>
@@ -73,11 +68,8 @@ export const OneDetail = ({
             <StyledDetailPhoto
               src={
                 details?.smallImage?.data
-                  ? process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                    details?.smallImage?.data.attributes.url
-                  : details?.image &&
-                    process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                      details?.image?.data.attributes.url
+                  ? details?.smallImage?.data?.attributes.url
+                  : details?.image && details?.image?.data?.attributes.url
               }
             />
           ) : (

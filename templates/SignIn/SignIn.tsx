@@ -28,7 +28,6 @@ export default function SignIn({}: SignInProps) {
     } else {
       // Tutaj możesz dodać logikę logowania
       await signIn(email, password);
-      console.log("Logging in with:", email, password);
     }
   };
 

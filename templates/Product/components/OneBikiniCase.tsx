@@ -30,10 +30,7 @@ export const OneBikiniCase = ({
       <StyledOneDetail $active={active} onClick={onClick}>
         <StyledDetailPhotoContainer>
           <StyledDetailPhoto
-            src={
-              process.env.NEXT_PUBLIC_STRAPIBASEURL +
-              details?.attributes.main_photo?.data?.attributes?.url
-            }
+            src={details?.attributes.main_photo?.data?.attributes?.url}
           />
         </StyledDetailPhotoContainer>
       </StyledOneDetail>

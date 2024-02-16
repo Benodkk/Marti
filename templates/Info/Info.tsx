@@ -21,7 +21,6 @@ export default function Info({}: InfoProps) {
   const [infoData, setInfoData] = useState<any>();
 
   useEffect(() => {
-    console.log(router.query.info);
     if (router.query.info) {
       fetchData(router.query.info);
     }
@@ -30,7 +29,6 @@ export default function Info({}: InfoProps) {
   const fetchData = async (id: any) => {
     const data: any = await fetchInfo(id);
     if (data) setInfoData(data);
-    console.log(data);
   };
 
   return (
@@ -48,9 +46,8 @@ export default function Info({}: InfoProps) {
           infoData?.attributes?.big_photo?.data?.attributes?.url && (
             <StyledHeaderPhoto
               src={
-                process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                (infoData &&
-                  infoData?.attributes?.big_photo?.data?.attributes?.url)
+                infoData &&
+                infoData?.attributes?.big_photo?.data?.attributes?.url
               }
             />
           )}
@@ -75,9 +72,7 @@ export default function Info({}: InfoProps) {
         {infoData && infoData?.attributes.photo_on_bottom && (
           <StyledHeaderPhoto
             src={
-              process.env.NEXT_PUBLIC_STRAPIBASEURL +
-              (infoData &&
-                infoData?.attributes?.big_photo?.data?.attributes?.url)
+              infoData && infoData?.attributes?.big_photo?.data?.attributes?.url
             }
           />
         )}

@@ -20,6 +20,7 @@ import { ListFilters } from "./ListFilters";
 import {
   fetchAllCat,
   fetchAllCategories,
+  fetchAllProdWithPriceRange,
   fetchProductsByCategoryId,
 } from "@/API/strapiConfig";
 
@@ -96,7 +97,6 @@ export default function ProductList({}: ProductListProps) {
 
         setCategory(currentCategory);
         const rootId = findRoot(categoryId, categories);
-        console.log(rootId);
 
         setRootCategory(rootId);
         if (rootId) {
@@ -140,8 +140,6 @@ export default function ProductList({}: ProductListProps) {
     setIsLoading(true);
     try {
       const response = await fetchAllCat(id);
-      console.log(response);
-      console.log(response[0].attributes.products.data);
 
       if (response) {
         setProducts(response[0].attributes.products.data);
@@ -163,11 +161,13 @@ export default function ProductList({}: ProductListProps) {
   const applyFilters = async () => {
     setIsLoading(true);
     try {
-      const response = await getProductsByCategoryAndPrice(
+      const response = await fetchAllProdWithPriceRange(
         category.id,
         sliderMin,
         sliderMax
       );
+      console.log(response);
+
       if (response) {
         setProducts(response);
       }

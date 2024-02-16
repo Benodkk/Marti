@@ -63,7 +63,6 @@ export default function NewsTemplate() {
     const month = monthNames[date.getMonth()];
 
     // Zwracanie numeru dnia i skróconej nazwy miesiąca
-    console.log(day);
 
     return { day, month };
   }
@@ -99,9 +98,8 @@ export default function NewsTemplate() {
           newsData?.attributes?.big_photo?.data?.attributes?.url && (
             <StyledHeaderPhoto
               src={
-                process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                (newsData &&
-                  newsData?.attributes?.big_photo?.data?.attributes?.url)
+                newsData &&
+                newsData?.attributes?.big_photo?.data?.attributes?.url
               }
             />
           )}
@@ -126,9 +124,7 @@ export default function NewsTemplate() {
         {newsData && newsData?.attributes.photo_on_bottom && (
           <StyledHeaderPhoto
             src={
-              process.env.NEXT_PUBLIC_STRAPIBASEURL +
-              (newsData &&
-                newsData?.attributes?.big_photo?.data?.attributes?.url)
+              newsData && newsData?.attributes?.big_photo?.data?.attributes?.url
             }
           />
         )}

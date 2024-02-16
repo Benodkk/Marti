@@ -52,8 +52,6 @@ export default function Cart({}: CartProps) {
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
-  console.log(cartItems);
-
   const remove = (id: any) => {
     dispatch(removeItem({ id: id }));
   };
@@ -70,9 +68,7 @@ export default function Cart({}: CartProps) {
                 {cartItems.map((item: any) => {
                   return (
                     <StyledOneProduct key={item.id}>
-                      <StyledOneProductPhoto
-                        src={process.env.NEXT_PUBLIC_STRAPIBASEURL + item.image}
-                      />
+                      <StyledOneProductPhoto src={item.image} />
                       <StyleOneProductDetails>
                         <StyledTopDetails>
                           <StyledProductName>

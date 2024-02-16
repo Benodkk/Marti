@@ -43,7 +43,6 @@ export const ProductionTime = ({
   const getData = async () => {
     const production: any = await getProductsDetails(productionTimeName);
     if (production) setProductionTime(production);
-    console.log(production);
   };
 
   function stripHtml(html: any) {

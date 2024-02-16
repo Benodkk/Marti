@@ -128,3 +128,37 @@ export const FormLabel = styled.label`
     top: 20px;
   }
 `;
+
+export const FormLabelPhoto = styled.label`
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: gray; // Ustaw odpowiedni kolor
+  font-weight: 500;
+`;
+
+export const FormFieldPhoto = styled.input`
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid gray; // Ustaw odpowiedni kolor
+  outline: 0;
+  color: #36322c;
+  font-size: 1.1rem;
+  padding: 8px 0 4px;
+  background: transparent;
+  transition: border-color 0.2s;
+  cursor: pointer;
+
+  &:focus {
+    font-weight: 500;
+    // Ustaw gradient dla border-image przy focusie
+  }
+
+  &:required,
+  &:invalid {
+    box-shadow: none;
+  }
+`;

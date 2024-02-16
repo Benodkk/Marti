@@ -26,8 +26,6 @@ export const OneLatestNews = ({
   title,
   onClick,
 }: OneLatestNewsProps) => {
-  console.log(day);
-
   return (
     <StyledOneLatestNews onClick={onClick}>
       <StyledOneLatestDate>

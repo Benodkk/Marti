@@ -29,7 +29,6 @@ const MainPage = ({}: MainPageProps) => {
 
   const getProperLinks = async () => {
     const response: any = await fetchAllCategoriesWithProductDetails();
-    console.log(response);
 
     if (response) {
       const newWelcomePageLinkId = response.find(

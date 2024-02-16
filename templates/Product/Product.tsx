@@ -155,11 +155,9 @@ export default function ProductTemplate({}: ProductProps) {
     setLoading(true);
     try {
       const data: any = await fetchProductById(id);
-      console.log(data);
 
       if (data.attributes) {
         // show details check
-        console.log(data);
 
         data.attributes.id = data.id;
         setProductData(data.attributes);
@@ -180,8 +178,6 @@ export default function ProductTemplate({}: ProductProps) {
         // looking for bikini details.
 
         if (data.attributes.bikini_details) {
-          console.log(data);
-
           const bikiniDetails = await fetchBikiniDetailsByName(
             data.attributes.bikini_details
           );
@@ -192,7 +188,6 @@ export default function ProductTemplate({}: ProductProps) {
 
         if (data.attributes.robe_detail) {
           const robe = await fetchRobe();
-          console.log(robe);
 
           const modifiedArray = robe.map((element: any) => {
             return {
@@ -278,8 +273,6 @@ export default function ProductTemplate({}: ProductProps) {
         errors.push(capitalizeFirstLetter(att.name));
       }
     });
-    console.log(bikiniDetails);
-    console.log(chosenBikiniDetails);
 
     if (bikiniDetails) {
       if (
@@ -428,7 +421,6 @@ export default function ProductTemplate({}: ProductProps) {
     setRobeText("");
     setRobeFont(updatedRobeFont);
   };
-  console.log(productData);
 
   return (
     <StyledProductContainer>
@@ -441,9 +433,7 @@ export default function ProductTemplate({}: ProductProps) {
         ) : (
           <>
             <StyledPhotos>
-              <StyledMainPhoto
-                src={process.env.NEXT_PUBLIC_STRAPIBASEURL + mainPhotoSrc}
-              />
+              <StyledMainPhoto src={mainPhotoSrc} />
               <StyledPhotoRow>
                 {productData &&
                   [
@@ -455,10 +445,7 @@ export default function ProductTemplate({}: ProductProps) {
                     return (
                       <StyledSmallPhoto
                         onClick={() => setMainPhotoSrc(image.attributes.url)}
-                        src={
-                          process.env.NEXT_PUBLIC_STRAPIBASEURL +
-                          image?.attributes?.url
-                        }
+                        src={image?.attributes?.url}
                       />
                     );
                   })}
