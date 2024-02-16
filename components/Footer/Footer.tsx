@@ -97,7 +97,13 @@ const Footer = ({}: FooterProps) => {
         </StyledFooterText>
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>Customer care</StyledFooterLinksTitle>
-          <StyledOneFooterLink>Sign in</StyledOneFooterLink>
+          <StyledOneFooterLink
+            onClick={() => {
+              router.push("/SignIn");
+            }}
+          >
+            Sign in
+          </StyledOneFooterLink>
           {links &&
             links.map((element: any) => {
               // Używamy instrukcji warunkowej if do sprawdzenia warunku
