@@ -5,6 +5,7 @@ export const StyledSignInContainer = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
+  min-height: 80vh;
 `;
 
 export const StyledSignIn = styled.div`

@@ -50,7 +50,7 @@ const Header = ({}: HeaderProps) => {
   const router = useRouter();
 
   const [showMenu, setShowMenu] = useState(false);
-  // const [lastScrollPosition, setLastScrollPosition] = useState(0);
+  const [lastScrollPosition, setLastScrollPosition] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [openWomanCategories, setOpenWomanCategories] = useState(false);
   const [openManCategories, setOpenManCategories] = useState(false);
@@ -65,42 +65,67 @@ const Header = ({}: HeaderProps) => {
 
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentScrollPosition = window.pageYOffset;
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPosition = window.pageYOffset;
 
-  //     if (
-  //       currentScrollPosition > lastScrollPosition &&
-  //       currentScrollPosition > 150
-  //     ) {
-  //       // Scroll w dół
-  //       setHeaderVisible(false);
-  //     } else if (currentScrollPosition < lastScrollPosition - 20) {
-  //       // Scroll w górę o więcej niż 20px
-  //       setHeaderVisible(true);
-  //     }
+      if (
+        currentScrollPosition > lastScrollPosition &&
+        currentScrollPosition > 150
+      ) {
+        // Scroll w dół
+        setHeaderVisible(false);
+      } else if (currentScrollPosition < lastScrollPosition - 20) {
+        // Scroll w górę o więcej niż 20px
+        setHeaderVisible(true);
+      }
 
-  //     setLastScrollPosition(currentScrollPosition);
-  //   };
+      setLastScrollPosition(currentScrollPosition);
+    };
 
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [lastScrollPosition, headerVisible]);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollPosition, headerVisible]);
 
-  // useEffect(() => {
-  //   if (!headerVisible && showMenu) {
-  //     setShowMenu(false);
-  //   }
-  // }, [headerVisible]);
+  useEffect(() => {
+    if (!headerVisible && showMenu) {
+      setShowMenu(false);
+    }
+  }, [headerVisible]);
 
   useEffect(() => {
     getAllCategories();
   }, []);
 
+  const handleMouseAtTop = () => {
+    console.log("Kursor jest na górze ekranu!");
+    // Tutaj możesz umieścić logikę, którą chcesz wykonać
+  };
+
+  useEffect(() => {
+    const checkMousePosition = (event: any) => {
+      const { clientY } = event; // Pobierz pozycję Y kursora
+      const threshold = 100; // Ustaw próg, na przykład 100px od góry ekranu
+
+      if (clientY <= threshold) {
+        setHeaderVisible(true);
+      }
+    };
+
+    // Dodaj event listener do nasłuchiwania ruchu myszy
+    window.addEventListener("mousemove", checkMousePosition);
+
+    // Oczyść event listener, gdy komponent zostanie odmontowany
+    return () => {
+      window.removeEventListener("mousemove", checkMousePosition);
+    };
+  }, []);
+
   const getAllCategories = async () => {
     setLoading(true);
+
     try {
       const categories: any = await fetchAllCategories();
       if (categories) {
@@ -169,10 +194,21 @@ const Header = ({}: HeaderProps) => {
           <StyledTopHeader>
             <StyledGroupIconsHeader>
               {/* <SearchButton /> */}
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  window.open("https://www.facebook.com/martibikini", "_blank");
+                }}
+              >
                 <FaFacebookF />
               </IconButton>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  window.open(
+                    "https://www.instagram.com/marti_bikini?igsh=MWt0c2E5ZjR4MGMxbA==",
+                    "_blank"
+                  );
+                }}
+              >
                 <FaInstagram />
               </IconButton>
             </StyledGroupIconsHeader>
@@ -224,7 +260,7 @@ const Header = ({}: HeaderProps) => {
               </HeaderButton>
               <HeaderButton
                 onClick={() => {
-                  window.location.href = "https://www.marti-store.pl";
+                  window.open("https://www.marti-store.pl", "_blank");
                 }}
                 label={translation["en"].sportswear}
               />

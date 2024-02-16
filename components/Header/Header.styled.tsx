@@ -10,12 +10,12 @@ export const StyledHeaderContainer = styled.header<HeaderProps>`
   flex-direction: column;
   justify-content: center;
   box-shadow: rgba(0, 0, 0, 0.137) 0px 1px 4px;
-  position: absolute;
+  position: fixed;
   background-color: #fff;
   top: 0;
   z-index: 100;
   transition: 0.5s;
-  /* top: ${(props) => (props.$scroll ? "0px" : "-160px")}; */
+  top: ${(props) => (props.$scroll ? "0px" : "-160px")};
 `;
 
 export const StyledTopHeaderContainer = styled.div`

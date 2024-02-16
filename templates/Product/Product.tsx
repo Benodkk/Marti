@@ -572,7 +572,7 @@ export default function ProductTemplate({}: ProductProps) {
                         <StyledShowDetails
                           onClick={() => toggleShow(attribute.id)}
                         >
-                          {capitalizeFirstLetter(attribute.name)}
+                          {capitalizeFirstLetter(attribute.name)}*
                           <StyledShowDetailsArrow
                             open={attribute.show}
                             src={Arrow.src}
