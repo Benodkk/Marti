@@ -388,6 +388,10 @@ export default function ProductTemplate({}: ProductProps) {
 
       setSuccess(true);
       dispatch(addItem(product));
+      window.scrollTo({
+        top: 0, // Przewija do pozycji 0px od góry strony
+        behavior: "smooth", // Opcjonalnie, dla płynnego przewijania
+      });
     }
   };
   function capitalizeFirstLetter(str: any) {

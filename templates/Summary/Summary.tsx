@@ -35,7 +35,7 @@ import {
   StyledProductName,
   StyledTopDetails,
   StyledTopDetailsRight,
-} from "../Cart/Cart.styled";
+} from "../ShopCart/Cart.styled";
 import { useSelector } from "react-redux";
 import { removeItem, selectCartItems } from "@/redux/cartSlice";
 import { IoEyeOutline } from "react-icons/io5";
