@@ -4,6 +4,6 @@ const Cart = dynamic(() => import("@/templates/Cart/Cart"), {
   ssr: false,
 });
 
-export default function Products() {
+export default function Carts() {
   return <Cart />;
 }

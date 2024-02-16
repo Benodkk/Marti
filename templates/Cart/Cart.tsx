@@ -61,7 +61,7 @@ export default function Cart({}: CartProps) {
       <StyledCart>
         <StyledGoBack onClick={() => router.back()}>{"< Back"}</StyledGoBack>
         <StyledCartTitle>Cart</StyledCartTitle>
-        {cartItems.length ? (
+        {cartItems && cartItems.length ? (
           <>
             <StyledProductListContainer>
               <StyledProductList>
@@ -86,8 +86,8 @@ export default function Cart({}: CartProps) {
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
                         <StyledProductListDetails>
-                          {item.personalization &&
-                            item.personalization.length > 0 && (
+                          {item?.personalization &&
+                            item?.personalization.length > 0 && (
                               <StyledOneDetailCheck
                                 onClick={() => {
                                   setIsOpen(true);
@@ -114,30 +114,31 @@ export default function Cart({}: CartProps) {
                               </StyledOneDetailCheck>
                             )}
 
-                          {item.formDetails && item.formDetails.length > 0 && (
-                            <StyledOneDetailCheck
-                              onClick={() => {
-                                setIsOpen(true);
-                                const content = item.formDetails.map(
-                                  (element: any) => {
-                                    return (
-                                      <StyledOneDetailContainer>
-                                        <strong>{element.name}:</strong>{" "}
-                                        <StyledOneDetailFromList>
-                                          {" "}
-                                          {element.value}
-                                        </StyledOneDetailFromList>
-                                      </StyledOneDetailContainer>
-                                    );
-                                  }
-                                );
-                                setModalContent(content);
-                              }}
-                            >
-                              Form Details <IoEyeOutline size={18} />
-                            </StyledOneDetailCheck>
-                          )}
-                          {item.details && item.details.length > 0 && (
+                          {item?.formDetails &&
+                            item?.formDetails.length > 0 && (
+                              <StyledOneDetailCheck
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  const content = item.formDetails.map(
+                                    (element: any) => {
+                                      return (
+                                        <StyledOneDetailContainer>
+                                          <strong>{element.name}:</strong>{" "}
+                                          <StyledOneDetailFromList>
+                                            {" "}
+                                            {element.value}
+                                          </StyledOneDetailFromList>
+                                        </StyledOneDetailContainer>
+                                      );
+                                    }
+                                  );
+                                  setModalContent(content);
+                                }}
+                              >
+                                Form Details <IoEyeOutline size={18} />
+                              </StyledOneDetailCheck>
+                            )}
+                          {item?.details && item.details.length > 0 && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
@@ -163,7 +164,7 @@ export default function Cart({}: CartProps) {
                               Details <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.additionalNotes && (
+                          {item?.additionalNotes && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
@@ -179,7 +180,7 @@ export default function Cart({}: CartProps) {
                               Additional notes <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.bikiniCase && (
+                          {item?.bikiniCase && (
                             <StyledOneDetail>
                               Bikini case:{" "}
                               <StyledOneDetailBoldLink
@@ -189,7 +190,7 @@ export default function Cart({}: CartProps) {
                                   });
                                 }}
                               >
-                                {item.bikiniCase.attributes.name}
+                                {item?.bikiniCase?.attributes?.name}
                               </StyledOneDetailBoldLink>
                             </StyledOneDetail>
                           )}
