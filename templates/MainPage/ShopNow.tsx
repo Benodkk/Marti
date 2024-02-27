@@ -6,6 +6,9 @@ import womenMain from "@/assets/womenMain.png";
 import heelsMain from "@/assets/heelsMain.png";
 import { useRouter } from "next/router";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface ShopNowProps {
   womenLinkId: any;
   menLinkId: any;
@@ -17,6 +20,7 @@ export const ShopNow = ({
   menLinkId,
   heelsLinkId,
 }: ShopNowProps) => {
+  const language = useSelector(selectLanguage);
   const router = useRouter();
 
   const pushToList = (category: any) => {
@@ -33,19 +37,19 @@ export const ShopNow = ({
       <OneShopNow
         backgroundColor="#C44370"
         imageSrc={womenMain.src}
-        label="Women"
+        label={language == "pl" ? "Kobiety" : "Women"}
         onClick={() => pushToList(womenLinkId)}
       />
       <OneShopNow
         backgroundColor="#75939E"
         imageSrc={menMain.src}
-        label="Men"
+        label={language == "pl" ? "Mężczyźni" : "Men"}
         onClick={() => pushToList(menLinkId)}
       />
       <OneShopNow
         backgroundColor="#B1A270"
         imageSrc={heelsMain.src}
-        label="Heels"
+        label={language == "pl" ? "Buty" : "Heels"}
         onClick={() => pushToList(heelsLinkId)}
       />
     </StyledShopNowContainer>

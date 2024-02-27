@@ -9,29 +9,8 @@ import {
 import { Input } from "@/components/Input/Input";
 import { InputIamges } from "@/components/InputImages/InputImages";
 
-const formPoles = [
-  { name: "Height", label: "Height*", type: "text" },
-  { name: "Bust Circumference", label: "Bust Circumference*", type: "text" },
-  {
-    name: "Under Bust Circumference",
-    label: "Under Bust Circumference*",
-    type: "text",
-  },
-  {
-    name: "Waist (circumference)",
-    label: "Waist (circumference)*",
-    type: "text",
-  },
-  {
-    name: "Buttock (circumference)",
-    label: "Buttock (circumference)*",
-    type: "text",
-  },
-  { name: "Current Weight", label: "Current Weight*", type: "text" },
-  { name: "Weight on the Stage", label: "Weight on the Stage*", type: "text" },
-  { name: "Show Date", label: "Show Date", type: "text" },
-  { name: "Insagram nick name", label: "Insagram nick name", type: "text" },
-];
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
 
 interface BikiniFormProps {
   formData: any;
@@ -44,6 +23,7 @@ export const BikiniForm = ({
   setFormData,
   show,
 }: BikiniFormProps) => {
+  const language = useSelector(selectLanguage);
   const [images, setImages] = useState<any>([]);
 
   const updateItemValueById = (itemId: any, newValue: any) => {
@@ -74,14 +54,21 @@ export const BikiniForm = ({
         <>
           {field.input_photos ? (
             <StyledPhotoInputContainer key={index}>
-              <InputIamges onChange={handleImageChange} label={field.name} />
+              <InputIamges
+                onChange={handleImageChange}
+                label={
+                  language == "pl" && field.name_pl ? field.name_pl : field.name
+                }
+              />
             </StyledPhotoInputContainer>
           ) : (
             <StyledInputContainer key={index}>
               {" "}
               <Input
                 type={field.input_photos ? "text" : "text"}
-                label={field.name}
+                label={
+                  language == "pl" && field.name_pl ? field.name_pl : field.name
+                }
                 value={field.value}
                 onChange={(e: any) =>
                   updateItemValueById(field.id, e.target.value)

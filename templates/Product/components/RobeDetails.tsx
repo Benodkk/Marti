@@ -10,6 +10,10 @@ import {
   StyledRobeText,
 } from "../Product.styled";
 import { Input } from "@/components/Input/Input";
+import { translation } from "@/translation";
+
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
 
 interface RobeDetailsProps {
   show: boolean;
@@ -36,6 +40,7 @@ export const RobeDetails = ({
   setIsModalOpen,
   setModalTitle,
 }: RobeDetailsProps) => {
+  const language = useSelector(selectLanguage);
   return (
     <StyledRobeDetailsContainer $display={show ? "flex" : "none"}>
       {" "}
@@ -70,15 +75,11 @@ export const RobeDetails = ({
             type="text"
             value={robeText}
             onChange={(e: any) => setRobeText(e.target.value)}
-            label="Your text"
+            label={translation[language].yourText}
           />
           <StyledRobeText>
-            <div>
-              Important: Please write exact text that will appear on the back of
-              the robe. Lowercase and uppercase letters matter. If you want to
-              put the instagram symbol in front of the Nickname, please write @
-            </div>
-            <div>5 characters = 100 zł (Min. 10 charaters)</div>
+            <div>{translation[language].robeInfoText}</div>
+            <div>{`5 ${translation[language].charaters} = 100 zł (Min. 10 ${translation[language].charaters})`}</div>
           </StyledRobeText>
         </StyledRobeDetails>
       )}

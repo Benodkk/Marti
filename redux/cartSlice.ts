@@ -4,16 +4,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
-// interface CartItem {
-//   id: number;
-//   title: string;
-//   price: number;
-// }
-
-// interface CartState {
-//   items: CartItem[];
-// }
-
 const initialState: any = {
   items: [],
 };

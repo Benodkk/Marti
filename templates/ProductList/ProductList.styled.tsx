@@ -173,6 +173,15 @@ export const StyledCateogryFilterContainer = styled.div`
   box-sizing: content-box;
 `;
 
+export const StyledCateogryFilterContainerSizes = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  /* padding: 12px 0px; */
+  gap: 5px;
+  transition: 0.5s;
+  box-sizing: content-box;
+`;
+
 export const StyledOneCateogryFilterChecked = styled.img``;
 
 export const StyledOneCateogryFilterContainer = styled.div`

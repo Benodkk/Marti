@@ -1,6 +1,8 @@
 import MediaQuery from "react-responsive";
 import { reactDevice } from "@/styles/deviceWith";
 import icon from "@/assets/GoldenCircle.png";
+import HeelsIcon from "@/assets/HeelsIcon.svg";
+import HeelsIconWhite from "@/assets/HeelsIconWhite.svg";
 import {
   StyledBottomHeader,
   StyledGroupIconsHeader,
@@ -39,15 +41,33 @@ import { Categories } from "./Categories";
 import { useRouter } from "next/router";
 import { getCategories } from "@/API/categories";
 import { ShopButton } from "../ShopButton/ShopButton";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectTotalItems } from "@/redux/cartSlice";
+import { setLanguage, selectLanguage } from "@/redux/languageSlice";
+
 import { MoonLoader } from "react-spinners";
 import { fetchAllCategories } from "@/API/strapiConfig";
 import Head from "next/head";
+import { SelectValue } from "../Select/Select";
+import { setCurrency, selectCurrencyDetails } from "@/redux/currencySlice";
+
+const options = [
+  { value: "pln", label: "PLN" },
+  { value: "eur", label: "EUR" },
+  { value: "usd", label: "USD" },
+];
+
+const langOptions = [
+  { value: "pl", label: "PL" },
+  { value: "en", label: "EN" },
+];
 
 interface HeaderProps {}
 
 const Header = ({}: HeaderProps) => {
+  const dispatch = useDispatch();
+  const language = useSelector(selectLanguage);
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
   const totalItems = useSelector(selectTotalItems);
   const router = useRouter();
 
@@ -56,14 +76,17 @@ const Header = ({}: HeaderProps) => {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [openWomanCategories, setOpenWomanCategories] = useState(false);
   const [openManCategories, setOpenManCategories] = useState(false);
+  const [openHeelsCategories, setOpenHeelsCategories] = useState(false);
 
   // cateogories for header
   const [womenCategories, setWomenCategories] = useState();
   const [menCategories, setMenCategories] = useState();
+  const [heelsCategories, setHeelsCategories] = useState();
 
   // id for categories
   const [allWomenProducts, setAllWomenProducts] = useState<any>();
   const [allMenProducts, setAllMenProducts] = useState<any>();
+  const [allHeelsProducts, setAllHeelsProducts] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
@@ -141,14 +164,18 @@ const Header = ({}: HeaderProps) => {
               category?.attributes?.parent?.data?.id == womenCategoryId
           )
           .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
+
         const allWomenCategories = womenCategories.map((womenCategory: any) => {
-          const each = categories.filter(
-            (category: any) =>
-              category?.attributes?.parent?.data?.id == womenCategory.id
-          );
+          const each = categories
+            .filter(
+              (category: any) =>
+                category?.attributes?.parent?.data?.id == womenCategory.id
+            )
+            .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
 
           return { category: womenCategory, under: each };
         });
+
         const menCategoryId: any = categories.find(
           (category: any) => category.attributes.name == "Men"
         ).id;
@@ -159,6 +186,27 @@ const Header = ({}: HeaderProps) => {
           (category: any) =>
             category?.attributes?.parent?.data?.id == menCategoryId
         );
+
+        const heelsCategoryId: any = categories.find(
+          (category: any) => category.attributes.name == "Heels"
+        ).id;
+
+        setAllHeelsProducts(heelsCategoryId);
+
+        const heelsCategories = categories
+          .filter(
+            (category: any) =>
+              category?.attributes?.parent?.data?.id == heelsCategoryId
+          )
+          .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
+        const allHeelsCategories = heelsCategories.map((heelsCategory: any) => {
+          const each = categories.filter(
+            (category: any) =>
+              category?.attributes?.parent?.data?.id == heelsCategory.id
+          );
+
+          return { category: heelsCategory, under: each };
+        });
 
         // .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
 
@@ -172,8 +220,8 @@ const Header = ({}: HeaderProps) => {
         });
 
         setWomenCategories(allWomenCategories);
-
         setMenCategories(allMenCategories);
+        setHeelsCategories(allHeelsCategories);
       }
     } catch {
     } finally {
@@ -185,6 +233,16 @@ const Header = ({}: HeaderProps) => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
+    });
+  };
+
+  const pushToList = (category: any) => {
+    router.push({
+      pathname: "/products",
+      query: {
+        category: category,
+        fromHeader: "true",
+      },
     });
   };
 
@@ -235,7 +293,7 @@ const Header = ({}: HeaderProps) => {
                 onMouseLeave={() => setOpenWomanCategories(false)}
                 color={openWomanCategories ? "white" : "#232323"}
                 bgColor={openWomanCategories ? "#c44370" : "white"}
-                label={translation["en"].women}
+                label={translation[language].women}
                 onMouseEnter={() =>
                   setOpenWomanCategories(!openWomanCategories)
                 }
@@ -253,7 +311,7 @@ const Header = ({}: HeaderProps) => {
                 onMouseLeave={() => setOpenManCategories(false)}
                 color={openManCategories ? "white" : "#232323"}
                 bgColor={openManCategories ? "#75939E" : "white"}
-                label={translation["en"].men}
+                label={translation[language].men}
                 onMouseEnter={() => setOpenManCategories(!openManCategories)}
               >
                 <AiOutlineMan />
@@ -266,16 +324,52 @@ const Header = ({}: HeaderProps) => {
                 />
               </HeaderButton>
               <HeaderButton
+                onMouseLeave={() => setOpenHeelsCategories(false)}
+                color={openHeelsCategories ? "white" : "#232323"}
+                bgColor={openHeelsCategories ? "#B1A270" : "white"}
+                label={translation[language].heels}
+                onMouseEnter={() =>
+                  setOpenHeelsCategories(!openHeelsCategories)
+                }
+              >
+                <img
+                  src={openHeelsCategories ? HeelsIconWhite.src : HeelsIcon.src}
+                  alt="heel"
+                />
+                <Categories
+                  heelsCategory={true}
+                  categories={heelsCategories}
+                  openCategories={openHeelsCategories}
+                  bgColor="#B1A270"
+                  allLinkId={allHeelsProducts}
+                  loading={loading}
+                />
+              </HeaderButton>
+              <HeaderButton
                 onClick={() => {
                   window.open("https://www.marti-store.pl", "_blank");
                 }}
-                label={translation["en"].sportswear}
+                label={translation[language].sportswear}
               />
             </StyledBottomButtons>
             <StyledBottomButtons>
+              <SelectValue
+                options={options}
+                defaultValue={options[0]}
+                handleChange={(selectedOption: any) =>
+                  dispatch(setCurrency(selectedOption.value))
+                }
+              />
+              <SelectValue
+                options={langOptions}
+                defaultValue={langOptions[0]}
+                handleChange={(selectedOption: any) =>
+                  dispatch(setLanguage(selectedOption.value))
+                }
+              />
               <HeaderButton
                 onClick={scrollToBottom}
-                label={translation["en"].contact}
+                label={translation[language].contact}
               />
             </StyledBottomButtons>
           </StyledBottomHeader>

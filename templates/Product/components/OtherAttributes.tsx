@@ -7,15 +7,19 @@ import {
   StyledOtherAttributesLabel,
   StyledOtherAttributes,
   StyledOtherAttributesInfo,
+  StyledOtherAttributesDesc,
 } from "./OtherAttributes.styled";
 import { getProductsByCategoriesId } from "@/API/product";
 import { Loader } from "@/components/Loader/Loader";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
 interface OtherAttributesProps {
   otherAttributes: any;
   show: any;
   chosenOtherAttributes: any;
   setChosenOtherAttributes: any;
+  description: any;
 }
 
 export const OtherAttributes = ({
@@ -23,7 +27,10 @@ export const OtherAttributes = ({
   show,
   chosenOtherAttributes,
   setChosenOtherAttributes,
+  description,
 }: OtherAttributesProps) => {
+  const language = useSelector(selectLanguage);
+
   return (
     <StyledOtherAttributesContainer $display={show ? "flex" : "none"}>
       <StyledOtherAttributes>
@@ -38,11 +45,20 @@ export const OtherAttributes = ({
                   onClick={() => setChosenOtherAttributes(type)}
                 >
                   <StyledOtherAttributesLabel>
-                    {type.name}
+                    {language == "pl" && type.name_pl
+                      ? type.name_pl
+                      : type.name}
                   </StyledOtherAttributesLabel>
                 </StyledOneOtherAttributes>
                 {type.price_pln && <div> +{type.price_pln}zł</div>}
-                {type.small_description && <div>{type.small_description}</div>}
+                {type.small_description_pl ||
+                  (type.small_description && (
+                    <div>
+                      {language == "pl" && type.small_description_pl
+                        ? type.small_description_pl
+                        : type.small_description}
+                    </div>
+                  ))}
               </StyledOneOtherAttributesContainer>
             );
           })
@@ -50,6 +66,7 @@ export const OtherAttributes = ({
           <Loader />
         )}
       </StyledOtherAttributes>
+      <StyledOtherAttributesDesc>{description}</StyledOtherAttributesDesc>
     </StyledOtherAttributesContainer>
   );
 };

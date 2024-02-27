@@ -17,12 +17,24 @@ export const StyledModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #fff;
+  position: relative;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 50%;
-  max-width: 500px;
+  /* width: 50%;
+  max-width: 500px; */
   z-index: 1001;
+`;
+
+export const StyledX = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: 0.3s;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.2);
+  }
 `;
 
 export const StyledModalTitle = styled.div`

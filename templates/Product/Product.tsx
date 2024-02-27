@@ -36,7 +36,7 @@ import Arrow from "@/assets/Arrow.svg";
 import { BikiniForm } from "./components/BikiniForm";
 import { ProductionTime } from "./components/ProductionTime";
 import { BikiniCase } from "./components/BikiniCase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { addItem, removeItem } from "@/redux/cartSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -56,10 +56,14 @@ import {
   fetchProductsByCategoryName,
   fetchRobe,
 } from "@/API/strapiConfig";
+import { PickSize } from "./components/PickSize";
+import { selectLanguage } from "@/redux/languageSlice";
+import { translation } from "@/translation";
 
 interface ProductProps {}
 
 export default function ProductTemplate({}: ProductProps) {
+  const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -102,6 +106,11 @@ export default function ProductTemplate({}: ProductProps) {
 
   const [loading, setLoading] = useState(true);
 
+  // heels
+  const [heelsSizes, setHeelsSizes] = useState<any>([]);
+  const [openHeels, setOpenHeels] = useState(false);
+  const [chosenSize, setChosenSize] = useState<any>();
+
   // modal states
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,8 +123,6 @@ export default function ProductTemplate({}: ProductProps) {
   const [errors, setErrors] = useState<any>();
 
   const [success, setSuccess] = useState(false);
-
-  const [description, setDescription] = useState<any>();
 
   useEffect(() => {
     if (router.query.product) {
@@ -199,6 +206,12 @@ export default function ProductTemplate({}: ProductProps) {
           setRobeFont(modifiedArray);
         }
 
+        // looking for heelSizes
+
+        if (data.attributes.heels_sizes?.data?.length > 0) {
+          setHeelsSizes(data.attributes.heels_sizes?.data);
+        }
+
         if (data.attributes.bikini_case) {
           const etuis = await fetchProductsByCategoryName("Etui");
           setEtuis(etuis);
@@ -215,6 +228,7 @@ export default function ProductTemplate({}: ProductProps) {
             }
           );
           setOtherAttributes(modifiedArray);
+          console.log(modifiedArray);
         }
       }
     } catch {
@@ -265,12 +279,18 @@ export default function ProductTemplate({}: ProductProps) {
     let errors = [];
     if (robeFont && robeText) {
       if (robeText.length < 10) {
-        errors.push("Robe text - Min. 10 characters ");
+        errors.push(translation[language].robeTextErrorInfo);
       }
     }
+    console.log(otherAttributes);
+
     otherAttributes.forEach((att: any) => {
       if (att.chosen === 0) {
-        errors.push(capitalizeFirstLetter(att.name));
+        errors.push(
+          capitalizeFirstLetter(
+            language == "pl" && att.name_pl ? att.name_pl : att.name
+          )
+        );
       }
     });
 
@@ -280,28 +300,28 @@ export default function ProductTemplate({}: ProductProps) {
           (element: any) => element.typeName === "Bra Style"
         )
       ) {
-        errors.push("Personalization - Bra style");
+        errors.push(`${translation[language].personalization} - Bra style`);
       }
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Cup Size"
         )
       ) {
-        errors.push("Personalization - Cup size");
+        errors.push(`${translation[language].personalization} - Cup size`);
       }
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Push Up"
         )
       ) {
-        errors.push("Personalization - Push up");
+        errors.push(`${translation[language].personalization} - Push up`);
       }
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Bottom Backs"
         )
       ) {
-        errors.push("Personalization - Bottom Back");
+        errors.push(`${translation[language].personalization} - Bottom Back`);
       }
 
       const backStraps = chosenBikiniDetails.find(
@@ -315,21 +335,37 @@ export default function ProductTemplate({}: ProductProps) {
             (element: any) => element.typeName === "Back Connectors"
           ))
       ) {
-        errors.push("Personalization - Back straps");
+        errors.push(`${translation[language].personalization} - Back straps`);
       }
 
       // form errors
+      console.log(formData);
+
       formData.forEach((field: any) => {
         if (field.obligatory == true && field.value.length == 0) {
-          errors.push(`Details - ${field.name}`);
+          errors.push(
+            `${translation[language].details} - ${
+              language == "pl" && field.name_pl ? field.name_pl : field.name
+            }`
+          );
         }
       });
+    }
+
+    if (heelsSizes?.length > 0 && chosenSize == undefined) {
+      errors.push(translation[language].size);
     }
 
     otherAttributes &&
       otherAttributes.forEach((attribute: any) => {
         if (!attribute.chosen) {
-          errors.push(`${attribute.name}`);
+          errors.push(
+            `${
+              language == "pl" && attribute.name_pl
+                ? attribute.name_pl
+                : attribute.name
+            }`
+          );
         }
       });
 
@@ -339,10 +375,15 @@ export default function ProductTemplate({}: ProductProps) {
     } else {
       const personalization: any = [];
       if (chosenBikiniDetails) {
+        console.log(chosenBikiniDetails);
+
         chosenBikiniDetails.forEach((element: any) => {
           personalization.push({
             type: element.typeName,
-            name: element.option.name,
+            name:
+              language == "pl" && element.option.name_pl
+                ? element.option.name_pl
+                : element.option.name,
             price_pln: element.option.price_pln,
             price_eur: element.option.price_eur,
           });
@@ -354,30 +395,48 @@ export default function ProductTemplate({}: ProductProps) {
         let count = Math.ceil(robeText.length / 5);
         const addPrice = count * robeFontChosen.price_pln;
         personalization.push({
-          type: "Robe font",
-          name: robeFontChosen.name,
+          type: translation[language].robeFont,
+          name:
+            language == "pl" && robeFontChosen.name_pl
+              ? robeFontChosen.name_pl
+              : robeFontChosen.name,
           price: addPrice,
         });
 
         personalization.push({
-          type: "Robe text",
+          type: translation[language].robeText,
           name: robeText,
           price: "",
         });
       }
+      console.log(otherAttributes);
 
       const details = otherAttributes.map((att: any) => {
-        return { name: capitalizeFirstLetter(att.name), value: att.chosen };
+        return {
+          name: capitalizeFirstLetter(
+            language == "pl" && att.name_pl ? att.name_pl : att.name
+          ),
+          value: att.chosen,
+        };
       });
+      console.log(chosenSize);
+
+      if (heelsSizes?.length > 0 && chosenSize != undefined) {
+        let real = chosenSize.attributes;
+        real.name = real.value;
+
+        details.push({ name: "Size", value: real });
+      }
 
       const formDetails =
         formData && formData.filter((oneData: any) => oneData.value.length > 0);
-
+      console.log(formDetails);
       const product = {
         id: myRandomId,
         strapiId: productData.id,
         image: productData.main_photo.data.attributes.url,
         name: productData.name,
+        name_pl: productData.name_pl,
         price: inTotal.toFixed(2),
         personalization: personalization ? personalization : null,
         details: details,
@@ -460,11 +519,19 @@ export default function ProductTemplate({}: ProductProps) {
               <StyledType>
                 {productData &&
                   productData.categories.data.map((cat: any) => {
-                    return <StyledTypeOne>{cat.attributes.name}</StyledTypeOne>;
+                    return (
+                      <StyledTypeOne>
+                        {language == "pl" && cat.attributes.name_pl
+                          ? cat.attributes.name_pl
+                          : cat.attributes.name}
+                      </StyledTypeOne>
+                    );
                   })}
               </StyledType>
               <StyledProductName>
-                {productData && productData.name}
+                {productData && language == "pl" && productData.name_pl
+                  ? productData.name_pl
+                  : productData.name}
               </StyledProductName>
               <StyledPrize>
                 {productData && Number(productData.price_pln).toFixed(2)} zł
@@ -488,7 +555,11 @@ export default function ProductTemplate({}: ProductProps) {
                 <StyledDescription
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(
-                      processTextToHtml(productData.description)
+                      processTextToHtml(
+                        language == "pl" && productData.description_pl
+                          ? productData.description_pl
+                          : productData.description
+                      )
                     ),
                   }}
                 ></StyledDescription>
@@ -500,7 +571,7 @@ export default function ProductTemplate({}: ProductProps) {
                   <StyledShowDetails
                     onClick={() => setToggleShowDetails(!toggleShowDetails)}
                   >
-                    Personalization*
+                    {translation[language].personalization}*
                     <StyledShowDetailsArrow
                       open={toggleShowDetails}
                       src={Arrow.src}
@@ -524,7 +595,7 @@ export default function ProductTemplate({}: ProductProps) {
                   <StyledShowDetails
                     onClick={() => setShowRobeDetails(!showRobeDetails)}
                   >
-                    Personalization
+                    {translation[language].personalization}
                     <StyledShowDetailsArrow
                       open={showRobeDetails}
                       src={Arrow.src}
@@ -554,7 +625,7 @@ export default function ProductTemplate({}: ProductProps) {
                   <StyledShowDetails
                     onClick={() => setToggleShowForm(!toggleShowForm)}
                   >
-                    Details*
+                    {translation[language].details}*
                     <StyledShowDetailsArrow
                       open={toggleShowForm}
                       src={Arrow.src}
@@ -568,6 +639,21 @@ export default function ProductTemplate({}: ProductProps) {
                 </>
               )}
 
+              {heelsSizes.length > 0 && (
+                <>
+                  <StyledShowDetails onClick={() => setOpenHeels(!openHeels)}>
+                    {translation[language].size}*
+                    <StyledShowDetailsArrow open={openHeels} src={Arrow.src} />
+                  </StyledShowDetails>
+                  <PickSize
+                    show={openHeels}
+                    sizes={heelsSizes}
+                    setChosenSize={setChosenSize}
+                    chosenSize={chosenSize}
+                  />
+                </>
+              )}
+
               {otherAttributes && (
                 <>
                   {otherAttributes.map((attribute: any) => {
@@ -576,7 +662,12 @@ export default function ProductTemplate({}: ProductProps) {
                         <StyledShowDetails
                           onClick={() => toggleShow(attribute.id)}
                         >
-                          {capitalizeFirstLetter(attribute.name)}*
+                          {capitalizeFirstLetter(
+                            language == "pl" && attribute.name_pl
+                              ? attribute.name_pl
+                              : attribute.name
+                          )}
+                          *
                           <StyledShowDetailsArrow
                             open={attribute.show}
                             src={Arrow.src}
@@ -588,6 +679,11 @@ export default function ProductTemplate({}: ProductProps) {
                           chosenOtherAttributes={attribute.chosen}
                           setChosenOtherAttributes={(value: any) =>
                             setChosenAttribute(attribute.id, value)
+                          }
+                          description={
+                            language == "pl" && attribute.description_pl
+                              ? attribute.description_pl
+                              : attribute.description
                           }
                         />
                       </>
@@ -602,7 +698,7 @@ export default function ProductTemplate({}: ProductProps) {
                   <StyledShowDetails
                     onClick={() => setToggleBikiniCase(!toggleBikiniCase)}
                   >
-                    Bikini case
+                    {translation[language].bikiniCase}
                     <StyledShowDetailsArrow
                       open={toggleBikiniCase}
                       src={Arrow.src}
@@ -622,7 +718,7 @@ export default function ProductTemplate({}: ProductProps) {
               <StyledShowDetails
                 onClick={() => setToggleAdditionalNotes(!toggleAdditionalNotes)}
               >
-                Additional notes
+                {translation[language].additionalNotes}
                 <StyledShowDetailsArrow
                   open={toggleAdditionalNotes}
                   src={Arrow.src}
@@ -632,11 +728,13 @@ export default function ProductTemplate({}: ProductProps) {
                 $display={toggleAdditionalNotes ? "block" : "none"}
                 value={additionalNotes}
                 onChange={(e) => setAdditionalNotes(e.target.value)}
-                placeholder="Write here..."
+                placeholder={translation[language].writeHere}
               />
-              <StyledInTotal>In total: {inTotal.toFixed(2)} zł</StyledInTotal>
+              <StyledInTotal>
+                {translation[language].inTotal}: {inTotal.toFixed(2)} zł
+              </StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
-                Add to Bag
+                {translation[language].addToBag}
               </BlackButton>
               {/* <StyledAddToWishlist>
             Add to Wishlist
@@ -653,14 +751,16 @@ export default function ProductTemplate({}: ProductProps) {
       />
       <Error showError={showError} setShowError={setShowError}>
         <StyledErrorTitle>
-          Please complete the following fields:
+          {translation[language].completeFields}:
         </StyledErrorTitle>
         {errors?.map((error: any) => {
           return <div>{error}</div>;
         })}
       </Error>
       <Success showSuccess={success} setShowSuccess={setSuccess}>
-        <StyledSuccessTitle>Product added to cart!</StyledSuccessTitle>
+        <StyledSuccessTitle>
+          {translation[language].productAdded}
+        </StyledSuccessTitle>
       </Success>
     </StyledProductContainer>
   );

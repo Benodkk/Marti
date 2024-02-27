@@ -19,6 +19,9 @@ import CheckHover from "@/assets/CheckHover.svg";
 import { useRouter } from "next/router";
 import { MoonLoader } from "react-spinners";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface ListCategoriesProps {
   mainCategory: any;
   mainCategories: any;
@@ -26,6 +29,7 @@ interface ListCategoriesProps {
   currentCategory: any;
   setCurrentCategory: any;
   isLoading: boolean;
+  showUnder?: boolean;
 }
 
 export const ListCategories = ({
@@ -35,7 +39,9 @@ export const ListCategories = ({
   currentCategory,
   setCurrentCategory,
   isLoading,
+  showUnder,
 }: ListCategoriesProps) => {
+  const language = useSelector(selectLanguage);
   const router = useRouter();
   // Category
 
@@ -51,7 +57,7 @@ export const ListCategories = ({
         <StyledOneFiltersGroupNameContainer
           onClick={() => setOpenCategory(!openCategory)}
         >
-          <div>Categories</div>
+          <div>{language == "pl" ? "Kategorie" : "Categories"}</div>
           <StyledOneFiltersGroupNameArrow open={openCategory} src={Arrow.src} />
         </StyledOneFiltersGroupNameContainer>
         <StyledOneFiltersGroup open={openCategory}>
@@ -82,7 +88,7 @@ export const ListCategories = ({
                     >
                       <StyledOneCateogryFilterChecked
                         src={
-                          category.id == currentCategory.id ||
+                          category.id == currentCategory?.id ||
                           (mainCategory && category.id == mainCategory.id)
                             ? CheckChecked.src
                             : category.id === hoveredId
@@ -90,7 +96,9 @@ export const ListCategories = ({
                             : Check.src
                         }
                       />
-                      {category.attributes.name}
+                      {language == "pl" && category.attributes.name_pl
+                        ? category.attributes.name_pl
+                        : category.attributes.name}
                     </StyledOneCateogryFilterContainer>
                   );
                 })}
@@ -99,59 +107,63 @@ export const ListCategories = ({
         </StyledOneFiltersGroup>
       </StyledOneFiltersGroupContainer>
       {/* under categories */}
-      <StyledOneFiltersGroupContainer>
-        <StyledOneFiltersGroupNameContainer
-          onClick={() => setOpenUnderCategory(!openUnderCategory)}
-        >
-          <div>Subcategories</div>
-          <StyledOneFiltersGroupNameArrow
-            open={openUnderCategory}
-            src={Arrow.src}
-          />
-        </StyledOneFiltersGroupNameContainer>
-        <StyledOneFiltersGroup open={openUnderCategory}>
-          {isLoading ? (
-            <StyledLoaderContainer>
-              <MoonLoader color="#000000" size={40} />
-            </StyledLoaderContainer>
-          ) : (
-            <StyledCateogryFilterContainer>
-              {underCategories &&
-                underCategories.map((category: any) => {
-                  return (
-                    <StyledOneCateogryFilterContainer
-                      onClick={() => {
-                        setCurrentCategory(category);
-                        router.push(
-                          {
-                            pathname: "/products",
-                            query: { category: category.id },
-                          },
-                          undefined,
-                          { shallow: true }
-                        );
-                      }}
-                      key={category.id}
-                      onMouseEnter={() => setHoveredId(category.id)} // Ustawienie ID przy najechaniu
-                      onMouseLeave={() => setHoveredId(null)}
-                    >
-                      <StyledOneCateogryFilterChecked
-                        src={
-                          category.id == currentCategory.id
-                            ? CheckChecked.src
-                            : category.id === hoveredId
-                            ? CheckHover.src
-                            : Check.src
-                        }
-                      />
-                      {category.attributes.name}
-                    </StyledOneCateogryFilterContainer>
-                  );
-                })}
-            </StyledCateogryFilterContainer>
-          )}
-        </StyledOneFiltersGroup>
-      </StyledOneFiltersGroupContainer>
+      {showUnder === true && (
+        <StyledOneFiltersGroupContainer>
+          <StyledOneFiltersGroupNameContainer
+            onClick={() => setOpenUnderCategory(!openUnderCategory)}
+          >
+            <div>{language == "pl" ? "Podkategorie" : "Subcategories"}</div>
+            <StyledOneFiltersGroupNameArrow
+              open={openUnderCategory}
+              src={Arrow.src}
+            />
+          </StyledOneFiltersGroupNameContainer>
+          <StyledOneFiltersGroup open={openUnderCategory}>
+            {isLoading ? (
+              <StyledLoaderContainer>
+                <MoonLoader color="#000000" size={40} />
+              </StyledLoaderContainer>
+            ) : (
+              <StyledCateogryFilterContainer>
+                {underCategories &&
+                  underCategories.map((category: any) => {
+                    return (
+                      <StyledOneCateogryFilterContainer
+                        onClick={() => {
+                          setCurrentCategory(category);
+                          router.push(
+                            {
+                              pathname: "/products",
+                              query: { category: category.id },
+                            },
+                            undefined,
+                            { shallow: true }
+                          );
+                        }}
+                        key={category.id}
+                        onMouseEnter={() => setHoveredId(category.id)} // Ustawienie ID przy najechaniu
+                        onMouseLeave={() => setHoveredId(null)}
+                      >
+                        <StyledOneCateogryFilterChecked
+                          src={
+                            category.id == currentCategory?.id
+                              ? CheckChecked.src
+                              : category.id === hoveredId
+                              ? CheckHover.src
+                              : Check.src
+                          }
+                        />
+                        {language == "pl" && category.attributes.name_pl
+                          ? category.attributes.name_pl
+                          : category.attributes.name}
+                      </StyledOneCateogryFilterContainer>
+                    );
+                  })}
+              </StyledCateogryFilterContainer>
+            )}
+          </StyledOneFiltersGroup>
+        </StyledOneFiltersGroupContainer>
+      )}
     </>
   );
 };

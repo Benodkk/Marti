@@ -1,34 +1,27 @@
+import { fetchNews } from "@/API/strapiConfig";
 import { useEffect, useState } from "react";
 import {
-  StyledLatestNews,
-  StyledLatestNewsContaienr,
-  StyledMainPageSectionTitle,
-  StyledMoreNewsButtonCotnainer,
-  StyledMoreProductsButtonCotnainer,
-} from "./MainPage.styled";
-import { OneLatestNews } from "./components/OneLatestNews";
-import TestPhoto from "@/assets/NewReleases.png";
-import { fetchMainPageNews, fetchNews } from "@/API/strapiConfig";
+  NewsListListContainer,
+  StyledNewTitle,
+  StyledNewsContainer,
+} from "./NewsList.styled";
+import { OneLatestNews } from "../MainPage/components/OneLatestNews";
 import { useRouter } from "next/router";
-import { StyledBack } from "../Adress/Adress.styled";
-import { ArrowButton } from "@/components/ArrowButton/ArrowButton";
 
-import { useSelector } from "react-redux";
-import { selectLanguage } from "@/redux/languageSlice";
+interface NewsListProps {}
 
-interface LatestNewsProps {}
-
-export const LatestNews = ({}: LatestNewsProps) => {
-  const language = useSelector(selectLanguage);
+export default function NewsList({}: NewsListProps) {
   const router = useRouter();
-  const [news, setNews] = useState<any>();
+
+  const [news, setNews] = useState<any>([]);
 
   useEffect(() => {
     getNews();
-  }, [router.query]);
+  }, []);
 
   const getNews = async () => {
-    const newNews: any = await fetchMainPageNews();
+    const newNews: any = await fetchNews();
+    console.log(newNews);
 
     setNews(newNews);
   };
@@ -64,11 +57,9 @@ export const LatestNews = ({}: LatestNewsProps) => {
   }
 
   return (
-    <StyledLatestNews>
-      <StyledMainPageSectionTitle>
-        {language == "pl" ? "Ostatnie posty" : "Latest Posts"}
-      </StyledMainPageSectionTitle>
-      <StyledLatestNewsContaienr>
+    <NewsListListContainer>
+      <StyledNewTitle> All Posts</StyledNewTitle>
+      <StyledNewsContainer>
         {news &&
           news.map((item: any, index: number) => {
             return (
@@ -89,12 +80,7 @@ export const LatestNews = ({}: LatestNewsProps) => {
               />
             );
           })}
-      </StyledLatestNewsContaienr>
-      <StyledMoreNewsButtonCotnainer>
-        <ArrowButton onClick={() => router.push("/NewsList/")}>
-          {language == "pl" ? "POKAŻ WSZYSTKIE" : "SHOW ALL POSTS"}
-        </ArrowButton>
-      </StyledMoreNewsButtonCotnainer>
-    </StyledLatestNews>
+      </StyledNewsContainer>
+    </NewsListListContainer>
   );
-};
+}

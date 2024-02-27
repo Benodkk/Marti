@@ -38,13 +38,17 @@ import { IoEyeOutline } from "react-icons/io5";
 import { Modal } from "@/components/Modal/Modal";
 import { useDispatch } from "react-redux";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
+import { selectLanguage } from "@/redux/languageSlice";
+import { translation } from "@/translation";
 
 interface CartProps {}
 
 export default function Cart({}: CartProps) {
+  const language = useSelector(selectLanguage);
   const dispatch = useDispatch();
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
+  console.log(cartItems);
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>();
@@ -59,8 +63,10 @@ export default function Cart({}: CartProps) {
   return (
     <CartContainer>
       <StyledCart>
-        <StyledGoBack onClick={() => router.back()}>{"< Back"}</StyledGoBack>
-        <StyledCartTitle>Cart</StyledCartTitle>
+        <StyledGoBack
+          onClick={() => router.back()}
+        >{`< ${translation[language].back}`}</StyledGoBack>
+        <StyledCartTitle>{translation[language].cart}</StyledCartTitle>
         {cartItems && cartItems.length ? (
           <>
             <StyledProductListContainer>
@@ -72,7 +78,9 @@ export default function Cart({}: CartProps) {
                       <StyleOneProductDetails>
                         <StyledTopDetails>
                           <StyledProductName>
-                            {item.name.toUpperCase()}
+                            {language == "pl" && item.name_pl
+                              ? item.name_pl.toUpperCase()
+                              : item.name.toUpperCase()}
                           </StyledProductName>
                           <StyledTopDetailsRight>
                             <StyledPrice>{item.price} zł</StyledPrice>
@@ -81,7 +89,7 @@ export default function Cart({}: CartProps) {
                                 remove(item.id);
                               }}
                             >
-                              Remove
+                              {translation[language].remove}
                             </StyledDelete>
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
@@ -98,7 +106,9 @@ export default function Cart({}: CartProps) {
                                           {element.type}:{" "}
                                           <StyledOneDetailFromList>
                                             {" "}
-                                            {element.name}{" "}
+                                            {language == "pl" && element.name_pl
+                                              ? element.name_pl
+                                              : element.name}{" "}
                                             {element.price_pln
                                               ? ` +${element.price_pln}zł`
                                               : ""}
@@ -110,7 +120,8 @@ export default function Cart({}: CartProps) {
                                   setModalContent(content);
                                 }}
                               >
-                                Personalization <IoEyeOutline size={18} />
+                                {translation[language].personalization}{" "}
+                                <IoEyeOutline size={18} />
                               </StyledOneDetailCheck>
                             )}
 
@@ -123,7 +134,12 @@ export default function Cart({}: CartProps) {
                                     (element: any) => {
                                       return (
                                         <StyledOneDetailContainer>
-                                          <strong>{element.name}:</strong>{" "}
+                                          <strong>
+                                            {language == "pl" && element.name_pl
+                                              ? element.name_pl
+                                              : element.name}
+                                            :
+                                          </strong>{" "}
                                           <StyledOneDetailFromList>
                                             {" "}
                                             {element.value}
@@ -135,7 +151,8 @@ export default function Cart({}: CartProps) {
                                   setModalContent(content);
                                 }}
                               >
-                                Form Details <IoEyeOutline size={18} />
+                                {translation[language].formDetails}{" "}
+                                <IoEyeOutline size={18} />
                               </StyledOneDetailCheck>
                             )}
                           {item?.details && item.details.length > 0 && (
@@ -146,10 +163,17 @@ export default function Cart({}: CartProps) {
                                   (element: any) => {
                                     return (
                                       <StyledOneDetailContainer>
-                                        <strong>{element.name}:</strong>{" "}
+                                        <strong>
+                                          {language == "pl" && element.name_pl
+                                            ? element.name_pl
+                                            : element.name}
+                                          :
+                                        </strong>{" "}
                                         <StyledOneDetailFromList>
-                                          {" "}
-                                          {element.value.name}
+                                          {language == "pl" &&
+                                          element.value.name_pl
+                                            ? element.value.name_pl
+                                            : element.value.name}
                                           {element.value.price_pln
                                             ? ` +${element.value.price_pln}zł`
                                             : ""}
@@ -161,7 +185,8 @@ export default function Cart({}: CartProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Details <IoEyeOutline size={18} />
+                              {translation[language].details}{" "}
+                              <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
                           {item?.additionalNotes && (
@@ -177,12 +202,13 @@ export default function Cart({}: CartProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Additional notes <IoEyeOutline size={18} />
+                              {translation[language].additionalNotes}{" "}
+                              <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
                           {item?.bikiniCase && (
                             <StyledOneDetail>
-                              Bikini case:{" "}
+                              {translation[language].bikiniCase}:{" "}
                               <StyledOneDetailBoldLink
                                 onClick={() => {
                                   router.push({
@@ -190,7 +216,10 @@ export default function Cart({}: CartProps) {
                                   });
                                 }}
                               >
-                                {item?.bikiniCase?.attributes?.name}
+                                {language == "pl" &&
+                                item?.bikiniCase?.attributes?.name_pl
+                                  ? item?.bikiniCase?.attributes?.name_pl
+                                  : item?.bikiniCase?.attributes?.name}
                               </StyledOneDetailBoldLink>
                             </StyledOneDetail>
                           )}
@@ -201,10 +230,12 @@ export default function Cart({}: CartProps) {
                 })}
               </StyledProductList>
               <StyledProductSummary>
-                <StyledSumamryTitle>Summary</StyledSumamryTitle>
+                <StyledSumamryTitle>
+                  {translation[language].summary}
+                </StyledSumamryTitle>
                 <StyledBottomSummary>
                   <StyledTotalContainer>
-                    <StyledTotal>Total</StyledTotal>
+                    <StyledTotal>{translation[language].inTotal}</StyledTotal>
                     <StyledTotalPrice>
                       {cartItems
                         .reduce((acc: any, curr: any) => {
@@ -218,13 +249,15 @@ export default function Cart({}: CartProps) {
                     margin={"12px 0 0"}
                     onClick={() => router.push("/CheckOutNow")}
                   >
-                    Checkout
+                    {translation[language].checkout}
                   </BlackButton>
                 </StyledBottomSummary>
               </StyledProductSummary>
             </StyledProductListContainer>
             <StyledPaymentMethod>
-              <StyledSumamryTitle>Payment methods</StyledSumamryTitle>
+              <StyledSumamryTitle>
+                {translation[language].paymentsMethods}
+              </StyledSumamryTitle>
             </StyledPaymentMethod>
           </>
         ) : (

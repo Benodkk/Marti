@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  StyledDesctiption,
   StyledDetailLabel,
   StyledDetailPhoto,
   StyledDetailPhotoContainer,
@@ -14,6 +15,9 @@ import {
 
 import { FaCircleInfo } from "react-icons/fa6";
 import { IoEyeOutline } from "react-icons/io5";
+
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
 interface OneDetailProps {
   details: any;
   onClick: () => void;
@@ -33,6 +37,7 @@ export const OneDetail = ({
   setModalTitle,
   moreDetails,
 }: OneDetailProps) => {
+  const language = useSelector(selectLanguage);
   const showDetails = () => {
     setIsModalOpen(true);
     let content = (
@@ -40,11 +45,19 @@ export const OneDetail = ({
         {details?.image?.data?.attributes.url && (
           <StyledImage src={details?.image?.data.attributes.url} />
         )}{" "}
-        {details.description_pl && stripHtml(details.description_pl)}
+        <StyledDesctiption>
+          {language == "pl" && details.description_pl
+            ? stripHtml(details.description_pl)
+            : details.description && stripHtml(details.description)}
+        </StyledDesctiption>
       </StyledModalContent>
     );
     setModalContent(content);
-    setModalTitle(details?.name.toUpperCase());
+    setModalTitle(
+      language == "pl" && details?.name_pl
+        ? details?.name_pl.toUpperCase()
+        : details?.name.toUpperCase()
+    );
   };
 
   function stripHtml(html: any) {
@@ -73,7 +86,11 @@ export const OneDetail = ({
               }
             />
           ) : (
-            <StyledDetailLabel>{details?.name.toUpperCase()}</StyledDetailLabel>
+            <StyledDetailLabel>
+              {language == "pl" && details?.name_pl
+                ? details?.name_pl.toUpperCase()
+                : details?.name.toUpperCase()}
+            </StyledDetailLabel>
           )}
         </StyledDetailPhotoContainer>
       </StyledOneDetail>
@@ -82,7 +99,11 @@ export const OneDetail = ({
         <StyledPrice>+{details?.price_pln} zł</StyledPrice>
       ) : null}
       {details?.name && details?.image.data ? (
-        <StyledName>{details?.name.toUpperCase()}</StyledName>
+        <StyledName>
+          {language == "pl" && details?.name_pl
+            ? details?.name_pl.toUpperCase()
+            : details?.name.toUpperCase()}
+        </StyledName>
       ) : null}
     </StyledOneDetailContainer>
   );

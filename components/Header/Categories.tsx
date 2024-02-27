@@ -10,12 +10,17 @@ import {
 } from "./Header.styled";
 import { MoonLoader } from "react-spinners";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+import { translation } from "@/translation";
+
 interface CategoriesProps {
   openCategories?: boolean;
   categories: any;
   bgColor: string;
   allLinkId: string;
   loading: boolean;
+  heelsCategory?: boolean;
 }
 
 export const Categories = ({
@@ -24,7 +29,9 @@ export const Categories = ({
   bgColor,
   allLinkId,
   loading,
+  heelsCategory,
 }: CategoriesProps) => {
+  const language = useSelector(selectLanguage);
   const router = useRouter();
 
   const pushToList = (category: any) => {
@@ -36,16 +43,20 @@ export const Categories = ({
       },
     });
   };
+
   return (
     <StyledWomanOptionsContainer open={openCategories}>
       <StyledRealContent open={openCategories} $color={bgColor}>
-        <StyledBoldLink
-          onClick={() => pushToList(allLinkId)}
-          $firstChild={true}
-        >
-          All products
-        </StyledBoldLink>
-        <StyledCategoriesOptions>
+        {heelsCategory == true ? null : (
+          <StyledBoldLink
+            onClick={() => pushToList(allLinkId)}
+            $firstChild={true}
+          >
+            {translation[language].allProducts}
+          </StyledBoldLink>
+        )}
+
+        <StyledCategoriesOptions $heels={heelsCategory == true}>
           {loading ? (
             <MoonLoader color="#000000" />
           ) : (
@@ -54,11 +65,15 @@ export const Categories = ({
               return (
                 <StyledOneLinkColumn key={category.category.id}>
                   <StyledBoldLink
+                    $heels={heelsCategory == true}
+                    $lastChild={index + 1 == categories.length}
                     $firstChild={index === 0}
-                    $oneChild={categories.length == 1}
+                    $oneChild={categories.length == 1 || heelsCategory}
                     onClick={() => pushToList(category.category.id)}
                   >
-                    {category.category.attributes.name}
+                    {language == "pl"
+                      ? category.category.attributes.name_pl
+                      : category.category.attributes.name}
                   </StyledBoldLink>
                   <StyledLinkContainer
                     $firstChild={index === 0}
@@ -71,7 +86,9 @@ export const Categories = ({
                           onClick={() => pushToList(underCategory.id)}
                           key={underCategory.id}
                         >
-                          {underCategory.attributes.name}
+                          {language == "pl" && underCategory.attributes.name_pl
+                            ? underCategory.attributes.name_pl
+                            : underCategory.attributes.name}
                         </StyledLink>
                       );
                     })}

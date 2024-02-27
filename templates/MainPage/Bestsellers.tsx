@@ -24,12 +24,21 @@ import { MoonLoader } from "react-spinners";
 import { Loader } from "@/components/Loader/Loader";
 import { fetchBestsellerTitle } from "@/API/strapiConfig";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
+
 interface BestsellersProps {
   bestsellers: any;
 }
 
 export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
+
+  const language = useSelector(selectLanguage);
   const router = useRouter();
+  console.log(currency);
 
   // bestsellers lists
   const [currentBestsellers, setCurrentBestsellers] = useState<any>();
@@ -43,6 +52,7 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
 
   useEffect(() => {
     setCurrentBestsellers(bestsellers[0]);
+    console.log(bestsellers);
   }, [bestsellers]);
 
   const fetch = async () => {
@@ -62,7 +72,9 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
     const name = categories.find(
       (category: any) => category.attributes.class == "bot"
     );
-    return name.attributes.name;
+    return language == "pl" && name.attributes.name_pl
+      ? name.attributes.name_pl
+      : name.attributes.name;
   };
 
   return (
@@ -84,7 +96,9 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
                     setCurrentBestsellers(best);
                   }}
                 >
-                  {best.attributes.name}
+                  {language == "pl" && best.attributes.name_pl
+                    ? best.attributes.name_pl
+                    : best.attributes.name}
                 </StyledOneBestsellersHeaderType>
               );
             })}
@@ -102,9 +116,13 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
             .map((product: any) => {
               return (
                 <OneBestsellerProduct
-                  name={product.attributes.name}
+                  name={
+                    language == "pl" && product.attributes.name_pl
+                      ? product.attributes.name_pl
+                      : product.attributes.name
+                  }
                   type={findLowCategory(product.attributes.categories.data)}
-                  price={parseFloat(product.attributes.price_pln).toFixed(2)}
+                  price={parseFloat(product.attributes[priceKey]).toFixed(2)}
                   image={product.attributes?.main_photo?.data?.attributes?.url}
                   id={product.id}
                   key={product.id}
@@ -119,7 +137,7 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
             currentBestsellers && pushToList(currentBestsellers.id)
           }
         >
-          SHOW MORE PRODUCTS
+          {language == "pl" ? "POKAŻ WIĘCEJ" : "SHOW MORE PRODUCTS"}
         </ArrowButton>
       </StyledMoreProductsButtonCotnainer>
     </StyledBestsellers>

@@ -116,8 +116,12 @@ export const StyledModalContent = styled.div`
 `;
 
 export const StyledImage = styled.img`
-  height: 300px;
-  max-width: 300px;
+  height: 60vh;
+  max-width: 70vw;
   width: auto;
   object-fit: contain;
+`;
+
+export const StyledDesctiption = styled.div`
+  max-width: 40vw;
 `;

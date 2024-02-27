@@ -14,6 +14,10 @@ import {
 
 import { FaCircleInfo } from "react-icons/fa6";
 import { IoEyeOutline } from "react-icons/io5";
+
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface OneBikiniCaseProps {
   details: any;
   onClick: () => void;
@@ -25,6 +29,7 @@ export const OneBikiniCase = ({
   active,
   onClick,
 }: OneBikiniCaseProps) => {
+  const language = useSelector(selectLanguage);
   return (
     <StyledOneDetailContainer>
       <StyledOneDetail $active={active} onClick={onClick}>
@@ -38,8 +43,12 @@ export const OneBikiniCase = ({
       {details?.attributes.price_pln ? (
         <StyledPrice>+{details?.attributes.price_pln} zł</StyledPrice>
       ) : null}
-      {details?.attributes.name ? (
-        <StyledName>{details?.attributes.name.toUpperCase()}</StyledName>
+      {details?.attributes.name || details?.attributes.name_pl ? (
+        <StyledName>
+          {language == "pl" && details?.attributes.name_pl
+            ? details?.attributes.name_pl.toUpperCase()
+            : details?.attributes.name.toUpperCase()}
+        </StyledName>
       ) : null}
     </StyledOneDetailContainer>
   );

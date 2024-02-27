@@ -388,6 +388,11 @@ export const StyledMoreProductsButtonCotnainer = styled.div`
   padding-top: 40px;
 `;
 
+export const StyledMoreNewsButtonCotnainer = styled.div`
+  display: flex;
+  align-self: center;
+  padding-top: 20px;
+`;
 // New relese
 
 export const StyledNewReleases = styled.div`
@@ -417,7 +422,6 @@ export const StyledLatestNews = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 150px;
-  cursor: pointer;
 `;
 
 export const StyledLatestNewsContaienr = styled.div`
@@ -442,6 +446,8 @@ export const StyledOneLatestNews = styled.div`
   transition: all 0.3s;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  margin-bottom: 30px;
+  cursor: pointer;
   &:hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-bottom-left-radius: 10px;

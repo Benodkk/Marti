@@ -7,6 +7,10 @@ export const StyledOtherAttributes = styled.div`
   gap: 10px;
 `;
 
+export const StyledOtherAttributesDesc = styled.div`
+  margin-top: 10px;
+`;
+
 interface OtherAttributesContainerProps {
   $display: string;
 }
@@ -56,6 +60,48 @@ export const StyledOneOtherAttributes = styled.div<OneDetailsProps>`
 `;
 
 export const StyledOtherAttributesLabel = styled.div`
+  color: #1f2937;
+  font-family: "Roboto";
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+`;
+
+// heeels sizes
+
+export const StyledSizesContainer = styled.div<OtherAttributesContainerProps>`
+  gap: 10px;
+  display: ${(props) => props.$display};
+  flex-direction: column;
+  margin: 10px 5px;
+`;
+
+export const StyledSizes = styled.div`
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  /* align-items: start; */
+  gap: 10px;
+`;
+
+export const StyledOneSizeContainer = styled.div<OneDetailsProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+  border: ${(props) =>
+    props.$active ? "4px solid #caa871" : "1px solid #d1d5db"};
+  &:hover {
+    border: ${(props) =>
+      props.$active ? "4px solid #caa871" : "2px solid #caa871"};
+  }
+`;
+
+export const StyledOneSize = styled.div`
   color: #1f2937;
   font-family: "Roboto";
   font-size: 16px;

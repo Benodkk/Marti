@@ -16,11 +16,18 @@ import GreyHeart from "@/assets/RedHeart.svg";
 import TestPhoto from "@/assets/BestSellersPhoto.png";
 import { useRouter } from "next/router";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
+
 interface OneProductCartProps {
   product: any;
 }
 
 export const OneProductCart = ({ product }: OneProductCartProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
+  const language = useSelector(selectLanguage);
   const router = useRouter();
 
   const pushToProduct = (product: any) => {
@@ -41,13 +48,15 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
 
       {/* <StyledOneProductRedLabel>New In</StyledOneProductRedLabel> */}
       <StyledOneProductName onClick={() => pushToProduct(product.id)}>
-        {product.attributes.name.toUpperCase()}
+        {language == "pl" && product.attributes.name_pl
+          ? product.attributes.name_pl.toUpperCase()
+          : product.attributes.name.toUpperCase()}
       </StyledOneProductName>
       {/* <StyledOneProductShortDesc>
         A piece of short description goes in here
       </StyledOneProductShortDesc> */}
       <StyledOneProductPrice>
-        {parseFloat(product.attributes.price_pln).toFixed(2)} zł
+        {parseFloat(product.attributes[priceKey]).toFixed(2)} {symbol}
       </StyledOneProductPrice>
     </StyledOneProductCart>
   );

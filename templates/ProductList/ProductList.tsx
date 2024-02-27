@@ -7,26 +7,29 @@ import { ProductListHeader } from "./ProductListHeader";
 import { ProductListBody } from "./ProductListBody";
 import womenMain from "@/assets/womenMain.png";
 import menMain from "@/assets/menMain.png";
+import heelsMain from "@/assets/heelsMain.png";
 import { ListCategories } from "./ListCategories";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { getCategories } from "@/API/categories";
 import { useRouter } from "next/router";
-import {
-  getProductsByCategoriesId,
-  getProductsByCategoryAndPrice,
-} from "@/API/product";
 import { ListFilters } from "./ListFilters";
 import {
   fetchAllCat,
   fetchAllCategories,
+  fetchAllProdWithPriceAndSize,
   fetchAllProdWithPriceRange,
   fetchProductsByCategoryId,
 } from "@/API/strapiConfig";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
+
 interface ProductListProps {}
 
 export default function ProductList({}: ProductListProps) {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
+  const language = useSelector(selectLanguage);
   const router = useRouter();
 
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -50,6 +53,8 @@ export default function ProductList({}: ProductListProps) {
   const [sliderMin, setSliderMin] = useState("");
   const [sliderMax, setSliderMax] = useState("");
   // const [sliderValue, setSliderValue] = useState([100, 200]);
+  const [sizes, setSizes] = useState<any>([]);
+  const [colors, setColors] = useState<any>([]);
 
   useEffect(() => {
     if (!category || router.query.fromHeader) {
@@ -75,7 +80,11 @@ export default function ProductList({}: ProductListProps) {
 
       if (newUnderCategories) {
         setMainCategory(newUnderCategories.category);
-        setUnderCategories(newUnderCategories.under);
+        setUnderCategories(
+          newUnderCategories.under.sort(
+            (a: any, b: any) => a.attributes.order - b.attributes.order
+          )
+        );
       }
 
       getProducts(category.id);
@@ -140,7 +149,6 @@ export default function ProductList({}: ProductListProps) {
     setIsLoading(true);
     try {
       const response = await fetchAllCat(id);
-
       if (response) {
         setProducts(response[0].attributes.products.data);
       }
@@ -159,15 +167,19 @@ export default function ProductList({}: ProductListProps) {
   // };
 
   const applyFilters = async () => {
+    const sizesNames: any = sizes.map((item: any) => item.attributes.value);
+    const colorsNames: any = colors.map((item: any) => item.attributes.name);
+
     setIsLoading(true);
     try {
-      const response = await fetchAllProdWithPriceRange(
+      const response = await fetchAllProdWithPriceAndSize(
         category.id,
         sliderMin,
-        sliderMax
+        sliderMax,
+        sizesNames,
+        colorsNames,
+        priceKey
       );
-      console.log(response);
-
       if (response) {
         setProducts(response);
       }
@@ -179,13 +191,30 @@ export default function ProductList({}: ProductListProps) {
 
   return (
     <ProductListContainer>
-      <ProductListHeader
-        color={rootCategory?.attributes.name == "Men" ? "#75939E" : `#C44370`}
-        listType={rootCategory?.attributes.name}
-        photoSource={
-          rootCategory?.attributes.name == "Men" ? menMain.src : womenMain.src
-        }
-      />
+      {rootCategory && (
+        <ProductListHeader
+          color={
+            rootCategory?.attributes.name == "Men"
+              ? "#75939E"
+              : rootCategory?.attributes.name == "Heels"
+              ? "#B1A270"
+              : `#C44370`
+          }
+          listType={
+            language == "pl" && rootCategory?.attributes.name_pl
+              ? rootCategory?.attributes.name_pl
+              : rootCategory?.attributes.name
+          }
+          photoSource={
+            rootCategory?.attributes.name == "Men"
+              ? menMain.src
+              : rootCategory?.attributes.name == "Heels"
+              ? heelsMain.src
+              : womenMain.src
+          }
+        />
+      )}
+
       <StyledBodyContainer>
         <StyledBodyFilters>
           <ListCategories
@@ -195,6 +224,7 @@ export default function ProductList({}: ProductListProps) {
             currentCategory={category}
             setCurrentCategory={setCategory}
             isLoading={loadingCategories}
+            showUnder={rootCategory?.attributes.name !== "Heels"}
           />
           <ListFilters
             openFilters={openFilters}
@@ -204,6 +234,11 @@ export default function ProductList({}: ProductListProps) {
             sliderMin={sliderMin}
             setSliderMax={setSliderMax}
             setSliderMin={setSliderMin}
+            setChosenColors={setColors}
+            chosenColors={colors}
+            setChosenSizes={setSizes}
+            chosenSizes={sizes}
+            rootCategory={rootCategory}
           />
         </StyledBodyFilters>
 

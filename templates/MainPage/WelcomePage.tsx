@@ -24,11 +24,16 @@ import defaultWelcomePageImage from "@/assets/defaultWelcomePageImage.png";
 import { useRouter } from "next/router";
 import { fetchWelcomePageContent } from "@/API/strapiConfig";
 import { Loader } from "@/components/Loader/Loader";
+
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface WelcomePageProps {
   linkId: string;
 }
 
 export const WelcomePage = ({ linkId }: WelcomePageProps) => {
+  const language = useSelector(selectLanguage);
   const router = useRouter();
   const [content, setContent] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -43,6 +48,7 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
       const data: any = await fetchWelcomePageContent();
 
       if (data) setContent(data);
+      console.log(data);
     } catch {
     } finally {
       setLoading(false);
@@ -78,18 +84,24 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
               {/* <StyledUpTo>UP TO 50% OFF YOUR ENTIRE ORDER</StyledUpTo> */}
               <StyledTitleContainer>
                 <StyledTitle $color={"#FFF"}>
-                  {content && content.attributes.title}
+                  {content && language == "pl" && content.attributes.title_pl
+                    ? content.attributes.title_pl
+                    : content.attributes.title}
                 </StyledTitle>
               </StyledTitleContainer>
 
               <StyledWelcomePageTextContainer>
                 <StyledWelcomePageText $color={"#FFF"}>
-                  {content && content.attributes.first_line}
+                  {content &&
+                  language == "pl" &&
+                  content.attributes.first_line_pl
+                    ? content.attributes.first_line_pl
+                    : content.attributes.first_line}
                 </StyledWelcomePageText>
               </StyledWelcomePageTextContainer>
 
               <ArrowButton onClick={() => pushToList(linkId)}>
-                SHOW MORE
+                {language == "pl" ? "POKAŻ WIĘCEJ" : "SHOW MORE"}
               </ArrowButton>
               {content && content.attributes.decoration && (
                 <StyledGoldenCircleImage src={GoldenCircle.src} />

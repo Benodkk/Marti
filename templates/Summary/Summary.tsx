@@ -46,8 +46,12 @@ import { selectEntireForm } from "@/redux/formSlice";
 import { Input } from "@/components/Input/Input";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
 
+import { selectLanguage } from "@/redux/languageSlice";
+import { translation } from "@/translation";
+
 interface AdressProps {}
 export default function Adress({}: AdressProps) {
+  const language = useSelector(selectLanguage);
   const dispatch = useDispatch();
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
@@ -65,7 +69,9 @@ export default function Adress({}: AdressProps) {
     <StyledSummaryContainer>
       <StyledSummary>
         <StyledBack onClick={() => router.back()}>{"< Back"}</StyledBack>
-        <StyledSummaryTitle>Summary</StyledSummaryTitle>{" "}
+        <StyledSummaryTitle>
+          {translation[language].summary}
+        </StyledSummaryTitle>{" "}
         <StyledProductListContainer>
           {cartItems.length ? (
             <>

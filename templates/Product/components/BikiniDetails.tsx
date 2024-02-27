@@ -10,6 +10,9 @@ import { StyledDetailTitle } from "./OneDetail.styled";
 import { YesOrNo } from "./YesOrNo";
 import { Loader } from "@/components/Loader/Loader";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface BikiniDetailsProps {
   show: any;
   bikiniDetails: any;
@@ -29,6 +32,7 @@ export const BikiniDetails = ({
   chosenBikiniDetails,
   setChosenBikiniDetails,
 }: BikiniDetailsProps) => {
+  const language = useSelector(selectLanguage);
   const [activeYesOrNo, setActiveYesOrNo] = useState<any>([]);
 
   const yesOrNoToggle = (name: string, value: boolean, id: number) => {
@@ -83,7 +87,11 @@ export const BikiniDetails = ({
         return (
           <>
             {detail.name !== "Back Connectors" && (
-              <StyledDetailTitle>{detail.name}</StyledDetailTitle>
+              <StyledDetailTitle>
+                {language == "pl" && detail.name_pl
+                  ? detail.name_pl
+                  : detail.name}
+              </StyledDetailTitle>
             )}
             {detail.yesOrNo && (
               <YesOrNo

@@ -10,6 +10,9 @@ import {
 import BestsellersPhoto from "@/assets/BestSellersPhoto.png";
 import { useRouter } from "next/router";
 import { AiOutlineShopping } from "react-icons/ai";
+import { useSelector } from "react-redux";
+
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 
 interface OneBestsellerProductProps {
   name: string;
@@ -26,6 +29,7 @@ export const OneBestsellerProduct = ({
   image,
   id,
 }: OneBestsellerProductProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
   const router = useRouter();
 
   const pushToList = (product: any) => {
@@ -42,7 +46,9 @@ export const OneBestsellerProduct = ({
       <StyledProductName onClick={() => pushToList(id)}>
         {name.toUpperCase()}
       </StyledProductName>
-      <StyledProductPrize>{price} zł</StyledProductPrize>
+      <StyledProductPrize>
+        {price} {symbol}
+      </StyledProductPrize>
     </StyledOneProduct>
   );
 };

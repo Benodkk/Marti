@@ -86,6 +86,65 @@ export const fetchAllProdWithPriceRange = async (id, minPrice, maxPrice) => {
   }
 };
 
+const createSizeFilterQueryString = (sizes) => {
+  return sizes
+    .map((size) => `&filters[heels_sizes][value][$in]=${size}`)
+    .join("");
+};
+
+const createColorsFilterQueryString = (colors) => {
+  return colors.map((size) => `&filters[colors][name][$in]=${size}`).join("");
+};
+
+export const fetchAllProdWithPriceAndSize = async (
+  id,
+  minPrice,
+  maxPrice,
+  sizes,
+  colors,
+  currency
+) => {
+  try {
+    // Dodawanie parametrów filtrowania ceny do URL
+    const priceFilter = `${
+      minPrice ? `&filters[${currency}][$gte]=${minPrice}` : ""
+    }${maxPrice ? `&filters[${currency}][$lte]=${maxPrice}` : ""}`;
+
+    // Dodawanie parametrów filtrowania rozmiaru do URL, zakładając, że sizes to tablica rozmiarów
+    const sizeFilter =
+      sizes.length > 0 ? createSizeFilterQueryString(sizes) : "";
+
+    const colorsfilter =
+      colors.length > 0 ? createColorsFilterQueryString(colors) : "";
+
+    const url = `products?filters[categories][id][$in]=${id}&populate=*${priceFilter}${sizeFilter}${colorsfilter}`;
+
+    const response = await getData(url);
+    const data = response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+    throw error; // Rzucenie błędu pozwoli wywołującemu zareagować odpowiednio
+  }
+};
+
+export const fetchColors = async (id) => {
+  try {
+    const response = await getData(`colors?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchSizes = async (id) => {
+  try {
+    const response = await getData(`sizes?populate=*`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
 // dobre
 export const fetchProductsByCategoryId = async (id) => {
   try {
@@ -132,7 +191,7 @@ export const fetchRobe = async () => {
 export const fetchProductById = async (id) => {
   try {
     const response = await getData(
-      `products/${id}?populate[attributes][populate][options][populate]=*&populate[categories]=*&populate[form]=*&populate[main_photo]=*&populate[photos]=*`
+      `products/${id}?populate[attributes][populate][options][populate]=*&populate[categories]=*&populate[form]=*&populate[main_photo]=*&populate[photos]=*&populate[heels_sizes]=*&populate[color]=*`
     );
     const data = response.data;
     return data;
@@ -187,9 +246,19 @@ export const fetchBestsellerTitle = async () => {
   } catch {}
 };
 
-export const fetchNews = async (id) => {
+export const fetchMainPageNews = async () => {
   try {
-    const response = await getData(`newss??_sort=published_at:desc&populate=*`);
+    const response = await getData(
+      `newss?sort=publishedAt:desc&pagination[limit]=3&populate=*`
+    );
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const fetchNews = async () => {
+  try {
+    const response = await getData(`newss?sort=publishedAt:desc&populate=*`);
     const data = response.data;
     return data;
   } catch {}

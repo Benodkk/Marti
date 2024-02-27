@@ -16,7 +16,7 @@ import {
   StyledOneFooterPhoto,
 } from "./Footer.styled";
 
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { FaLocationDot, FaPhoneVolume, FaRegEnvelope } from "react-icons/fa6";
 
 import Inspire1 from "@/assets/inspire1.png";
@@ -37,13 +37,15 @@ import {
 } from "@/API/strapiConfig";
 import { useRouter } from "next/router";
 
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
+
 interface FooterProps {}
 
 const Footer = ({}: FooterProps) => {
+  const language = useSelector(selectLanguage);
   const router: any = useRouter();
   const [links, setLinks] = useState<any>();
-  const [newsId, setNewsId] = useState<any>();
-  const [footerText, setFooterText] = useState<any>();
   const [contactsAdress, setContactsAdress] = useState<any>();
   const [contactsPhone, setContactsPhone] = useState<any>();
   const [contactsMail, setContactsMail] = useState<any>();
@@ -54,13 +56,9 @@ const Footer = ({}: FooterProps) => {
 
   const fetchData = async () => {
     const data: any = await fetchFooterLinks();
-    const news: any = await fetchNews();
-    const footerText: any = await fetchFooterText();
     const contacts: any = await fetchContacts();
 
     if (data) setLinks(data);
-    if (news) setNewsId(news[0].id);
-    if (footerText) setFooterText(footerText);
     if (contacts) {
       const adres: any = contacts.find(
         (contact: any) => contact.attributes.type == "adress"
@@ -92,17 +90,16 @@ const Footer = ({}: FooterProps) => {
         <StyledOneFooterPhoto src={Inspire5.src} />
       </StyledFooterPhotoContainer>
       <StyledFooterLinksContainer>
-        <StyledFooterText>
-          {footerText && footerText.attributes.text}
-        </StyledFooterText>
         <StyledFooterLinksCol>
-          <StyledFooterLinksTitle>Customer care</StyledFooterLinksTitle>
+          <StyledFooterLinksTitle>
+            {language == "pl" ? "Obsługa klienta" : "Customer care"}
+          </StyledFooterLinksTitle>
           <StyledOneFooterLink
             onClick={() => {
               router.push("/SignIn");
             }}
           >
-            Sign in
+            {language == "pl" ? "Zaloguj" : "Sign in"}
           </StyledOneFooterLink>
           {links &&
             links.map((element: any) => {
@@ -125,10 +122,12 @@ const Footer = ({}: FooterProps) => {
             })}
         </StyledFooterLinksCol>
         <StyledFooterLinksCol>
-          <StyledFooterLinksTitle>Informations</StyledFooterLinksTitle>
+          <StyledFooterLinksTitle>
+            {language == "pl" ? "Informacje" : "Information"}
+          </StyledFooterLinksTitle>
           <StyledOneFooterLink
             onClick={() => {
-              newsId && router.push("/news/" + newsId);
+              router.push("/NewsList/");
             }}
           >
             News
@@ -153,8 +152,10 @@ const Footer = ({}: FooterProps) => {
             })}
         </StyledFooterLinksCol>
         <StyledContactCol>
-          <StyledFooterLinksTitle>Contact info</StyledFooterLinksTitle>
-          <StyledContactGroup>
+          <StyledFooterLinksTitle>
+            {language == "pl" ? "Kontakt" : "Contact info"}
+          </StyledFooterLinksTitle>
+          {/* <StyledContactGroup>
             <StyledGoldenCircle>
               <FaLocationDot color="white" size={16} />
             </StyledGoldenCircle>
@@ -166,7 +167,7 @@ const Footer = ({}: FooterProps) => {
                 {contactsAdress && contactsAdress.attributes?.second_line}
               </div>
             </StyledContactRows>
-          </StyledContactGroup>
+          </StyledContactGroup> */}
           <StyledContactGroup>
             <StyledGoldenCircle>
               <FaPhoneVolume color="white" size={16} />
@@ -191,7 +192,9 @@ const Footer = ({}: FooterProps) => {
       </StyledFooterLinksContainer>
       <StyledCopyrightContainer>
         <StyledCopyright>
-          Copyright © 2024. All rights reserved.
+          {language == "pl"
+            ? "Copyright © 2024. Wszelkie prawa zastrzeżone."
+            : "Copyright © 2024. All rights reserved."}
         </StyledCopyright>
       </StyledCopyrightContainer>
     </StyledFooter>

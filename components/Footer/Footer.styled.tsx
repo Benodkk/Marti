@@ -39,6 +39,8 @@ export const StyledFooterLinksContainer = styled.div`
   align-items: center;
   width: 1020px;
   padding: 50px 0;
+  justify-content: center;
+  gap: 70px;
 `;
 
 export const StyledFooterText = styled.div`
@@ -54,7 +56,6 @@ export const StyledFooterText = styled.div`
 export const StyledFooterLinksCol = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 50px;
   align-self: flex-start;
 `;
 
@@ -105,7 +106,6 @@ export const StyledOneFooterLink = styled.div`
 export const StyledContactCol = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 50px;
   align-self: flex-start;
 `;
 

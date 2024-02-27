@@ -147,8 +147,14 @@ export const StyledRealContentMan = styled.div<Options>`
     props.open ? "translateY(0%)" : "translateY(-100%)"};
 `;
 
-export const StyledCategoriesOptions = styled.div`
+interface CategoriesOptions {
+  $heels?: boolean;
+}
+
+export const StyledCategoriesOptions = styled.div<CategoriesOptions>`
   display: flex;
+  flex-direction: ${(props) => (props.$heels ? "column" : "row")};
+
   position: relative;
 `;
 
@@ -163,6 +169,7 @@ interface LinkContainer {
   $firstChild?: boolean;
   $lastChild?: boolean;
   $oneChild?: boolean;
+  $heels?: boolean;
 }
 
 export const StyledLinkContainer = styled.div<LinkContainer>`
@@ -189,12 +196,13 @@ export const StyledBoldLink = styled.div<LinkContainer>`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  margin-bottom: 16px;
+  margin-bottom: ${(props) =>
+    props.$heels && props.$lastChild ? "0px" : "16px"};
   cursor: pointer;
   padding: ${(props) =>
     props.$firstChild
       ? "0px 20px 0px 0px"
-      : props.$lastChild || props.$oneChild
+      : props.$oneChild
       ? "0px"
       : "0px 20px"};
 `;

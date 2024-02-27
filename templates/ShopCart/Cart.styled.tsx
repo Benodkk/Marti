@@ -61,7 +61,7 @@ export const StyledOneProduct = styled.div`
 `;
 
 export const StyledOneProductPhoto = styled.img`
-  max-width: 320px;
+  max-width: 150px;
   height: 240px;
   object-fit: contain;
   object-position: center;
