@@ -17,6 +17,7 @@ import { IoEyeOutline } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 
 interface OneBikiniCaseProps {
   details: any;
@@ -29,6 +30,8 @@ export const OneBikiniCase = ({
   active,
   onClick,
 }: OneBikiniCaseProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
   return (
     <StyledOneDetailContainer>
@@ -40,8 +43,10 @@ export const OneBikiniCase = ({
         </StyledDetailPhotoContainer>
       </StyledOneDetail>
 
-      {details?.attributes.price_pln ? (
-        <StyledPrice>+{details?.attributes.price_pln} zł</StyledPrice>
+      {details?.attributes[priceKey] ? (
+        <StyledPrice>
+          +{details?.attributes[priceKey]} {symbol}
+        </StyledPrice>
       ) : null}
       {details?.attributes.name || details?.attributes.name_pl ? (
         <StyledName>

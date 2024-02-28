@@ -103,8 +103,16 @@ export const LatestNews = ({}: LatestNewsProps) => {
                   item.attributes.publishedAt
                 ).day.toString()}
                 month={extractDayAndMonth(item.attributes.publishedAt).month}
-                title={item.attributes.title}
-                newsType={item.attributes.type}
+                title={
+                  language == "pl" && item.attributes.title_pl
+                    ? item.attributes.title_pl
+                    : item.attributes.title
+                }
+                newsType={
+                  language == "pl" && item.attributes.type_pl
+                    ? item.attributes.type_pl
+                    : item.attributes.type
+                }
               />
             );
           })}

@@ -18,6 +18,7 @@ import { IoEyeOutline } from "react-icons/io5";
 
 import { useSelector } from "react-redux";
 import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 interface OneDetailProps {
   details: any;
   onClick: () => void;
@@ -37,6 +38,8 @@ export const OneDetail = ({
   setModalTitle,
   moreDetails,
 }: OneDetailProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
   const showDetails = () => {
     setIsModalOpen(true);
@@ -95,8 +98,10 @@ export const OneDetail = ({
         </StyledDetailPhotoContainer>
       </StyledOneDetail>
 
-      {details?.price_pln ? (
-        <StyledPrice>+{details?.price_pln} zł</StyledPrice>
+      {details[priceKey] ? (
+        <StyledPrice>
+          +{details[priceKey]} {symbol}
+        </StyledPrice>
       ) : null}
       {details?.name && details?.image.data ? (
         <StyledName>

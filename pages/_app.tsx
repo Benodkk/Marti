@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { ThemeProvider } from "styled-components";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
+import CookieConsent from "@/components/Cookies/CookieConsent";
 
 const Header = dynamic(() => import("@/components/Header/Header"), {
   ssr: false,
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <Header />
               <StyledApp>
                 <Component {...pageProps} />
+                <CookieConsent />
               </StyledApp>
               <Footer />
             </StyledAppContainer>

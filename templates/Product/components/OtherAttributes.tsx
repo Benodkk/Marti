@@ -14,6 +14,7 @@ import { Loader } from "@/components/Loader/Loader";
 
 import { useSelector } from "react-redux";
 import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 interface OtherAttributesProps {
   otherAttributes: any;
   show: any;
@@ -29,6 +30,8 @@ export const OtherAttributes = ({
   setChosenOtherAttributes,
   description,
 }: OtherAttributesProps) => {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
 
   return (
@@ -50,7 +53,12 @@ export const OtherAttributes = ({
                       : type.name}
                   </StyledOtherAttributesLabel>
                 </StyledOneOtherAttributes>
-                {type.price_pln && <div> +{type.price_pln}zł</div>}
+                {type[priceKey] && (
+                  <div>
+                    {" "}
+                    +{type[priceKey]} {symbol}
+                  </div>
+                )}
                 {type.small_description_pl ||
                   (type.small_description && (
                     <div>

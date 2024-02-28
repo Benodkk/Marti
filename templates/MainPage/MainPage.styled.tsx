@@ -351,11 +351,13 @@ export const StyledProductName = styled.div`
   font-weight: 500;
   line-height: 28px;
   margin-top: 5px;
+  cursor: pointer;
   /* cursor: pointer;
   transition: all 0.3s;
   &:hover {
     text-shadow: 2px 2px 3px rgba(109, 109, 109, 0.5);
-  } */
+  }
+  */
   @media (max-width: 1020px) {
     font-size: 15px;
     line-height: 18px;

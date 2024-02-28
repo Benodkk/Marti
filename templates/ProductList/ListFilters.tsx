@@ -256,7 +256,7 @@ export const ListFilters = ({
         )}
 
         <BlackButton onClick={applyFilters} margin="10px 0 0">
-          Apply filters
+          {language == "pl" ? "Zastosuj filtry" : "Apply filters"}
         </BlackButton>
       </StyledOneFiltersGroup>
     </StyledOneFiltersGroupContainer>

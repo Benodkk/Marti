@@ -59,10 +59,13 @@ import {
 import { PickSize } from "./components/PickSize";
 import { selectLanguage } from "@/redux/languageSlice";
 import { translation } from "@/translation";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 
 interface ProductProps {}
 
 export default function ProductTemplate({}: ProductProps) {
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -135,18 +138,18 @@ export default function ProductTemplate({}: ProductProps) {
 
     if (chosenBikiniDetails) {
       chosenBikiniDetails.forEach((detail: any) => {
-        addPrice += Number(detail.option.price_pln);
+        addPrice += Number(detail.option[priceKey]);
       });
     }
 
     if (otherAttributes) {
       otherAttributes.forEach((detail: any) => {
-        if (detail.chosen) addPrice += Number(detail.chosen?.price_pln);
+        if (detail.chosen) addPrice += Number(detail.chosen[priceKey]);
       });
     }
 
     if (chosenBikiniCase) {
-      addPrice += Number(chosenBikiniCase.attributes.price_pln);
+      addPrice += Number(chosenBikiniCase.attributes[priceKey]);
     }
     if (robeText && robeText.length > 0) {
       let count = Math.ceil(robeText.length / 5);
@@ -154,9 +157,15 @@ export default function ProductTemplate({}: ProductProps) {
     }
 
     if (productData) {
-      setInTotal(Number(productData?.price_pln) + addPrice);
+      setInTotal(Number(productData[priceKey]) + addPrice);
     }
-  }, [chosenBikiniDetails, otherAttributes, chosenBikiniCase, robeText]);
+  }, [
+    chosenBikiniDetails,
+    otherAttributes,
+    chosenBikiniCase,
+    robeText,
+    currency,
+  ]);
 
   const getProductData = async (id: number) => {
     setLoading(true);
@@ -169,7 +178,7 @@ export default function ProductTemplate({}: ProductProps) {
         data.attributes.id = data.id;
         setProductData(data.attributes);
 
-        setInTotal(Number(data.attributes.price_pln));
+        setInTotal(Number(data.attributes[priceKey]));
 
         setMainPhotoSrc(data.attributes?.main_photo?.data?.attributes?.url);
         if (data.attributes.form) {
@@ -386,6 +395,7 @@ export default function ProductTemplate({}: ProductProps) {
                 : element.option.name,
             price_pln: element.option.price_pln,
             price_eur: element.option.price_eur,
+            price_usd: element.option.price_usd,
           });
         });
       }
@@ -393,7 +403,7 @@ export default function ProductTemplate({}: ProductProps) {
 
       if (robeFontChosen) {
         let count = Math.ceil(robeText.length / 5);
-        const addPrice = count * robeFontChosen.price_pln;
+        const addPrice = count * robeFontChosen[priceKey];
         personalization.push({
           type: translation[language].robeFont,
           name:
@@ -534,7 +544,8 @@ export default function ProductTemplate({}: ProductProps) {
                   : productData.name}
               </StyledProductName>
               <StyledPrize>
-                {productData && Number(productData.price_pln).toFixed(2)} zł
+                {productData && Number(productData[priceKey]).toFixed(2)}{" "}
+                {symbol}
               </StyledPrize>
               {/* <StyledOpinionRow>
                 <StyledOpinion>
@@ -731,7 +742,7 @@ export default function ProductTemplate({}: ProductProps) {
                 placeholder={translation[language].writeHere}
               />
               <StyledInTotal>
-                {translation[language].inTotal}: {inTotal.toFixed(2)} zł
+                {translation[language].inTotal}: {inTotal.toFixed(2)} {symbol}
               </StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
                 {translation[language].addToBag}

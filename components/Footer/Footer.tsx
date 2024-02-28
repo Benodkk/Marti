@@ -112,8 +112,9 @@ const Footer = ({}: FooterProps) => {
                       router.push("/info/" + element.id);
                     }}
                   >
-                    {" "}
-                    {element.attributes.title}
+                    {language == "pl" && element.attributes.title_pl
+                      ? element.attributes.title_pl
+                      : element.attributes.title}
                   </StyledOneFooterLink>
                 );
               }
@@ -143,7 +144,9 @@ const Footer = ({}: FooterProps) => {
                       router.push("/info/" + element.id);
                     }}
                   >
-                    {element.attributes.title}
+                    {language == "pl" && element.attributes.title_pl
+                      ? element.attributes.title_pl
+                      : element.attributes.title}
                   </StyledOneFooterLink>
                 );
               }

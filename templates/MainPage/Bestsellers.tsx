@@ -80,11 +80,19 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
   return (
     <StyledBestsellers>
       <StyledSmallGoldText>
-        {bestsellerTitle && bestsellerTitle.attributes.label.toUpperCase()}
+        {bestsellerTitle &&
+        language == "pl" &&
+        bestsellerTitle.attributes.label_pl
+          ? bestsellerTitle.attributes.label_pl.toUpperCase()
+          : bestsellerTitle?.attributes.label.toUpperCase()}
       </StyledSmallGoldText>
       <StyledBestsellersHeader>
         <StyledMainPageSectionTitle>
-          {bestsellerTitle && bestsellerTitle.attributes.title}
+          {bestsellerTitle &&
+          language == "pl" &&
+          bestsellerTitle.attributes.title_pl
+            ? bestsellerTitle.attributes.title_pl
+            : bestsellerTitle?.attributes.title}
         </StyledMainPageSectionTitle>
         <StyledBestsellersHeaderRight>
           <MediaQuery minWidth={reactDevice.desktop.minWidth}>
