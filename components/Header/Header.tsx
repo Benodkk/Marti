@@ -124,11 +124,6 @@ const Header = ({}: HeaderProps) => {
     getAllCategories();
   }, []);
 
-  const handleMouseAtTop = () => {
-    console.log("Kursor jest na górze ekranu!");
-    // Tutaj możesz umieścić logikę, którą chcesz wykonać
-  };
-
   useEffect(() => {
     const checkMousePosition = (event: any) => {
       const { clientY } = event; // Pobierz pozycję Y kursora

@@ -86,8 +86,6 @@ export const ListFilters = ({
   const toggleSize = (size: any) => {
     setChosenSizes((currentSizes: any) => {
       // Sprawdzenie, czy kolor już istnieje w tablicy
-      console.log(currentSizes);
-
       const isSizeExist = currentSizes?.includes(size);
 
       if (isSizeExist) {

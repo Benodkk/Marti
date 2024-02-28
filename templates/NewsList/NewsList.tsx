@@ -21,8 +21,6 @@ export default function NewsList({}: NewsListProps) {
 
   const getNews = async () => {
     const newNews: any = await fetchNews();
-    console.log(newNews);
-
     setNews(newNews);
   };
 

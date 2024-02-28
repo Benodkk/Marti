@@ -48,7 +48,6 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
       const data: any = await fetchWelcomePageContent();
 
       if (data) setContent(data);
-      console.log(data);
     } catch {
     } finally {
       setLoading(false);

@@ -33,6 +33,7 @@ export const StyledPhotos = styled.div`
 export const StyledMainPhoto = styled.img`
   height: 400px;
   object-fit: contain;
+  cursor: pointer;
   @media (max-width: 1020px) {
     width: 50%;
     height: auto;

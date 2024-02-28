@@ -26,7 +26,6 @@ const getData = async (endpoint) => {
 };
 
 const postData = async (endpoint, payload) => {
-  console.log(payload);
   try {
     const data = await axios.post(`${prodUrl}${endpoint}`, payload, {
       headers: {
@@ -76,8 +75,7 @@ export const fetchAllProdWithPriceRange = async (id, minPrice, maxPrice) => {
       minPrice ? `&filters[price_pln][$gte]=${minPrice}` : ""
     }${maxPrice ? `&filters[price_pln][$lte]=${maxPrice} ` : ""}`;
     const url = `products?filters[categories][id][$in]=${id}&populate=*${priceFilter}`;
-    console.log(url);
-    const response = await getData(url);
+
     const data = response.data;
     return data;
   } catch (error) {
@@ -207,7 +205,6 @@ export const signUp = async (email, password) => {
       email,
       password,
     });
-    console.log(response);
   } catch (error) {
     console.error(error);
     throw error;
@@ -220,7 +217,6 @@ export const signIn = async (email, password) => {
       identifier: email,
       password,
     });
-    console.log(response);
     return response;
   } catch (error) {
     console.error(error);

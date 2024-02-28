@@ -60,6 +60,7 @@ import { PickSize } from "./components/PickSize";
 import { selectLanguage } from "@/redux/languageSlice";
 import { translation } from "@/translation";
 import { selectCurrencyDetails } from "@/redux/currencySlice";
+import { ModalPhotos } from "@/components/ModalPhotos/ModalPhotos";
 
 interface ProductProps {}
 
@@ -120,6 +121,12 @@ export default function ProductTemplate({}: ProductProps) {
   const [modalTitle, setModalTitle] = useState("");
   const [modalContent, setModalContent] = useState<any>();
 
+  // photos for modal
+
+  const [photosUrl, setPhotosUrl] = useState<any>([]);
+  const [openUrlPhotos, setOpenUrlPhotos] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState<any>(0);
+
   // error
 
   const [showError, setShowError] = useState(false);
@@ -175,12 +182,22 @@ export default function ProductTemplate({}: ProductProps) {
       if (data.attributes) {
         // show details check
 
+        let photosUrls = [];
         data.attributes.id = data.id;
         setProductData(data.attributes);
 
         setInTotal(Number(data.attributes[priceKey]));
 
         setMainPhotoSrc(data.attributes?.main_photo?.data?.attributes?.url);
+        photosUrls.push(data.attributes?.main_photo?.data?.attributes?.url);
+
+        if (data?.attributes?.photos?.data) {
+          data?.attributes?.photos?.data.forEach((photo: any) => {
+            photosUrls.push(photo.attributes?.url);
+          });
+        }
+        setPhotosUrl(photosUrls);
+
         if (data.attributes.form) {
           const modifiedArray = data.attributes.form.map((element: any) => {
             return {
@@ -237,7 +254,6 @@ export default function ProductTemplate({}: ProductProps) {
             }
           );
           setOtherAttributes(modifiedArray);
-          console.log(modifiedArray);
         }
       }
     } catch {
@@ -291,7 +307,6 @@ export default function ProductTemplate({}: ProductProps) {
         errors.push(translation[language].robeTextErrorInfo);
       }
     }
-    console.log(otherAttributes);
 
     otherAttributes.forEach((att: any) => {
       if (att.chosen === 0) {
@@ -348,7 +363,6 @@ export default function ProductTemplate({}: ProductProps) {
       }
 
       // form errors
-      console.log(formData);
 
       formData.forEach((field: any) => {
         if (field.obligatory == true && field.value.length == 0) {
@@ -384,8 +398,6 @@ export default function ProductTemplate({}: ProductProps) {
     } else {
       const personalization: any = [];
       if (chosenBikiniDetails) {
-        console.log(chosenBikiniDetails);
-
         chosenBikiniDetails.forEach((element: any) => {
           personalization.push({
             type: element.typeName,
@@ -419,7 +431,6 @@ export default function ProductTemplate({}: ProductProps) {
           price: "",
         });
       }
-      console.log(otherAttributes);
 
       const details = otherAttributes.map((att: any) => {
         return {
@@ -429,7 +440,6 @@ export default function ProductTemplate({}: ProductProps) {
           value: att.chosen,
         };
       });
-      console.log(chosenSize);
 
       if (heelsSizes?.length > 0 && chosenSize != undefined) {
         let real = chosenSize.attributes;
@@ -440,7 +450,7 @@ export default function ProductTemplate({}: ProductProps) {
 
       const formDetails =
         formData && formData.filter((oneData: any) => oneData.value.length > 0);
-      console.log(formDetails);
+
       const product = {
         id: myRandomId,
         strapiId: productData.id,
@@ -506,7 +516,10 @@ export default function ProductTemplate({}: ProductProps) {
         ) : (
           <>
             <StyledPhotos>
-              <StyledMainPhoto src={mainPhotoSrc} />
+              <StyledMainPhoto
+                onClick={() => setOpenUrlPhotos(true)}
+                src={mainPhotoSrc}
+              />
               <StyledPhotoRow>
                 {productData &&
                   [
@@ -514,10 +527,13 @@ export default function ProductTemplate({}: ProductProps) {
                     ...(Array.isArray(productData.photos.data)
                       ? productData.photos.data
                       : []),
-                  ].map((image: any) => {
+                  ].map((image: any, index: any) => {
                     return (
                       <StyledSmallPhoto
-                        onClick={() => setMainPhotoSrc(image.attributes.url)}
+                        onClick={() => {
+                          setCurrentUrl(index);
+                          setOpenUrlPhotos(true);
+                        }}
                         src={image?.attributes?.url}
                       />
                     );
@@ -759,6 +775,13 @@ export default function ProductTemplate({}: ProductProps) {
         setIsOpen={setIsModalOpen}
         children={modalContent}
         title={modalTitle}
+      />
+      <ModalPhotos
+        isOpen={openUrlPhotos}
+        setIsOpen={setOpenUrlPhotos}
+        urls={photosUrl}
+        currentUrl={currentUrl}
+        setCurrentUrl={setCurrentUrl}
       />
       <Error showError={showError} setShowError={setShowError}>
         <StyledErrorTitle>

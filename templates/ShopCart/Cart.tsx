@@ -48,7 +48,6 @@ export default function Cart({}: CartProps) {
   const dispatch = useDispatch();
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
-  console.log(cartItems);
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>();

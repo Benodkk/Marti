@@ -38,7 +38,6 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
 
   const language = useSelector(selectLanguage);
   const router = useRouter();
-  console.log(currency);
 
   // bestsellers lists
   const [currentBestsellers, setCurrentBestsellers] = useState<any>();
@@ -52,7 +51,6 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
 
   useEffect(() => {
     setCurrentBestsellers(bestsellers[0]);
-    console.log(bestsellers);
   }, [bestsellers]);
 
   const fetch = async () => {

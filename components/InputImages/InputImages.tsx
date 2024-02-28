@@ -13,7 +13,6 @@ interface InputIamgesProps {
 }
 
 export const InputIamges = ({ label, value, onChange }: InputIamgesProps) => {
-  console.log(label);
   return (
     <FormGroup className="form__group field">
       <FormFieldPhoto
