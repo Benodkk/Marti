@@ -262,7 +262,7 @@ export const StyledOneProductCart = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 240px;
   font-family: "Jost";
   gap: 5px;
   margin-bottom: 40px;
@@ -279,8 +279,8 @@ export const StyledFavourite = styled.img`
 `;
 
 export const StyledOneProductPhotoContainer = styled.div`
-  max-width: 200px;
-  max-height: 300px;
+  max-width: 240px;
+  max-height: 340px;
   overflow: hidden;
   z-index: 1;
 
@@ -291,8 +291,8 @@ export const StyledOneProductPhotoContainer = styled.div`
 `;
 
 export const StyledOneProductPhoto = styled.img`
-  width: 200px;
-  height: 300px;
+  width: 240px;
+  height: 340px;
   object-fit: contain;
   object-position: center;
   border-radius: 10px;

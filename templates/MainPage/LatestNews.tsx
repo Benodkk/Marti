@@ -56,8 +56,27 @@ export const LatestNews = ({}: LatestNewsProps) => {
       "Dec",
     ];
 
+    const monthNamesPL = [
+      "Sty",
+      "Lut",
+      "Mar",
+      "Kwi",
+      "Maj",
+      "Cze",
+      "Lip",
+      "Sie",
+      "Wrz",
+      "Paź",
+      "Lis",
+      "Gru",
+    ];
+
     // Pobieranie skróconej nazwy miesiąca z tablicy, używając miesiąca z obiektu Date (getMonth() zwraca wartość od 0 do 11)
-    const month = monthNames[date.getMonth()];
+
+    const month =
+      language === "pl"
+        ? monthNamesPL[date.getMonth()]
+        : monthNames[date.getMonth()];
 
     // Zwracanie numeru dnia i skróconej nazwy miesiąca
     return { day, month };

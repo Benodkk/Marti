@@ -287,7 +287,7 @@ export const StyledProductsContainer = styled.div`
   margin-top: 40px;
   @media (max-width: 1020px) {
     max-width: 100vw;
-    gap: 40px;
+    gap: 10px;
     overflow-x: scroll;
   }
 `;
@@ -296,12 +296,12 @@ export const StyledOneProduct = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  max-width: 200px;
+  max-width: 240px;
 `;
 
 export const StyledOneProductPhotoContainer = styled.div`
-  max-width: 200px;
-  max-height: 300px;
+  max-width: 240px;
+  max-height: 340px;
   overflow: hidden;
   z-index: 1;
 
@@ -312,8 +312,8 @@ export const StyledOneProductPhotoContainer = styled.div`
 `;
 
 export const StyledOneProductPhoto = styled.img`
-  width: 200px;
-  height: 300px;
+  width: 240px;
+  height: 340px;
   object-fit: contain;
   object-position: center;
   transition: all 0.3s;
