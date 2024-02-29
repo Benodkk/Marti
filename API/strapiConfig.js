@@ -226,7 +226,7 @@ export const signIn = async (email, password) => {
 
 export const confirmEmail = async (code) => {
   try {
-    const response = await postData(
+    const response = await getData(
       `auth/email-confirmation?confirmation=${code}`
     );
     return response;
