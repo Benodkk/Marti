@@ -224,6 +224,18 @@ export const signIn = async (email, password) => {
   }
 };
 
+export const confirmEmail = async (code) => {
+  try {
+    const response = await postData(
+      `auth/email-confirmation?confirmation=${code}`
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 // Main page
 
 export const fetchWelcomePageContent = async () => {

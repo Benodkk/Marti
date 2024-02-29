@@ -84,8 +84,8 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
               <StyledTitleContainer>
                 <StyledTitle $color={"#FFF"}>
                   {content && language == "pl" && content.attributes.title_pl
-                    ? content.attributes.title_pl
-                    : content.attributes.title}
+                    ? content?.attributes.title_pl
+                    : content?.attributes.title}
                 </StyledTitle>
               </StyledTitleContainer>
 
@@ -94,8 +94,8 @@ export const WelcomePage = ({ linkId }: WelcomePageProps) => {
                   {content &&
                   language == "pl" &&
                   content.attributes.first_line_pl
-                    ? content.attributes.first_line_pl
-                    : content.attributes.first_line}
+                    ? content?.attributes.first_line_pl
+                    : content?.attributes.first_line}
                 </StyledWelcomePageText>
               </StyledWelcomePageTextContainer>
 
