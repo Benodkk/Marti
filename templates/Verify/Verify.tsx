@@ -15,6 +15,9 @@ export default function Verify({}: VerifyProps) {
 
   const bw = async () => {
     const be = await confirmEmail(confirmation);
+    if (be) {
+      console.log("confirmed");
+    }
     console.log(be);
   };
 

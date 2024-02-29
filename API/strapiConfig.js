@@ -224,9 +224,23 @@ export const signIn = async (email, password) => {
   }
 };
 
+const getVerify = async (endpoint) => {
+  try {
+    const data = await axios.get(`${prodUrl}${endpoint}`, {
+      headers: {
+        Authorization: apiAuthCode,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const confirmEmail = async (code) => {
   try {
-    const response = await getData(
+    const response = await getVerify(
       `auth/email-confirmation?confirmation=${code}`
     );
     return response;
