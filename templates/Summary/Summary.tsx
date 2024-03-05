@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MdEdit } from "react-icons/md";
+
+import { sendContactForm } from "@/API/sendEmail";
+
 import {
   StyledSummary,
   StyledSummaryContainer,
@@ -14,6 +18,7 @@ import {
   StyledCouponInput,
   StyledCouponContainer,
   StyledBack,
+  StyledPointer,
 } from "./Summary.styled";
 import { useRouter } from "next/router";
 import {
@@ -47,10 +52,16 @@ import { Input } from "@/components/Input/Input";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
 
 import { selectLanguage } from "@/redux/languageSlice";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { translation } from "@/translation";
+import { useCookies } from "react-cookie";
+import { makeOrder } from "@/API/strapiConfig";
 
 interface AdressProps {}
 export default function Adress({}: AdressProps) {
+  const [cookies] = useCookies(["jwt", "email", "id"]);
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -62,16 +73,47 @@ export default function Adress({}: AdressProps) {
 
   const [code, setCode] = useState<any>();
 
+  useEffect(() => {}, [cookies]);
+
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
+
+  const buy = async () => {
+    // sendEmaill();
+    // const cartItemsIds = cartItems.map((item: any) => item.strapiId);
+    // console.log(cartItemsIds);
+    // const order = await makeOrder(
+    //   cookies.id,
+    //   cartItemsIds,
+    //   cartItems
+    //     .reduce((acc: any, curr: any) => {
+    //       return acc + Number(curr.price[priceKey]);
+    //     }, 0)
+    //     .toFixed(2) + symbol,
+    //   "Blik",
+    //   "przyjęte do realizacji",
+    //   cookies.jwt ? cookies.jwt : null
+    // );
+    // if (order) {
+    //   router.push("/ConfirmationSend?orderConfirmation=true");
+    // }
+    const data = {
+      name: "asdasd",
+      email: "daniel.kozlowski2607@gmail.com",
+      subject: "Subject",
+      message: "Message",
+    };
+    sendContactForm(data);
+  };
+
   return (
     <StyledSummaryContainer>
       <StyledSummary>
-        <StyledBack onClick={() => router.back()}>{"< Back"}</StyledBack>
-        <StyledSummaryTitle>
-          {translation[language].summary}
-        </StyledSummaryTitle>{" "}
+        <StyledBack
+          onClick={() => router.back()}
+        >{`< ${translation[language].back}`}</StyledBack>
+        <StyledSummaryTitle>{translation[language].summary}</StyledSummaryTitle>{" "}
         <StyledProductListContainer>
           {cartItems.length ? (
             <>
@@ -86,7 +128,9 @@ export default function Adress({}: AdressProps) {
                             {item.name.toUpperCase()}
                           </StyledProductName>
                           <StyledTopDetailsRight>
-                            <StyledPrice>{item.price} zł</StyledPrice>
+                            <StyledPrice>
+                              {item.price[priceKey].toFixed(2)} {symbol}
+                            </StyledPrice>
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
                         <StyledProductListDetails>
@@ -102,8 +146,8 @@ export default function Adress({}: AdressProps) {
                                         <StyledOneDetailFromList>
                                           {" "}
                                           {element.name}{" "}
-                                          {element.price
-                                            ? ` +${element.price}zł`
+                                          {element[priceKey]
+                                            ? ` +${element[priceKey]}${symbol}`
                                             : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
@@ -113,7 +157,8 @@ export default function Adress({}: AdressProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Personalization <IoEyeOutline size={18} />
+                              {translation[language].personalization}{" "}
+                              <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
                           {item.details && (
@@ -124,10 +169,20 @@ export default function Adress({}: AdressProps) {
                                   (element: any) => {
                                     return (
                                       <StyledOneDetailContainer>
-                                        {element.name}:{" "}
+                                        <strong>
+                                          {language == "pl" && element.name_pl
+                                            ? element.name_pl
+                                            : element.name}
+                                          :
+                                        </strong>{" "}
                                         <StyledOneDetailFromList>
-                                          {" "}
-                                          {element.value}
+                                          {language == "pl" &&
+                                          element.value.name_pl
+                                            ? element.value.name_pl
+                                            : element.value.name}
+                                          {element.value[priceKey]
+                                            ? ` +${element.value[priceKey]}${symbol}`
+                                            : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
                                     );
@@ -136,7 +191,8 @@ export default function Adress({}: AdressProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Details <IoEyeOutline size={18} />
+                              {translation[language].formDetails}{" "}
+                              <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
                           {item.additionalNotes && (
@@ -152,12 +208,14 @@ export default function Adress({}: AdressProps) {
                                 setModalContent(content);
                               }}
                             >
-                              Additional notes <IoEyeOutline size={18} />
+                              {translation[language].additionalNotes}{" "}
+                              <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
                           {item.productionTime && (
                             <StyledOneDetail>
-                              Production time:{" "}
+                              {translation[language].productionTime}
+                              {": "}
                               <StyledOneDetailBold>
                                 {item.productionTime.name},{" "}
                                 {item.productionTime.description &&
@@ -167,7 +225,7 @@ export default function Adress({}: AdressProps) {
                           )}
                           {item.bikiniCase && (
                             <StyledOneDetail>
-                              Bikini case:{" "}
+                              {translation[language].bikiniCase}:{" "}
                               <StyledOneDetailBoldLink
                                 onClick={() => {
                                   router.push({
@@ -175,7 +233,7 @@ export default function Adress({}: AdressProps) {
                                   });
                                 }}
                               >
-                                {item.bikiniCase.name}
+                                {item.bikiniCase.attributes.name}
                               </StyledOneDetailBoldLink>
                             </StyledOneDetail>
                           )}
@@ -188,7 +246,13 @@ export default function Adress({}: AdressProps) {
               <StyledProductSummary>
                 <StyledSummaryTop>
                   <StyledAdresData>
-                    <StyledSumamryTitle>Address</StyledSumamryTitle>
+                    <StyledSumamryTitle>
+                      {translation[language].addres}
+
+                      <StyledPointer>
+                        <MdEdit onClick={() => router.push("/Adress")} />
+                      </StyledPointer>
+                    </StyledSumamryTitle>
                     <StyledOneAdressData>
                       {personalData.name} {personalData.secondName}
                     </StyledOneAdressData>
@@ -208,37 +272,43 @@ export default function Adress({}: AdressProps) {
                       {personalData.additionalInfo}
                     </StyledOneAdressData>
                   </StyledAdresData>
-                  <StyledSumamryTitle>Discount code</StyledSumamryTitle>
+                  <StyledSumamryTitle>
+                    {translation[language].discoutCode}
+                  </StyledSumamryTitle>
                   <StyledCouponContainer>
                     {" "}
                     <Input
                       type="text"
                       value={code}
                       onChange={(e: any) => setCode(e.target.value)}
-                      label="Code"
+                      label={translation[language].code}
                     />
-                    <BlackButton margin="20px 0 0">Apply</BlackButton>
+                    <BlackButton margin="20px 0 0">
+                      {translation[language].apply}
+                    </BlackButton>
                   </StyledCouponContainer>
                 </StyledSummaryTop>
 
                 <StyledBottomSummary>
                   <StyledTotalContainer>
-                    <StyledTotal>Total</StyledTotal>
+                    <StyledTotal>{translation[language].inTotal}</StyledTotal>
                     <StyledTotalPrice>
                       {cartItems
                         .reduce((acc: any, curr: any) => {
-                          return acc + Number(curr.price);
+                          return acc + Number(curr.price[priceKey]);
                         }, 0)
                         .toFixed(2)}{" "}
-                      zł
+                      {symbol}
                     </StyledTotalPrice>
                   </StyledTotalContainer>
-                  <BlackButton margin="20px 0 0">Go to payment</BlackButton>
+                  <BlackButton margin="20px 0 0" onClick={buy}>
+                    {translation[language].goToPayment}
+                  </BlackButton>
                 </StyledBottomSummary>
               </StyledProductSummary>
             </>
           ) : (
-            <StyledEmpty>Cart is empty</StyledEmpty>
+            <StyledEmpty>{translation[language].cartIsEmpty}</StyledEmpty>
           )}
         </StyledProductListContainer>
       </StyledSummary>

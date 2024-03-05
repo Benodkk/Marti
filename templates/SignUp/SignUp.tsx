@@ -14,12 +14,16 @@ import { useRouter } from "next/router";
 import { Input } from "@/components/Input/Input";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
 import Error from "@/components/Error/Error";
+import { useSelector } from "react-redux";
 import { StyledErrorTitle } from "@/components/Error/Error.styled";
 import { createProfile } from "@/API/profile";
 import { signUp } from "@/API/strapiConfig";
+import { selectLanguage } from "@/redux/languageSlice";
+import { translation } from "@/translation";
 
 interface SignUpProps {}
 export default function SignUp({}: SignUpProps) {
+  const language = useSelector(selectLanguage);
   const router = useRouter();
   const [name, setName] = useState("");
   const [secondName, setSecondName] = useState("");
@@ -30,37 +34,53 @@ export default function SignUp({}: SignUpProps) {
   const [showError, setShowError] = useState(false);
   const [errors, setErrors] = useState<any>([]);
 
+  const [showEmailError, setShowEmailError] = useState(false);
+  const [emailErrors, setEmailErrors] = useState<any>("");
+
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
 
     let newErrors = [];
     if (name.length == 0) {
-      newErrors.push("First Name");
+      newErrors.push(translation[language].firstName);
     }
     if (secondName.length == 0) {
-      newErrors.push("Last Name");
+      newErrors.push(translation[language].lastName);
     }
     if (email.length == 0) {
       newErrors.push("E-mail");
     }
+
     if (password.length == 0) {
-      newErrors.push("Password");
+      newErrors.push(translation[language].password);
     }
     if (repeatpassword.length == 0) {
-      newErrors.push("Repeat Password");
+      newErrors.push(translation[language].repeatPassword);
     }
     if (password !== repeatpassword) {
-      newErrors.push(
-        `Password field and reapeat password field has to be the same.`
-      );
+      newErrors.push(translation[language].repeatpasswordError);
     }
-    if (newErrors.length > 0) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      newErrors.push(translation[language].validErrorEmail);
+    }
+    if (password.length != 0 && password.length < 6) {
+      newErrors.push(translation[language].passwordLengthErrorL);
+      if (newErrors.length > 0) {
+      }
       setErrors(newErrors);
       setShowError(true);
     } else {
-      console.log(email, name, secondName, password);
-
-      await signUp(email, password);
+      const signUpAction = await signUp(email, password);
+      console.log(signUpAction);
+      if (signUpAction?.user) {
+        router.push("/ConfirmationSend?emailConfirmationSend=true");
+      } else {
+        const message = "This email is already taken";
+        const plMessage = "Ten e-mail jest już zajęty";
+        setEmailErrors(language == "pl" ? plMessage : message);
+        setShowEmailError(true);
+      }
     }
   };
 
@@ -68,20 +88,24 @@ export default function SignUp({}: SignUpProps) {
     <StyledCheckOutContainer>
       <StyledCheckOut>
         <StyledSignInCheckOut>
-          <StyledBack onClick={() => router.back()}>{"< Back"}</StyledBack>
-          <StyledCheckOutTitle>Sign up</StyledCheckOutTitle>
+          <StyledBack
+            onClick={() => router.back()}
+          >{`< ${translation[language].back}`}</StyledBack>
+          <StyledCheckOutTitle>
+            {translation[language].signUp}
+          </StyledCheckOutTitle>
           <form>
             <Input
               type="text"
               value={name}
               onChange={(e: any) => setName(e.target.value)}
-              label="First name"
+              label={translation[language].firstName}
             />
             <Input
               type="text"
               value={secondName}
               onChange={(e: any) => setSecondName(e.target.value)}
-              label="Last name"
+              label={translation[language].lastName}
             />
             <Input
               type="text"
@@ -93,31 +117,34 @@ export default function SignUp({}: SignUpProps) {
               type="text"
               value={password}
               onChange={(e: any) => setPassword(e.target.value)}
-              label="Password"
+              label={translation[language].password}
             />
             <Input
               type="text"
               value={repeatpassword}
               onChange={(e: any) => setRepeatPassword(e.target.value)}
-              label="Repeat password"
+              label={translation[language].repeatPassword}
             />
             <BlackButton
               margin={"30px 0"}
               type="submit"
               onClick={handleRegister}
             >
-              Sign Up
+              {translation[language].signUp}
             </BlackButton>
           </form>
         </StyledSignInCheckOut>
       </StyledCheckOut>
       <Error showError={showError} setShowError={setShowError}>
         <StyledErrorTitle>
-          Please complete the following fields:
+          {translation[language].completeFields}:
         </StyledErrorTitle>
         {errors?.map((error: any) => {
           return <div>{error}</div>;
         })}
+      </Error>
+      <Error showError={showEmailError} setShowError={setShowEmailError}>
+        {emailErrors}
       </Error>
     </StyledCheckOutContainer>
   );

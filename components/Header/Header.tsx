@@ -50,6 +50,8 @@ import { fetchAllCategories } from "@/API/strapiConfig";
 import Head from "next/head";
 import { SelectValue } from "../Select/Select";
 import { setCurrency, selectCurrencyDetails } from "@/redux/currencySlice";
+import { selectUserData } from "@/redux/userSlice";
+import { useCookies } from "react-cookie";
 
 const options = [
   { value: "pln", label: "PLN" },
@@ -65,7 +67,10 @@ const langOptions = [
 interface HeaderProps {}
 
 const Header = ({}: HeaderProps) => {
+  const [cookies] = useCookies(["jwt", "email", "id"]); // 'jwt' to nazwa ciasteczka, w którym przechowujesz token JWT
+
   const dispatch = useDispatch();
+  const { email, id, confirmed } = useSelector(selectUserData);
   const language = useSelector(selectLanguage);
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const totalItems = useSelector(selectTotalItems);
@@ -241,6 +246,14 @@ const Header = ({}: HeaderProps) => {
     });
   };
 
+  const pushToProfile = () => {
+    if (cookies.email) {
+      router.push("/Profile");
+    } else {
+      router.push("/SignIn");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -275,7 +288,7 @@ const Header = ({}: HeaderProps) => {
             <StyledLogo onClick={() => router.push("/")} src={HeaderLogo.src} />
             <StyledGroupIconsHeader>
               <ShopButton totalItems={totalItems} />
-              <IconButton onClick={() => router.push("/SignIn")}>
+              <IconButton onClick={pushToProfile}>
                 <FaRegUser />
               </IconButton>
             </StyledGroupIconsHeader>
@@ -350,17 +363,23 @@ const Header = ({}: HeaderProps) => {
             <StyledBottomButtons>
               <SelectValue
                 options={options}
-                defaultValue={options[0]}
-                handleChange={(selectedOption: any) =>
-                  dispatch(setCurrency(selectedOption.value))
-                }
+                defaultValue={options.find(
+                  (lang: any) => lang.value === currency
+                )}
+                handleChange={(selectedOption: any) => {
+                  dispatch(setCurrency(selectedOption.value));
+                  localStorage.setItem("userCurrency", selectedOption.value);
+                }}
               />
               <SelectValue
                 options={langOptions}
-                defaultValue={langOptions[0]}
-                handleChange={(selectedOption: any) =>
-                  dispatch(setLanguage(selectedOption.value))
-                }
+                defaultValue={langOptions.find(
+                  (lang: any) => lang.value === language
+                )}
+                handleChange={(selectedOption: any) => {
+                  dispatch(setLanguage(selectedOption.value));
+                  localStorage.setItem("userLanguage", selectedOption.value);
+                }}
               />
               <HeaderButton
                 onClick={scrollToBottom}

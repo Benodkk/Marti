@@ -64,6 +64,14 @@ export const StyledSumamryTitle = styled.div`
   line-height: normal;
   align-self: flex-start;
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const StyledPointer = styled.div`
+  cursor: pointer;
 `;
 
 export const StyledAdresData = styled.div`

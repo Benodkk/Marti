@@ -18,7 +18,7 @@ export const StyledModalContent = styled.div`
   align-items: center;
   background-color: #fff;
   position: relative;
-  padding: 20px;
+  padding: 20px 60px 20px 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   /* width: 50%;

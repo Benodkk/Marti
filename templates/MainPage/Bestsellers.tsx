@@ -128,7 +128,9 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
                       : product.attributes.name
                   }
                   type={findLowCategory(product.attributes.categories.data)}
-                  price={parseFloat(product.attributes[priceKey]).toFixed(2)}
+                  price={
+                    parseFloat(product.attributes[priceKey]).toFixed(2) + symbol
+                  }
                   image={product.attributes?.main_photo?.data?.attributes?.url}
                   id={product.id}
                   key={product.id}

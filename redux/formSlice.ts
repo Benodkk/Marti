@@ -11,7 +11,7 @@ interface FormState {
   country: string;
 }
 
-const initialState: FormState = {
+const initialState: any = {
   name: "",
   secondName: "",
   street: "",
@@ -26,7 +26,7 @@ const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
-    updateFormData: (state, action: PayloadAction<FormState>) => {
+    updateFormData: (state, action: PayloadAction<any>) => {
       return { ...state, ...action.payload };
     },
   },

@@ -34,7 +34,7 @@ const postData = async (endpoint, payload) => {
     });
     return data.data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -205,6 +205,8 @@ export const signUp = async (email, password) => {
       email,
       password,
     });
+    console.log(response);
+    return response;
   } catch (error) {
     console.error(error);
     throw error;
@@ -330,4 +332,124 @@ export const fetchContacts = async () => {
     const data = response.data;
     return data;
   } catch {}
+};
+
+// users actions
+
+const putUserData = async (endpoint, code, putData) => {
+  const apiAuthCodee = `Bearer ${code}`;
+  console.log(putData);
+  try {
+    const data = await axios.put(`${prodUrl}${endpoint}`, putData && putData, {
+      headers: {
+        Authorization: apiAuthCodee,
+      },
+    });
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getUserData = async (endpoint, code) => {
+  const apiAuthCodee = `Bearer ${code}`;
+
+  try {
+    const data = await axios.get(`${prodUrl}${endpoint}`, {
+      headers: {
+        Authorization: apiAuthCodee,
+      },
+    });
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const be = async (xd) => {
+  console.log(xd);
+};
+
+const postUserData = async (endpoint, postDataa, code) => {
+  const apiAuthCodee = `Bearer ${code}`;
+  try {
+    const data = await axios.post(
+      `${prodUrl}${endpoint}`,
+      postDataa && postDataa,
+      code
+        ? {
+            headers: {
+              Authorization: apiAuthCodee,
+            },
+          }
+        : null
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const changeAdress = async (
+  first_name,
+  second_name,
+  country,
+  street,
+  post_code,
+  city,
+  phone_number,
+  userId,
+  code
+) => {
+  const formData = {
+    first_name: first_name,
+    second_name: second_name,
+    country: country,
+    street: street,
+    post_code: post_code,
+    city: city,
+    phone_number,
+  };
+  console.log(formData);
+  const putData = JSON.stringify(formData);
+
+  try {
+    const response = await putUserData(`users/${userId}`, code, formData);
+    console.log(response);
+    return data;
+  } catch {}
+};
+
+export const getUserInfo = async (id) => {
+  try {
+    const response = await getUserData(`user/${id}`);
+    const data = response.data;
+    return data;
+  } catch {}
+};
+
+export const makeOrder = async (
+  userId,
+  productId,
+  total_price,
+  payment_type,
+  status,
+  code
+) => {
+  let responseStatus = false;
+  const data = {
+    data: {
+      users_permissions_user: userId,
+      ordered_products: productId,
+      total_price: total_price,
+      payment_type,
+      status,
+    },
+  };
+  try {
+    const response = await postUserData(`orders`, data, code);
+    if (response.status == 200) {
+      responseStatus = true;
+    }
+  } catch {}
+  return responseStatus;
 };

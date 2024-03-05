@@ -4,8 +4,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
-const initialState: any = {
-  items: [],
+const isBrowser = typeof window !== "undefined";
+
+const initialState = {
+  items: isBrowser ? JSON.parse(localStorage.getItem("cartItems") || "[]") : [],
 };
 
 const cartSlice = createSlice({

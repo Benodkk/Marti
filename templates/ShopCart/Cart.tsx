@@ -40,10 +40,19 @@ import { useDispatch } from "react-redux";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
 import { selectLanguage } from "@/redux/languageSlice";
 import { translation } from "@/translation";
+import { selectCurrencyDetails } from "@/redux/currencySlice";
+import { selectUserData, resetUser } from "@/redux/userSlice";
+
+import { useCookies } from "react-cookie";
 
 interface CartProps {}
 
 export default function Cart({}: CartProps) {
+  const [cookies] = useCookies(["jwt", "email", "id"]); // 'jwt' to nazwa ciasteczka, w którym przechowujesz token JWT
+
+  const { email, id, confirmed } = useSelector(selectUserData);
+  const { currency, symbol } = useSelector(selectCurrencyDetails);
+  const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -82,7 +91,9 @@ export default function Cart({}: CartProps) {
                               : item.name.toUpperCase()}
                           </StyledProductName>
                           <StyledTopDetailsRight>
-                            <StyledPrice>{item.price} zł</StyledPrice>
+                            <StyledPrice>
+                              {item.price[priceKey].toFixed(2)} {symbol}
+                            </StyledPrice>
                             <StyledDelete
                               onClick={() => {
                                 remove(item.id);
@@ -108,8 +119,8 @@ export default function Cart({}: CartProps) {
                                             {language == "pl" && element.name_pl
                                               ? element.name_pl
                                               : element.name}{" "}
-                                            {element.price_pln
-                                              ? ` +${element.price_pln}zł`
+                                            {element[priceKey]
+                                              ? ` +${element[priceKey]}${symbol}`
                                               : ""}
                                           </StyledOneDetailFromList>
                                         </StyledOneDetailContainer>
@@ -173,8 +184,8 @@ export default function Cart({}: CartProps) {
                                           element.value.name_pl
                                             ? element.value.name_pl
                                             : element.value.name}
-                                          {element.value.price_pln
-                                            ? ` +${element.value.price_pln}zł`
+                                          {element.value[priceKey]
+                                            ? ` +${element.value[priceKey]}${symbol}`
                                             : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
@@ -238,15 +249,21 @@ export default function Cart({}: CartProps) {
                     <StyledTotalPrice>
                       {cartItems
                         .reduce((acc: any, curr: any) => {
-                          return acc + Number(curr.price);
+                          return acc + Number(curr.price[priceKey]);
                         }, 0)
                         .toFixed(2)}{" "}
-                      zł
+                      {symbol}
                     </StyledTotalPrice>
                   </StyledTotalContainer>
                   <BlackButton
                     margin={"12px 0 0"}
-                    onClick={() => router.push("/CheckOutNow")}
+                    onClick={() => {
+                      if (cookies.email) {
+                        router.push("/Adress");
+                      } else {
+                        router.push("/CheckOutNow");
+                      }
+                    }}
                   >
                     {translation[language].checkout}
                   </BlackButton>

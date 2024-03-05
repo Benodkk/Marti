@@ -3,7 +3,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  output: "export",
+  // output: "export",
   distDir: "dist",
   images: {
     deviceSizes: [320, 420, 768, 1024, 1200],

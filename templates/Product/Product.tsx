@@ -67,6 +67,8 @@ interface ProductProps {}
 export default function ProductTemplate({}: ProductProps) {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
+  console.log(priceKey);
+
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -104,7 +106,11 @@ export default function ProductTemplate({}: ProductProps) {
   const [etuis, setEtuis] = useState<any>();
   const [additionalNotes, setAdditionalNotes] = useState<any>();
 
-  const [inTotal, setInTotal] = useState<number>(0);
+  const [inTotal, setInTotal] = useState<any>({
+    price_usd: 0,
+    price_pln: 0,
+    price_eur: 0,
+  });
 
   const myRandomId = uuidv4();
 
@@ -142,29 +148,51 @@ export default function ProductTemplate({}: ProductProps) {
 
   useEffect(() => {
     let addPrice = 0;
+    const newPrice = {
+      price_usd: 0,
+      price_pln: 0,
+      price_eur: 0,
+    };
 
     if (chosenBikiniDetails) {
       chosenBikiniDetails.forEach((detail: any) => {
         addPrice += Number(detail.option[priceKey]);
+        newPrice.price_usd += Number(detail.option.price_usd);
+        newPrice.price_pln += Number(detail.option.price_pln);
+        newPrice.price_eur += Number(detail.option.price_eur);
       });
     }
 
     if (otherAttributes) {
       otherAttributes.forEach((detail: any) => {
-        if (detail.chosen) addPrice += Number(detail.chosen[priceKey]);
+        if (detail.chosen) {
+          addPrice += Number(detail.chosen[priceKey]);
+          newPrice.price_usd += Number(detail.chosen.price_usd);
+          newPrice.price_pln += Number(detail.chosen.price_pln);
+          newPrice.price_eur += Number(detail.chosen.price_eur);
+        }
       });
     }
 
     if (chosenBikiniCase) {
       addPrice += Number(chosenBikiniCase.attributes[priceKey]);
+      newPrice.price_usd += Number(chosenBikiniCase.attributes.price_usd);
+      newPrice.price_pln += Number(chosenBikiniCase.attributes.price_pln);
+      newPrice.price_eur += Number(chosenBikiniCase.attributes.price_eur);
     }
     if (robeText && robeText.length > 0) {
       let count = Math.ceil(robeText.length / 5);
       addPrice += count * 100;
     }
+    console.log(newPrice);
 
     if (productData) {
-      setInTotal(Number(productData[priceKey]) + addPrice);
+      const price = {
+        price_usd: Number(productData.price_usd) + newPrice.price_usd,
+        price_pln: Number(productData.price_pln) + newPrice.price_pln,
+        price_eur: Number(productData.price_eur) + newPrice.price_eur,
+      };
+      setInTotal(price);
     }
   }, [
     chosenBikiniDetails,
@@ -185,8 +213,12 @@ export default function ProductTemplate({}: ProductProps) {
         let photosUrls = [];
         data.attributes.id = data.id;
         setProductData(data.attributes);
-
-        setInTotal(Number(data.attributes[priceKey]));
+        const newPrice = {
+          price_usd: Number(data.attributes.price_usd),
+          price_pln: Number(data.attributes.price_pln),
+          price_eur: Number(data.attributes.price_eur),
+        };
+        setInTotal(newPrice);
 
         setMainPhotoSrc(data.attributes?.main_photo?.data?.attributes?.url);
         photosUrls.push(data.attributes?.main_photo?.data?.attributes?.url);
@@ -457,7 +489,7 @@ export default function ProductTemplate({}: ProductProps) {
         image: productData.main_photo.data.attributes.url,
         name: productData.name,
         name_pl: productData.name_pl,
-        price: inTotal.toFixed(2),
+        price: inTotal,
         personalization: personalization ? personalization : null,
         details: details,
         formDetails: formDetails,
@@ -758,7 +790,8 @@ export default function ProductTemplate({}: ProductProps) {
                 placeholder={translation[language].writeHere}
               />
               <StyledInTotal>
-                {translation[language].inTotal}: {inTotal.toFixed(2)} {symbol}
+                {translation[language].inTotal}: {inTotal[priceKey].toFixed(2)}{" "}
+                {symbol}
               </StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
                 {translation[language].addToBag}
