@@ -34,6 +34,20 @@ export const StyledOneFooterPhoto = styled.img`
 `;
 // style footer links
 
+export const StyledFooterPaymentsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 1020px;
+  padding: 100px 0;
+  justify-content: center;
+  gap: 70px;
+`;
+
+export const StyledPaymentPhoto = styled.img`
+  width: 100px;
+  max-height: 100px;
+`;
+
 export const StyledFooterLinksContainer = styled.div`
   display: flex;
   align-items: center;
@@ -73,7 +87,7 @@ export const StyledFooterLinksTitle = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 25%;
+    width: 50px;
     border-bottom: 2px solid #caa871;
   }
 `;
@@ -156,4 +170,5 @@ export const StyledCopyrightContainer = styled.div`
 
 export const StyledCopyright = styled.div`
   width: 1020px;
+  text-align: center;
 `;

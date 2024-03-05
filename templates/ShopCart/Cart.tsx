@@ -1,10 +1,12 @@
 import { useRouter } from "next/router";
 import {
   CartContainer,
+  CheckboxLabel,
   StyleOneProductDetails,
   StyledBottomSummary,
   StyledCart,
   StyledCartTitle,
+  StyledCheckbox,
   StyledDelete,
   StyledEmpty,
   StyledGoBack,
@@ -57,15 +59,23 @@ export default function Cart({}: CartProps) {
   const dispatch = useDispatch();
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>();
+
+  const [privacyError, setPrivacyError] = useState(false);
 
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
   const remove = (id: any) => {
     dispatch(removeItem({ id: id }));
+  };
+
+  const handleCheckboxChange = () => {
+    setIsAccepted(!isAccepted);
+    setPrivacyError(false);
   };
 
   return (
@@ -92,7 +102,9 @@ export default function Cart({}: CartProps) {
                           </StyledProductName>
                           <StyledTopDetailsRight>
                             <StyledPrice>
-                              {item.price[priceKey].toFixed(2)} {symbol}
+                              {symbol == "$"
+                                ? symbol + item.price[priceKey].toFixed(2)
+                                : item.price[priceKey].toFixed(2) + symbol}
                             </StyledPrice>
                             <StyledDelete
                               onClick={() => {
@@ -243,25 +255,47 @@ export default function Cart({}: CartProps) {
                 <StyledSumamryTitle>
                   {translation[language].summary}
                 </StyledSumamryTitle>
+
+                <CheckboxLabel $color={privacyError ? "red" : ""}>
+                  <StyledCheckbox
+                    type="checkbox"
+                    checked={isAccepted}
+                    onChange={handleCheckboxChange}
+                  />
+                  {translation[language].privacy}
+                </CheckboxLabel>
                 <StyledBottomSummary>
                   <StyledTotalContainer>
                     <StyledTotal>{translation[language].inTotal}</StyledTotal>
                     <StyledTotalPrice>
-                      {cartItems
-                        .reduce((acc: any, curr: any) => {
-                          return acc + Number(curr.price[priceKey]);
-                        }, 0)
-                        .toFixed(2)}{" "}
-                      {symbol}
+                      {symbol == "$"
+                        ? symbol +
+                          cartItems
+                            .reduce((acc: any, curr: any) => {
+                              return acc + Number(curr.price[priceKey]);
+                            }, 0)
+                            .toFixed(2)
+                        : cartItems
+                            .reduce((acc: any, curr: any) => {
+                              return acc + Number(curr.price[priceKey]);
+                            }, 0)
+                            .toFixed(2) + symbol}
                     </StyledTotalPrice>
                   </StyledTotalContainer>
+
+                  {/* Wyświetlanie stanu checkboxa */}
+
                   <BlackButton
                     margin={"12px 0 0"}
                     onClick={() => {
-                      if (cookies.email) {
-                        router.push("/Adress");
+                      if (!isAccepted) {
+                        setPrivacyError(true);
                       } else {
-                        router.push("/CheckOutNow");
+                        if (cookies.email) {
+                          router.push("/Adress");
+                        } else {
+                          router.push("/CheckOutNow");
+                        }
                       }
                     }}
                   >
@@ -270,11 +304,11 @@ export default function Cart({}: CartProps) {
                 </StyledBottomSummary>
               </StyledProductSummary>
             </StyledProductListContainer>
-            <StyledPaymentMethod>
+            {/* <StyledPaymentMethod>
               <StyledSumamryTitle>
                 {translation[language].paymentsMethods}
               </StyledSumamryTitle>
-            </StyledPaymentMethod>
+            </StyledPaymentMethod> */}
           </>
         ) : (
           <StyledEmpty>Cart is empty</StyledEmpty>

@@ -56,7 +56,10 @@ export const OtherAttributes = ({
                 {type[priceKey] && (
                   <div>
                     {" "}
-                    +{type[priceKey]} {symbol}
+                    +
+                    {symbol == "$"
+                      ? symbol + type[priceKey]
+                      : type[priceKey] + symbol}
                   </div>
                 )}
                 {type.small_description_pl ||

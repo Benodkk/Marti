@@ -72,6 +72,7 @@ export const translation = {
     smallLineOrderConfirmation: "Check you email!",
     confirmemail: "Your account email is not confirmed",
     incorecctEmail: "Incorrect email or password",
+    privacy: "I accept the provisions of the Privacy Policy and Regulations",
   },
   pl: {
     women: "Kobiety",
@@ -148,5 +149,6 @@ export const translation = {
     smallLineOrderConfirmation: "Sprawdź pocztę email!",
     confirmemail: "Adres e-mail Twojego konta nie został potwierdzony",
     incorecctEmail: "Nieprawidłowy email lub hasło",
+    privacy: "Akceptuję postanowienia Polityki Prywatności oraz Regulamin",
   },
 };

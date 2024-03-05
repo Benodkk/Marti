@@ -45,7 +45,10 @@ export const OneBikiniCase = ({
 
       {details?.attributes[priceKey] ? (
         <StyledPrice>
-          +{details?.attributes[priceKey]} {symbol}
+          +
+          {symbol == "$"
+            ? symbol + details?.attributes[priceKey]
+            : details?.attributes[priceKey] + symbol}
         </StyledPrice>
       ) : null}
       {details?.attributes.name || details?.attributes.name_pl ? (

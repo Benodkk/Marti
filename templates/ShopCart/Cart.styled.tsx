@@ -216,6 +216,22 @@ export const StyledEmpty = styled.div`
   padding: 100px 0;
 `;
 
+// checkbox
+
+interface CheckboxLabelProps {
+  $color?: any;
+}
+
+export const CheckboxLabel = styled.label<CheckboxLabelProps>`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: ${(props) => props.$color};
+`;
+export const StyledCheckbox = styled.input`
+  cursor: pointer;
+`;
+
 // summary
 
 export const StyledProductSummary = styled.div`

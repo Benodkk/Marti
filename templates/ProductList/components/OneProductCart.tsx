@@ -56,7 +56,9 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
         A piece of short description goes in here
       </StyledOneProductShortDesc> */}
       <StyledOneProductPrice>
-        {parseFloat(product.attributes[priceKey]).toFixed(2)} {symbol}
+        {symbol == "$"
+          ? symbol + parseFloat(product.attributes[priceKey]).toFixed(2)
+          : parseFloat(product.attributes[priceKey]).toFixed(2) + symbol}
       </StyledOneProductPrice>
     </StyledOneProductCart>
   );

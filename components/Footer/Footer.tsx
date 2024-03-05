@@ -8,13 +8,21 @@ import {
   StyledFooterLinksCol,
   StyledFooterLinksContainer,
   StyledFooterLinksTitle,
+  StyledFooterPaymentsContainer,
   StyledFooterPhotoContainer,
   StyledFooterText,
   StyledFooterTitleContainer,
   StyledGoldenCircle,
   StyledOneFooterLink,
   StyledOneFooterPhoto,
+  StyledPaymentPhoto,
 } from "./Footer.styled";
+
+import Mastercard from "@/assets/mastercard.svg";
+import PayU from "@/assets/PayU.png";
+import visa from "@/assets/visa.png";
+import paypro from "@/assets/paypro.png";
+import paypal from "@/assets/paypal.png";
 
 import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { FaLocationDot, FaPhoneVolume, FaRegEnvelope } from "react-icons/fa6";
@@ -89,18 +97,18 @@ const Footer = ({}: FooterProps) => {
         <StyledOneFooterPhoto src={Inspire4.src} />
         <StyledOneFooterPhoto src={Inspire5.src} />
       </StyledFooterPhotoContainer>
+      <StyledFooterPaymentsContainer>
+        <StyledPaymentPhoto src={Mastercard.src} />
+        <StyledPaymentPhoto src={PayU.src} />
+        <StyledPaymentPhoto src={visa.src} />
+        <StyledPaymentPhoto src={paypro.src} />
+        <StyledPaymentPhoto src={paypal.src} />
+      </StyledFooterPaymentsContainer>
       <StyledFooterLinksContainer>
         <StyledFooterLinksCol>
           <StyledFooterLinksTitle>
             {language == "pl" ? "Obsługa klienta" : "Customer care"}
           </StyledFooterLinksTitle>
-          <StyledOneFooterLink
-            onClick={() => {
-              router.push("/SignIn");
-            }}
-          >
-            {language == "pl" ? "Zaloguj" : "Sign in"}
-          </StyledOneFooterLink>
           {links &&
             links.map((element: any) => {
               // Używamy instrukcji warunkowej if do sprawdzenia warunku
@@ -126,6 +134,13 @@ const Footer = ({}: FooterProps) => {
           <StyledFooterLinksTitle>
             {language == "pl" ? "Informacje" : "Information"}
           </StyledFooterLinksTitle>
+          <StyledOneFooterLink
+            onClick={() => {
+              router.push("/SignIn");
+            }}
+          >
+            {language == "pl" ? "Zaloguj" : "Sign in"}
+          </StyledOneFooterLink>
           <StyledOneFooterLink
             onClick={() => {
               router.push("/NewsList/");

@@ -80,31 +80,30 @@ export default function Adress({}: AdressProps) {
   }
 
   const buy = async () => {
-    // sendEmaill();
-    // const cartItemsIds = cartItems.map((item: any) => item.strapiId);
-    // console.log(cartItemsIds);
-    // const order = await makeOrder(
-    //   cookies.id,
-    //   cartItemsIds,
-    //   cartItems
-    //     .reduce((acc: any, curr: any) => {
-    //       return acc + Number(curr.price[priceKey]);
-    //     }, 0)
-    //     .toFixed(2) + symbol,
-    //   "Blik",
-    //   "przyjęte do realizacji",
-    //   cookies.jwt ? cookies.jwt : null
-    // );
-    // if (order) {
-    //   router.push("/ConfirmationSend?orderConfirmation=true");
-    // }
-    const data = {
-      name: "asdasd",
-      email: "daniel.kozlowski2607@gmail.com",
-      subject: "Subject",
-      message: "Message",
-    };
-    sendContactForm(data);
+    const cartItemsIds = cartItems.map((item: any) => item.strapiId);
+    console.log(cartItemsIds);
+    const order = await makeOrder(
+      cookies.id,
+      cartItemsIds,
+      cartItems
+        .reduce((acc: any, curr: any) => {
+          return acc + Number(curr.price[priceKey]);
+        }, 0)
+        .toFixed(2) + symbol,
+      "Blik",
+      "przyjęte do realizacji",
+      cookies.jwt ? cookies.jwt : null
+    );
+    if (order) {
+      // router.push("/ConfirmationSend?orderConfirmation=true");
+    }
+    // const data = {
+    //   name: "asdasd",
+    //   email: "daniel.kozlowski2607@gmail.com",
+    //   subject: "Subject",
+    //   message: "Message",
+    // };
+    // sendContactForm(data);
   };
 
   return (
@@ -129,7 +128,9 @@ export default function Adress({}: AdressProps) {
                           </StyledProductName>
                           <StyledTopDetailsRight>
                             <StyledPrice>
-                              {item.price[priceKey].toFixed(2)} {symbol}
+                              {symbol == "$"
+                                ? symbol + item.price[priceKey].toFixed(2)
+                                : item.price[priceKey].toFixed(2) + symbol}
                             </StyledPrice>
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
@@ -181,7 +182,13 @@ export default function Adress({}: AdressProps) {
                                             ? element.value.name_pl
                                             : element.value.name}
                                           {element.value[priceKey]
-                                            ? ` +${element.value[priceKey]}${symbol}`
+                                            ? ` +${
+                                                symbol == "$"
+                                                  ? symbol +
+                                                    element.value[priceKey]
+                                                  : element.value[priceKey] +
+                                                    symbol
+                                              }`
                                             : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
@@ -293,12 +300,18 @@ export default function Adress({}: AdressProps) {
                   <StyledTotalContainer>
                     <StyledTotal>{translation[language].inTotal}</StyledTotal>
                     <StyledTotalPrice>
-                      {cartItems
-                        .reduce((acc: any, curr: any) => {
-                          return acc + Number(curr.price[priceKey]);
-                        }, 0)
-                        .toFixed(2)}{" "}
-                      {symbol}
+                      {symbol == "$"
+                        ? symbol +
+                          cartItems
+                            .reduce((acc: any, curr: any) => {
+                              return acc + Number(curr.price[priceKey]);
+                            }, 0)
+                            .toFixed(2)
+                        : cartItems
+                            .reduce((acc: any, curr: any) => {
+                              return acc + Number(curr.price[priceKey]);
+                            }, 0)
+                            .toFixed(2) + symbol}
                     </StyledTotalPrice>
                   </StyledTotalContainer>
                   <BlackButton margin="20px 0 0" onClick={buy}>

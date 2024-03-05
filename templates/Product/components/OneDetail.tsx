@@ -100,7 +100,10 @@ export const OneDetail = ({
 
       {details[priceKey] ? (
         <StyledPrice>
-          +{details[priceKey]} {symbol}
+          +
+          {symbol == "$"
+            ? symbol + details[priceKey]
+            : details[priceKey] + symbol}
         </StyledPrice>
       ) : null}
       {details?.name && details?.image.data ? (

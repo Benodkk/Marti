@@ -592,8 +592,10 @@ export default function ProductTemplate({}: ProductProps) {
                   : productData.name}
               </StyledProductName>
               <StyledPrize>
-                {productData && Number(productData[priceKey]).toFixed(2)}{" "}
-                {symbol}
+                {productData &&
+                  (symbol == "$"
+                    ? symbol + Number(productData[priceKey]).toFixed(2)
+                    : Number(productData[priceKey]).toFixed(2) + symbol)}
               </StyledPrize>
               {/* <StyledOpinionRow>
                 <StyledOpinion>
@@ -790,8 +792,10 @@ export default function ProductTemplate({}: ProductProps) {
                 placeholder={translation[language].writeHere}
               />
               <StyledInTotal>
-                {translation[language].inTotal}: {inTotal[priceKey].toFixed(2)}{" "}
-                {symbol}
+                {translation[language].inTotal}:{" "}
+                {symbol == "$"
+                  ? symbol + Number(productData[priceKey]).toFixed(2)
+                  : Number(productData[priceKey]).toFixed(2) + symbol}
               </StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
                 {translation[language].addToBag}

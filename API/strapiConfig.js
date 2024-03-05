@@ -445,6 +445,7 @@ export const makeOrder = async (
       status,
     },
   };
+  console.log(data);
   try {
     const response = await postUserData(`orders`, data, code);
     if (response.status == 200) {
