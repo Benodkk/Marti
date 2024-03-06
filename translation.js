@@ -31,6 +31,7 @@ export const translation = {
     cart: "Cart",
     back: "Back",
     remove: "Remove",
+    delete: "Delete",
     formDetails: "Form Details",
     checkout: "Check out",
     paymentsMethods: "Payment methods",
@@ -112,6 +113,7 @@ export const translation = {
     robeFont: "Czcinoka na szlafroku",
     robeText: "Napis na szlafroku",
     writeHere: "Pisz tutaj...",
+    delete: "Usuń",
     robeInfoText:
       "Ważne: Proszę wpisać dokładny tekst, który pojawi się z tyłu szaty. Duże i małe litery mają znaczenie. Jeśli chcesz umieścić symbol instagramu przed pseudonimem, napisz @",
     yourText: "Twój tekst",

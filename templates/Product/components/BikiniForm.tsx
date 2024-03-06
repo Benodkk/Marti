@@ -45,7 +45,32 @@ export const BikiniForm = ({
     }
 
     // Aktualizacja stanu z wybranymi zdjęciami
-    setImages([...images, ...Array.from(e.target.files)]);
+    // if (images[0]) {
+    //   uploadImageToCloudinary(images[0]);
+    // }
+  };
+
+  const uploadImageToCloudinary = async (file: any) => {
+    // console.log(file);
+    // const formData = new FormData();
+    // formData.append("file", file);
+    // formData.append("upload_preset", "your_upload_preset"); // Musisz utworzyć preset przesyłania w panelu Cloudinary
+    // try {
+    //   const response = await fetch(
+    //     `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`,
+    //     {
+    //       method: "POST",
+    //       body: formData,
+    //     }
+    //   );
+    //   if (!response.ok) {
+    //     throw new Error("Network response was not ok");
+    //   }
+    //   const data = await response.json();
+    //   return data; // Zwraca obiekt zawierający m.in. URL do przesłanego obrazu
+    // } catch (error) {
+    //   console.error("Error uploading image:", error);
+    // }
   };
 
   return (
@@ -55,7 +80,12 @@ export const BikiniForm = ({
           {field.input_photos ? (
             <StyledPhotoInputContainer key={index}>
               <InputIamges
-                onChange={handleImageChange}
+                onChange={(e: any) =>
+                  updateItemValueById(
+                    field.id,
+                    "https://res.cloudinary.com/deduvxogk/image/upload/v1709238441/40_A08_AB_0_D3_BC_4_C02_9260_F2_ADA_3_EA_1_B64_95428129c6.jpg"
+                  )
+                }
                 label={
                   language == "pl" && field.name_pl ? field.name_pl : field.name
                 }

@@ -81,6 +81,25 @@ export const FormGroup = styled.div`
   width: 100%;
 `;
 
+export const StyledFiledCol = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const StyledFiledRow = styled.div`
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
+
+export const StyledHoverButton = styled.button`
+  color: red;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 export const FormField = styled.input`
   font-family: inherit;
   width: 100%;
@@ -137,6 +156,12 @@ export const FormLabelPhoto = styled.label`
   font-size: 1rem;
   color: gray; // Ustaw odpowiedni kolor
   font-weight: 500;
+`;
+
+export const StyledError = styled.div`
+  font-size: 20px;
+  margin: 10px 0;
+  font-weight: 600;
 `;
 
 export const FormFieldPhoto = styled.input`

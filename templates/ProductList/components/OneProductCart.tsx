@@ -32,12 +32,14 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
 
   function ImageComponent(imageUrl: any) {
     // Dodaj transformacje do URL-a obrazu
-    const transformedImageUrl = imageUrl.replace(
-      "/upload/",
-      "/upload/w_400,q_80/"
-    );
+    if (imageUrl) {
+      const transformedImageUrl = imageUrl.replace(
+        "/upload/",
+        "/upload/w_400,q_80/"
+      );
 
-    return transformedImageUrl;
+      return transformedImageUrl;
+    }
   }
 
   const pushToProduct = (product: any) => {
