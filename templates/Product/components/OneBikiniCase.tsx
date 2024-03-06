@@ -33,12 +33,25 @@ export const OneBikiniCase = ({
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
+
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_200,q_80/"
+    );
+
+    return transformedImageUrl;
+  }
+
   return (
     <StyledOneDetailContainer>
       <StyledOneDetail $active={active} onClick={onClick}>
         <StyledDetailPhotoContainer>
           <StyledDetailPhoto
-            src={details?.attributes.main_photo?.data?.attributes?.url}
+            src={ImageComponent(
+              details?.attributes.main_photo?.data?.attributes?.url
+            )}
           />
         </StyledDetailPhotoContainer>
       </StyledOneDetail>

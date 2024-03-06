@@ -30,6 +30,16 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
   const language = useSelector(selectLanguage);
   const router = useRouter();
 
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_400,q_80/"
+    );
+
+    return transformedImageUrl;
+  }
+
   const pushToProduct = (product: any) => {
     router.push({
       pathname: `/product/${product}`,
@@ -42,7 +52,9 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
       <StyledOneProductPhotoContainer>
         <StyledOneProductPhoto
           onClick={() => pushToProduct(product.id)}
-          src={product?.attributes.main_photo?.data?.attributes.url}
+          src={ImageComponent(
+            product?.attributes.main_photo?.data?.attributes.url
+          )}
         />
       </StyledOneProductPhotoContainer>
 

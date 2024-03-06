@@ -60,12 +60,21 @@ export default function Cart({}: CartProps) {
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
   const [isAccepted, setIsAccepted] = useState(false);
+  console.log(cartItems);
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>();
 
   const [privacyError, setPrivacyError] = useState(false);
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_500,q_80/"
+    );
 
+    return transformedImageUrl;
+  }
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
@@ -92,7 +101,7 @@ export default function Cart({}: CartProps) {
                 {cartItems.map((item: any) => {
                   return (
                     <StyledOneProduct key={item.id}>
-                      <StyledOneProductPhoto src={item.image} />
+                      <StyledOneProductPhoto src={ImageComponent(item.image)} />
                       <StyleOneProductDetails>
                         <StyledTopDetails>
                           <StyledProductName>

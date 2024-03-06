@@ -75,6 +75,16 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
       : name.attributes.name;
   };
 
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_400,q_80/"
+    );
+
+    return transformedImageUrl;
+  }
+
   return (
     <StyledBestsellers>
       <StyledSmallGoldText>
@@ -135,7 +145,9 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
                       : parseFloat(product.attributes[priceKey]).toFixed(2) +
                         symbol
                   }
-                  image={product.attributes?.main_photo?.data?.attributes?.url}
+                  image={ImageComponent(
+                    product.attributes?.main_photo?.data?.attributes?.url
+                  )}
                   id={product.id}
                   key={product.id}
                 />

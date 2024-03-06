@@ -66,6 +66,17 @@ export const OneDetail = ({
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
+
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_200,q_80/"
+    );
+
+    return transformedImageUrl;
+  }
+
   return (
     <StyledOneDetailContainer>
       {moreDetails && (
@@ -82,11 +93,11 @@ export const OneDetail = ({
         <StyledDetailPhotoContainer>
           {details?.image?.data ? (
             <StyledDetailPhoto
-              src={
+              src={ImageComponent(
                 details?.smallImage?.data
                   ? details?.smallImage?.data?.attributes.url
                   : details?.image && details?.image?.data?.attributes.url
-              }
+              )}
             />
           ) : (
             <StyledDetailLabel>
