@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyledBlackButtonCookie, StyledCookies } from "./CookieConsent.styled";
 import { BlackButton } from "../BlackButton/BlackButton";
+import { translation } from "@/translation";
+import { useSelector } from "react-redux";
+import { selectLanguage } from "@/redux/languageSlice";
 
 const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
-
+  const language = useSelector(selectLanguage);
   useEffect(() => {
     const consent = localStorage.getItem("cookieConsent");
 
@@ -22,9 +25,9 @@ const CookieConsent = () => {
 
   return (
     <StyledCookies>
-      Ta strona używa plików cookies.
+      {translation[language].cookieMessage}
       <StyledBlackButtonCookie onClick={handleAccept}>
-        Akceptuję
+        {translation[language].accept}
       </StyledBlackButtonCookie>
     </StyledCookies>
   );

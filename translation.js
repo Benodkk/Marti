@@ -84,11 +84,15 @@ export const translation = {
     resetPasswordTitle: "Reset password",
     resetPassword: "You have reset your password",
     resetPasswordSecond: "Check your email",
+    cookieMessage:
+      "We use cookies to provide services at the highest level. By continuing to use the website, you agree to their use.",
+    accept: "Accept",
   },
   pl: {
     women: "Kobiety",
     men: "Mężczyźni",
     accessories: "Akcesoria",
+    accept: "Akceptuje",
     heels: "Buty",
     sportswear: "Sportswear",
     contact: "Kontakt",
@@ -170,5 +174,7 @@ export const translation = {
     resetPasswordTitle: "Zresetuj hasło",
     resetPassword: "Zresetowałeś hasło",
     resetPasswordSecond: "Sprawdź pocztę email",
+    cookieMessage:
+      "Korzystamy z plików cookies, aby świadczyć usługi na najwyższym poziomie. Dalsze korzystanie ze strony oznacza, że zgadzasz się na ich użycie.",
   },
 };
