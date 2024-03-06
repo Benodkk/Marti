@@ -10,7 +10,6 @@ export const createProfile = async (email, first_name, last_name, password) => {
   };
   try {
     const response = await api.post("customers", data);
-    console.log(response);
   } catch (error) {
     console.log(error);
   }

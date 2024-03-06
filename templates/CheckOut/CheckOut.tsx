@@ -54,7 +54,6 @@ export default function CheckOutTemplate() {
       alert("Proszę wprowadzić nazwę użytkownika i hasło!");
     } else {
       const proces = await signIn(email, password);
-      console.log(proces);
       if (proces.user) {
         const newUserData = {
           email: proces.user.email,

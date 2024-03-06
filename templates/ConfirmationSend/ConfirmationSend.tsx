@@ -39,6 +39,9 @@ export default function ConfirmationSendTemplate({}: ConfirmationSendProps) {
         setFirstLine(translation[language].firstLine);
         setSecondLine(translation[language].secondLineOrderConfirmation);
         setSmallLine(translation[language].smallLineOrderConfirmation);
+      } else if (router.query.resetPassword == "true") {
+        setFirstLine(translation[language].resetPassword);
+        setSecondLine(translation[language].resetPasswordSecond);
       }
     }
   }, [router, language]);

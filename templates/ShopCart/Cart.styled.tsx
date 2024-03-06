@@ -227,6 +227,7 @@ export const CheckboxLabel = styled.label<CheckboxLabelProps>`
   align-items: center;
   gap: 10px;
   color: ${(props) => props.$color};
+  margin-bottom: 15px;
 `;
 export const StyledCheckbox = styled.input`
   cursor: pointer;

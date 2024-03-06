@@ -67,7 +67,6 @@ interface ProductProps {}
 export default function ProductTemplate({}: ProductProps) {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
-  console.log(priceKey);
 
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
@@ -184,7 +183,6 @@ export default function ProductTemplate({}: ProductProps) {
       let count = Math.ceil(robeText.length / 5);
       addPrice += count * 100;
     }
-    console.log(newPrice);
 
     if (productData) {
       const price = {
@@ -353,7 +351,9 @@ export default function ProductTemplate({}: ProductProps) {
     if (bikiniDetails) {
       if (
         !chosenBikiniDetails.some(
-          (element: any) => element.typeName === "Bra Style"
+          (element: any) =>
+            element.typeName === "Bra Style" &&
+            bikiniDetails.some((element: any) => element.name === "Bra Style")
         )
       ) {
         errors.push(`${translation[language].personalization} - Bra style`);
@@ -361,7 +361,8 @@ export default function ProductTemplate({}: ProductProps) {
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Cup Size"
-        )
+        ) &&
+        bikiniDetails.some((element: any) => element.name === "Cup Size")
       ) {
         errors.push(`${translation[language].personalization} - Cup size`);
       }
@@ -370,26 +371,31 @@ export default function ProductTemplate({}: ProductProps) {
           (element: any) => element.typeName === "Push Up"
         )
       ) {
-        errors.push(`${translation[language].personalization} - Push up`);
+        errors.push(`${translation[language].personalization} - Push up`) &&
+          bikiniDetails.some((element: any) => element.name === "Push Up");
       }
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Bottom Backs"
-        )
+        ) &&
+        bikiniDetails.some((element: any) => element.name === "Bottom Backs")
       ) {
         errors.push(`${translation[language].personalization} - Bottom Back`);
       }
 
-      const backStraps = chosenBikiniDetails.find(
-        (element: any) => element.typeName === "Back Straps"
-      );
+      const backStraps =
+        chosenBikiniDetails.find(
+          (element: any) => element.typeName === "Back Straps"
+        ) &&
+        bikiniDetails.some((element: any) => element.name === "Back Straps");
 
       if (
-        !backStraps ||
-        (backStraps.option.name == "Connectors" &&
-          !chosenBikiniDetails.some(
-            (element: any) => element.typeName === "Back Connectors"
-          ))
+        (!backStraps ||
+          (backStraps.option?.name == "Connectors" &&
+            !chosenBikiniDetails.some(
+              (element: any) => element.typeName === "Back Connectors"
+            ))) &&
+        bikiniDetails.some((element: any) => element.name === "Back Straps")
       ) {
         errors.push(`${translation[language].personalization} - Back straps`);
       }
@@ -794,8 +800,8 @@ export default function ProductTemplate({}: ProductProps) {
               <StyledInTotal>
                 {translation[language].inTotal}:{" "}
                 {symbol == "$"
-                  ? symbol + Number(productData[priceKey]).toFixed(2)
-                  : Number(productData[priceKey]).toFixed(2) + symbol}
+                  ? symbol + Number(inTotal[priceKey]).toFixed(2)
+                  : Number(inTotal[priceKey]).toFixed(2) + symbol}
               </StyledInTotal>
               <BlackButton onClick={add} margin="10px 0 0">
                 {translation[language].addToBag}

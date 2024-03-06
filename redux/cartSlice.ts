@@ -23,6 +23,9 @@ const cartSlice = createSlice({
         (item: any) => item.id !== action.payload.id
       );
     },
+    clearCart: (state) => {
+      state.items = []; // Resetowanie tablicy items do pustej tablicy
+    },
   },
 });
 
@@ -36,6 +39,6 @@ export const selectTotalPrice = createSelector([selectCartItems], (items) =>
   items.reduce((total: any, item: any) => total + 1 * item.price, 0)
 );
 
-export const { addItem, removeItem } = cartSlice.actions;
+export const { addItem, removeItem, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

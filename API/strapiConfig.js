@@ -338,7 +338,6 @@ export const fetchContacts = async () => {
 
 const putUserData = async (endpoint, code, putData) => {
   const apiAuthCodee = `Bearer ${code}`;
-  console.log(putData);
   try {
     const data = await axios.put(`${prodUrl}${endpoint}`, putData && putData, {
       headers: {
@@ -365,16 +364,13 @@ const getUserData = async (endpoint, code) => {
     console.log(error);
   }
 };
-const be = async (xd) => {
-  console.log(xd);
-};
 
 const postUserData = async (endpoint, postDataa, code) => {
   const apiAuthCodee = `Bearer ${code}`;
   try {
     const data = await axios.post(
       `${prodUrl}${endpoint}`,
-      postDataa && postDataa,
+      postDataa,
       code
         ? {
             headers: {
@@ -409,21 +405,18 @@ export const changeAdress = async (
     city: city,
     phone_number,
   };
-  console.log(formData);
-  const putData = JSON.stringify(formData);
 
   try {
     const response = await putUserData(`users/${userId}`, code, formData);
-    console.log(response);
-    return data;
+    return response;
   } catch {}
 };
 
-export const getUserInfo = async (id) => {
+export const getUserInfo = async (id, code) => {
   try {
-    const response = await getUserData(`user/${id}`);
-    const data = response.data;
-    return data;
+    const response = await getUserData(`users/${id}?populate=*`, code);
+
+    return response;
   } catch {}
 };
 
@@ -433,7 +426,12 @@ export const makeOrder = async (
   total_price,
   payment_type,
   status,
-  code
+  code,
+  adress,
+  phone,
+  email,
+  client_name,
+  details
 ) => {
   let responseStatus = false;
   const data = {
@@ -443,9 +441,13 @@ export const makeOrder = async (
       total_price: total_price,
       payment_type,
       status,
+      adress: adress,
+      phone: phone,
+      email: email,
+      client_name: client_name,
+      details,
     },
   };
-  console.log(data);
   try {
     const response = await postUserData(`orders`, data, code);
     if (response.status == 200) {
@@ -453,4 +455,30 @@ export const makeOrder = async (
     }
   } catch {}
   return responseStatus;
+};
+
+export const resetPasswordSend = async (email) => {
+  try {
+    const response = await postData("auth/forgot-password", {
+      email,
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const resetPassword = async (code, password, passwordConfirmation) => {
+  try {
+    const response = await postData("auth/reset-password", {
+      code,
+      password,
+      passwordConfirmation,
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

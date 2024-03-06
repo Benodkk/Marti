@@ -42,7 +42,7 @@ import {
   StyledTopDetailsRight,
 } from "../ShopCart/Cart.styled";
 import { useSelector } from "react-redux";
-import { removeItem, selectCartItems } from "@/redux/cartSlice";
+import { clearCart, removeItem, selectCartItems } from "@/redux/cartSlice";
 import { IoEyeOutline } from "react-icons/io5";
 import { Modal } from "@/components/Modal/Modal";
 import { useDispatch } from "react-redux";
@@ -73,15 +73,125 @@ export default function Adress({}: AdressProps) {
 
   const [code, setCode] = useState<any>();
 
-  useEffect(() => {}, [cookies]);
-
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
   }
 
+  const headingGen = (text: string, lvl: number) => {
+    return {
+      type: "heading",
+      level: lvl,
+      children: [
+        {
+          text: text,
+          type: "text",
+        },
+      ],
+    };
+  };
+
+  const paragraphGen = (text: string) => {
+    return {
+      type: "paragraph",
+      children: [
+        {
+          text: text,
+          type: "text",
+        },
+      ],
+    };
+  };
+
+  const paragraphGenBold = (text: string) => {
+    return {
+      type: "paragraph",
+      children: [
+        {
+          bold: true,
+          text: text,
+          type: "text",
+        },
+      ],
+    };
+  };
+
   const buy = async () => {
+    const details: any = [];
+    // począrtek detali
+    const heading = headingGen("Produkty", 1);
+    details.push(heading);
+
+    cartItems.forEach((item: any, index: number) => {
+      // nagłowek
+      const heading3 = headingGen((index + 1).toString() + ". " + item.name, 3);
+      details.push(heading3);
+
+      if (item.personalization.length > 0) {
+        // magłowek szerczógółów
+        const title = paragraphGenBold(`Personalizacja:`);
+        details.push(title);
+        item.personalization.forEach((pole: any) => {
+          const paragraph1 = paragraphGen(
+            ` ${pole.type}: ${pole.name} ${
+              pole[priceKey] ? "+" + pole[priceKey] + symbol : ""
+            }`
+          );
+          details.push(paragraph1);
+        });
+
+        if (item.bikiniCase) {
+          // magłowek szerczógółów
+          const bikiniCasetitle = paragraphGenBold(`Bikini case:`);
+          details.push(bikiniCasetitle);
+          // bikini case
+          const bikiniCase = paragraphGen(
+            item.bikiniCase.attributes.name +
+              ": " +
+              item.bikiniCase.attributes[priceKey] +
+              symbol
+          );
+          details.push(bikiniCase);
+        }
+      }
+
+      if (item.formDetails.length > 0) {
+        // magłowek szerczógółów
+        const paragraph1 = paragraphGenBold(`Formularz:`);
+        details.push(paragraph1);
+
+        // formlarz
+        item.formDetails.forEach((pole: any) => {
+          const paragraph1 = paragraphGen(`${pole.name_pl}: ${pole.value}`);
+          details.push(paragraph1);
+        });
+      }
+      if (item.details.length > 0) {
+        // magłowek szerczógółów
+        const paragraph1 = paragraphGenBold(`Szczegóły:`);
+        details.push(paragraph1);
+
+        // details
+        item.details.forEach((pole: any) => {
+          const paragraph1 = paragraphGen(
+            `${pole.name}: ${pole.value.name} ${
+              pole.value[priceKey] ? `+ ${pole.value[priceKey]} ${symbol}` : ""
+            } `
+          );
+          details.push(paragraph1);
+        });
+      }
+
+      // magłowek szerczógółów
+      if (item.additionalNotes) {
+        const paragraph11 = paragraphGenBold(`Dodatkowe informacje:`);
+        details.push(paragraph11);
+        // dodatkowe informacje
+        const paragraph111 = paragraphGen(item.additionalNotes);
+        details.push(paragraph111);
+      }
+    });
+
     const cartItemsIds = cartItems.map((item: any) => item.strapiId);
-    console.log(cartItemsIds);
     const order = await makeOrder(
       cookies.id,
       cartItemsIds,
@@ -92,18 +202,18 @@ export default function Adress({}: AdressProps) {
         .toFixed(2) + symbol,
       "Blik",
       "przyjęte do realizacji",
-      cookies.jwt ? cookies.jwt : null
+      cookies.jwt ? cookies.jwt : null,
+      `${personalData.country}, ${personalData.city} ${personalData.postCode} ${personalData.street}`,
+      personalData.phone,
+      personalData.email,
+      `${personalData.name} ${personalData.secondName}`,
+      details
     );
+
     if (order) {
-      // router.push("/ConfirmationSend?orderConfirmation=true");
+      dispatch(clearCart());
+      router.push("/ConfirmationSend?orderConfirmation=true");
     }
-    // const data = {
-    //   name: "asdasd",
-    //   email: "daniel.kozlowski2607@gmail.com",
-    //   subject: "Subject",
-    //   message: "Message",
-    // };
-    // sendContactForm(data);
   };
 
   return (

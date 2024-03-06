@@ -255,53 +255,54 @@ export default function Cart({}: CartProps) {
                 <StyledSumamryTitle>
                   {translation[language].summary}
                 </StyledSumamryTitle>
+                <div>
+                  <CheckboxLabel $color={privacyError ? "red" : ""}>
+                    <StyledCheckbox
+                      type="checkbox"
+                      checked={isAccepted}
+                      onChange={handleCheckboxChange}
+                    />
+                    {translation[language].privacy}
+                  </CheckboxLabel>
+                  <StyledBottomSummary>
+                    <StyledTotalContainer>
+                      <StyledTotal>{translation[language].inTotal}</StyledTotal>
+                      <StyledTotalPrice>
+                        {symbol == "$"
+                          ? symbol +
+                            cartItems
+                              .reduce((acc: any, curr: any) => {
+                                return acc + Number(curr.price[priceKey]);
+                              }, 0)
+                              .toFixed(2)
+                          : cartItems
+                              .reduce((acc: any, curr: any) => {
+                                return acc + Number(curr.price[priceKey]);
+                              }, 0)
+                              .toFixed(2) + symbol}
+                      </StyledTotalPrice>
+                    </StyledTotalContainer>
 
-                <CheckboxLabel $color={privacyError ? "red" : ""}>
-                  <StyledCheckbox
-                    type="checkbox"
-                    checked={isAccepted}
-                    onChange={handleCheckboxChange}
-                  />
-                  {translation[language].privacy}
-                </CheckboxLabel>
-                <StyledBottomSummary>
-                  <StyledTotalContainer>
-                    <StyledTotal>{translation[language].inTotal}</StyledTotal>
-                    <StyledTotalPrice>
-                      {symbol == "$"
-                        ? symbol +
-                          cartItems
-                            .reduce((acc: any, curr: any) => {
-                              return acc + Number(curr.price[priceKey]);
-                            }, 0)
-                            .toFixed(2)
-                        : cartItems
-                            .reduce((acc: any, curr: any) => {
-                              return acc + Number(curr.price[priceKey]);
-                            }, 0)
-                            .toFixed(2) + symbol}
-                    </StyledTotalPrice>
-                  </StyledTotalContainer>
+                    {/* Wyświetlanie stanu checkboxa */}
 
-                  {/* Wyświetlanie stanu checkboxa */}
-
-                  <BlackButton
-                    margin={"12px 0 0"}
-                    onClick={() => {
-                      if (!isAccepted) {
-                        setPrivacyError(true);
-                      } else {
-                        if (cookies.email) {
-                          router.push("/Adress");
+                    <BlackButton
+                      margin={"12px 0 0"}
+                      onClick={() => {
+                        if (!isAccepted) {
+                          setPrivacyError(true);
                         } else {
-                          router.push("/CheckOutNow");
+                          if (cookies.email) {
+                            router.push("/Adress");
+                          } else {
+                            router.push("/CheckOutNow");
+                          }
                         }
-                      }
-                    }}
-                  >
-                    {translation[language].checkout}
-                  </BlackButton>
-                </StyledBottomSummary>
+                      }}
+                    >
+                      {translation[language].checkout}
+                    </BlackButton>
+                  </StyledBottomSummary>
+                </div>
               </StyledProductSummary>
             </StyledProductListContainer>
             {/* <StyledPaymentMethod>

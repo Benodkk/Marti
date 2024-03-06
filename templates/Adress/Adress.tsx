@@ -22,7 +22,7 @@ import { StyledErrorTitle } from "@/components/Error/Error.styled";
 import { useSelector } from "react-redux";
 import { selectLanguage } from "@/redux/languageSlice";
 import { translation } from "@/translation";
-import { changeAdress } from "@/API/strapiConfig";
+import { changeAdress, getUserInfo } from "@/API/strapiConfig";
 import { useCookies } from "react-cookie";
 import { selectEntireForm } from "@/redux/formSlice";
 
@@ -56,7 +56,24 @@ export default function Adress({}: AdressProps) {
     setPhone(personalData.phone);
     setCity(personalData.city);
     setEmail(personalData.email);
+    if (cookies.id) {
+      fetchData();
+    }
   }, [cookies, personalData]);
+
+  const fetchData = async () => {
+    const data = await getUserInfo(cookies.id, cookies.jwt);
+    if (data) {
+      setName(data.first_name);
+      setSecondName(data.second_name);
+      setStreet(data.street);
+      setPostCode(data.post_code);
+      setCountry(data.country);
+      setPhone(data.phone_number);
+      setCity(data.city);
+      setEmail(data.email);
+    }
+  };
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
@@ -90,7 +107,6 @@ export default function Adress({}: AdressProps) {
     if (emptyFields.length === 0) {
       // Jeśli nie ma pustych pól, wyślij dane
       dispatch(updateFormData(formData));
-      console.log(cookies);
 
       await changeAdress(
         name,

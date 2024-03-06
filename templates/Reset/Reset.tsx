@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
 import {
@@ -10,11 +10,16 @@ import {
   StyledOtherActions,
   StyledSignInButton,
   StyledSignInSignIn,
-} from "./SignIn.styled";
+} from "@/templates/SignIn/SignIn.styled";
 import { Input } from "@/components/Input/Input";
 import { BlackButton } from "@/components/BlackButton/BlackButton";
 import { useRouter } from "next/router";
-import { fetchColors, signIn } from "@/API/strapiConfig";
+import {
+  fetchColors,
+  resetPassword,
+  resetPasswordSend,
+  signIn,
+} from "@/API/strapiConfig";
 import { useSelector } from "react-redux";
 import { selectUserData, setUser } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
@@ -27,43 +32,38 @@ export default function SignIn({}: SignInProps) {
   const [cookies, setCookie] = useCookies(["jwt", "email", "id"]); // Dodaj to na początku Twojej funkcji handleLogin
 
   const language = useSelector(selectLanguage);
-  const { email, id, confirmed } = useSelector(selectUserData);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const [typeEmail, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatpassword, setRepeatPassword] = useState("");
 
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [code, setCode] = useState<any>("");
+
+  useEffect(() => {
+    if (router.query.code) {
+      setCode(router.query.code);
+    }
+  }, [router.query]);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!typeEmail || !password) {
-      alert("Proszę wprowadzić nazwę użytkownika i hasło!");
+    let newErrors: any = [];
+    if (password !== repeatpassword) {
+      newErrors.push(translation[language].repeatpasswordError);
+    }
+    if (password.length != 0 && password.length < 6) {
+      newErrors.push(translation[language].passwordLengthErrorL);
+    }
+    if (newErrors.length > 0) {
+      setErrorMessage(newErrors);
+      setShowError(true);
     } else {
-      const proces = await signIn(typeEmail, password);
-      if (proces.user) {
-        const newUserData = {
-          email: proces.user.email,
-          id: proces.user.id,
-          confirmed: proces.user.confirmed,
-        };
-
-        setCookie("jwt", proces.jwt, { path: "/" }); // Tutaj zapisujesz token JWT do ciasteczka 'jwt'
-        setCookie("email", proces.user.email, { path: "/" });
-        setCookie("id", proces.user.id, { path: "/" });
-
-        dispatch(setUser(newUserData));
-        router.push("/Profile");
-      } else {
-        if (proces.response.data.error.message.includes("confirmed")) {
-          setShowError(true);
-          setErrorMessage(translation[language].confirmemail);
-        } else if (proces.response.data.error.message.includes("password")) {
-          setShowError(true);
-          setErrorMessage(translation[language].incorecctEmail);
-        }
+      const response = await resetPassword(code, password, repeatpassword);
+      if (response.user) {
+        router.push("/SignIn");
       }
     }
   };
@@ -72,32 +72,26 @@ export default function SignIn({}: SignInProps) {
     <StyledSignInContainer>
       <StyledSignIn>
         <StyledSignInSignIn>
-          <StyledSignInTitle>{translation[language].signIn}</StyledSignInTitle>
+          <StyledSignInTitle>
+            {translation[language].resetPasswordTitle}
+          </StyledSignInTitle>
           <form onSubmit={handleLogin}>
-            <Input
-              type="text"
-              value={typeEmail}
-              onChange={(e: any) => setEmail(e.target.value)}
-              label="E-mail"
-            />
             <Input
               type="password"
               value={password}
               onChange={(e: any) => setPassword(e.target.value)}
               label={translation[language].password}
             />
+            <Input
+              type="password"
+              value={repeatpassword}
+              onChange={(e: any) => setRepeatPassword(e.target.value)}
+              label={translation[language].repeatPassword}
+            />
             <BlackButton margin={"30px 0 0"} type="submit">
-              {translation[language].signIn}
+              Reset
             </BlackButton>
           </form>
-          <StyledOtherActions>
-            <StyledOneAction onClick={() => router.push("/ResetPassword")}>
-              {translation[language].forgotPassword}
-            </StyledOneAction>
-            <StyledOneAction onClick={() => router.push("/SignUp")}>
-              {translation[language].createAccount}
-            </StyledOneAction>
-          </StyledOtherActions>
         </StyledSignInSignIn>
       </StyledSignIn>
       <Error showError={showError} setShowError={setShowError}>

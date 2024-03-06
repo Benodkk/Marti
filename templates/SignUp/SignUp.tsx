@@ -66,13 +66,12 @@ export default function SignUp({}: SignUpProps) {
     }
     if (password.length != 0 && password.length < 6) {
       newErrors.push(translation[language].passwordLengthErrorL);
-      if (newErrors.length > 0) {
-      }
+    }
+    if (newErrors.length > 0) {
       setErrors(newErrors);
       setShowError(true);
     } else {
       const signUpAction = await signUp(email, password);
-      console.log(signUpAction);
       if (signUpAction?.user) {
         router.push("/ConfirmationSend?emailConfirmationSend=true");
       } else {
@@ -114,13 +113,13 @@ export default function SignUp({}: SignUpProps) {
               label="E-mail"
             />
             <Input
-              type="text"
+              type="password"
               value={password}
               onChange={(e: any) => setPassword(e.target.value)}
               label={translation[language].password}
             />
             <Input
-              type="text"
+              type="password"
               value={repeatpassword}
               onChange={(e: any) => setRepeatPassword(e.target.value)}
               label={translation[language].repeatPassword}
