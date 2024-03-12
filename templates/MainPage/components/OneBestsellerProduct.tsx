@@ -27,7 +27,8 @@ export const OneBestsellerProduct = ({
 
   const pushToList = (product: any) => {
     router.push({
-      pathname: `/product/${product}`,
+      pathname: `/product/SpecificProduct/`,
+      query: { product: product },
     });
   };
   return (

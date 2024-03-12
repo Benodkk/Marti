@@ -44,7 +44,8 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
 
   const pushToProduct = (product: any) => {
     router.push({
-      pathname: `/product/${product}`,
+      pathname: `/product/SpecificProduct/`,
+      query: { product: product },
     });
   };
 

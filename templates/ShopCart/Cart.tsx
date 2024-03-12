@@ -86,6 +86,7 @@ export default function Cart({}: CartProps) {
     setIsAccepted(!isAccepted);
     setPrivacyError(false);
   };
+  console.log(cartItems);
 
   return (
     <CartContainer>
@@ -173,7 +174,9 @@ export default function Cart({}: CartProps) {
                                           </strong>{" "}
                                           <StyledOneDetailFromList>
                                             {" "}
-                                            {element.value}
+                                            {element.input_photos
+                                              ? element.value.length
+                                              : element.value}
                                           </StyledOneDetailFromList>
                                         </StyledOneDetailContainer>
                                       );
@@ -243,7 +246,8 @@ export default function Cart({}: CartProps) {
                               <StyledOneDetailBoldLink
                                 onClick={() => {
                                   router.push({
-                                    pathname: `/product/${item.bikiniCase.id}`,
+                                    pathname: `/product/SpecificProduct/`,
+                                    query: { product: item.bikiniCase.id },
                                   });
                                 }}
                               >

@@ -21,7 +21,7 @@ import {
 import Mastercard from "@/assets/mastercard.svg";
 import PayU from "@/assets/PayU.png";
 import visa from "@/assets/visa.png";
-import paypro from "@/assets/paypro.png";
+import blik from "@/assets/blik.png";
 import paypal from "@/assets/paypal.png";
 
 import { FaInstagram, FaWhatsapp } from "react-icons/fa";
@@ -94,15 +94,18 @@ const Footer = ({}: FooterProps) => {
         <StyledOneFooterPhoto src={Inspire1.src} />
         <StyledOneFooterPhoto src={Inspire2.src} />
         <StyledOneFooterPhoto src={Inspire3.src} />
+
         <StyledOneFooterPhoto src={Inspire4.src} />
+
         <StyledOneFooterPhoto src={Inspire5.src} />
       </StyledFooterPhotoContainer>
       <StyledFooterPaymentsContainer>
         <StyledPaymentPhoto src={Mastercard.src} />
-        <StyledPaymentPhoto src={PayU.src} />
         <StyledPaymentPhoto src={visa.src} />
-        <StyledPaymentPhoto src={paypro.src} />
+        <StyledPaymentPhoto src={PayU.src} />
+
         <StyledPaymentPhoto src={paypal.src} />
+        <StyledPaymentPhoto src={blik.src} />
       </StyledFooterPaymentsContainer>
       <StyledFooterLinksContainer>
         <StyledFooterLinksCol>

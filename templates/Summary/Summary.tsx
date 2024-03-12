@@ -19,6 +19,7 @@ import {
   StyledCouponContainer,
   StyledBack,
   StyledPointer,
+  StyledCopuonActiveContainer,
 } from "./Summary.styled";
 import { useRouter } from "next/router";
 import {
@@ -55,7 +56,7 @@ import { selectLanguage } from "@/redux/languageSlice";
 import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { translation } from "@/translation";
 import { useCookies } from "react-cookie";
-import { makeOrder } from "@/API/strapiConfig";
+import { fetchCoupon, makeOrder } from "@/API/strapiConfig";
 
 interface AdressProps {}
 export default function Adress({}: AdressProps) {
@@ -72,6 +73,14 @@ export default function Adress({}: AdressProps) {
   const [modalContent, setModalContent] = useState<any>();
 
   const [code, setCode] = useState<any>();
+
+  // coupon
+
+  const [couponActive, setCouponActive] = useState(false);
+  const [couponValue, setCouponValue] = useState<any>(0);
+  const [couponName, setCouponName] = useState<any>("");
+
+  const [couponError, setCouponError] = useState(false);
 
   function stripHtml(html: any) {
     return html.replace(/<[^>]*>?/gm, "");
@@ -114,92 +123,140 @@ export default function Adress({}: AdressProps) {
       ],
     };
   };
+  const imageBlockGen = (imageUrl: any, linkText: any) => {
+    return {
+      type: "paragraph", // Typ bloku, 'paragraph' w tym przypadku
+      children: [
+        {
+          text: "", // Pusty tekst przed linkiem
+          type: "text",
+        },
+        {
+          type: "link", // Typ elementu, 'link' w tym przypadku
+          url: imageUrl, // URL prowadzący do obrazu
+          children: [
+            {
+              text: linkText, // Tekst wyświetlany jako link
+              type: "text",
+            },
+          ],
+        },
+        {
+          text: "", // Pusty tekst po linku
+          type: "text",
+        },
+      ],
+    };
+  };
+
+  const uploadImageToCloudinary = async (file: any) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      typeof process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME == "string"
+        ? process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME
+        : ""
+    );
+    const uploadResponse = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const uploadedImageData = await uploadResponse.json();
+    const imageUrl = uploadedImageData.secure_url;
+    return imageUrl;
+  };
 
   const buy = async () => {
     const details: any = [];
-    // począrtek detali
-    const heading = headingGen("Produkty", 1);
-    details.push(heading);
+    console.log(cartItems);
 
-    cartItems.forEach((item: any, index: number) => {
-      // nagłowek
-      const heading3 = headingGen((index + 1).toString() + ". " + item.name, 3);
-      details.push(heading3);
+    if (couponActive) {
+      details.push(headingGen("Kupon", 1));
+      details.push(paragraphGen(`Nazwa: ${couponName} ${couponValue}%`));
+    }
+
+    details.push(headingGen("Produkty", 1));
+
+    for (const [index, item] of cartItems.entries()) {
+      details.push(headingGen(`${index + 1}. ${item.name}`, 3));
 
       if (item.personalization.length > 0) {
-        // magłowek szerczógółów
-        const title = paragraphGenBold(`Personalizacja:`);
-        details.push(title);
+        details.push(paragraphGenBold("Personalizacja:"));
         item.personalization.forEach((pole: any) => {
-          const paragraph1 = paragraphGen(
-            ` ${pole.type}: ${pole.name} ${
-              pole[priceKey] ? "+" + pole[priceKey] + symbol : ""
-            }`
+          details.push(
+            paragraphGen(
+              ` ${pole.type}: ${pole.name} ${
+                pole[priceKey] ? "+" + pole[priceKey] + symbol : ""
+              }`
+            )
           );
-          details.push(paragraph1);
         });
+      }
 
-        if (item.bikiniCase) {
-          // magłowek szerczógółów
-          const bikiniCasetitle = paragraphGenBold(`Bikini case:`);
-          details.push(bikiniCasetitle);
-          // bikini case
-          const bikiniCase = paragraphGen(
-            item.bikiniCase.attributes.name +
-              ": " +
-              item.bikiniCase.attributes[priceKey] +
-              symbol
-          );
-          details.push(bikiniCase);
-        }
+      if (item.bikiniCase) {
+        details.push(paragraphGenBold("Bikini case:"));
+        details.push(
+          paragraphGen(
+            `${item.bikiniCase.attributes.name}: ${item.bikiniCase.attributes[priceKey]}${symbol}`
+          )
+        );
       }
 
       if (item.formDetails.length > 0) {
-        // magłowek szerczógółów
-        const paragraph1 = paragraphGenBold(`Formularz:`);
-        details.push(paragraph1);
-
-        // formlarz
-        item.formDetails.forEach((pole: any) => {
-          const paragraph1 = paragraphGen(`${pole.name_pl}: ${pole.value}`);
-          details.push(paragraph1);
-        });
+        details.push(paragraphGenBold("Formularz:"));
+        await Promise.all(
+          item.formDetails.map(async (pole: any) => {
+            if (!pole.input_photos) {
+              details.push(paragraphGen(`${pole.name_pl}: ${pole.value}`));
+            } else {
+              const imageUrls = await Promise.all(
+                pole.value.map(uploadImageToCloudinary)
+              );
+              imageUrls.forEach((imageUrl: string, index: number) => {
+                details.push(imageBlockGen(imageUrl, `photo nr${index + 1}`));
+              });
+            }
+          })
+        );
       }
+
       if (item.details.length > 0) {
-        // magłowek szerczógółów
-        const paragraph1 = paragraphGenBold(`Szczegóły:`);
-        details.push(paragraph1);
-
-        // details
+        details.push(paragraphGenBold("Szczegóły:"));
         item.details.forEach((pole: any) => {
-          const paragraph1 = paragraphGen(
-            `${pole.name}: ${pole.value.name} ${
-              pole.value[priceKey] ? `+ ${pole.value[priceKey]} ${symbol}` : ""
-            } `
+          details.push(
+            paragraphGen(
+              `${pole.name}: ${pole.value.name} ${
+                pole.value[priceKey]
+                  ? `+ ${pole.value[priceKey]} ${symbol}`
+                  : ""
+              }`
+            )
           );
-          details.push(paragraph1);
         });
       }
 
-      // magłowek szerczógółów
       if (item.additionalNotes) {
-        const paragraph11 = paragraphGenBold(`Dodatkowe informacje:`);
-        details.push(paragraph11);
-        // dodatkowe informacje
-        const paragraph111 = paragraphGen(item.additionalNotes);
-        details.push(paragraph111);
+        details.push(paragraphGenBold("Dodatkowe informacje:"));
+        details.push(paragraphGen(item.additionalNotes));
       }
-    });
+    }
+
+    console.log(details);
 
     const cartItemsIds = cartItems.map((item: any) => item.strapiId);
     const order = await makeOrder(
       cookies.id,
       cartItemsIds,
-      cartItems
-        .reduce((acc: any, curr: any) => {
+      (
+        cartItems.reduce((acc: any, curr: any) => {
           return acc + Number(curr.price[priceKey]);
-        }, 0)
-        .toFixed(2) + symbol,
+        }, 0) *
+        (1 - couponValue * 0.01)
+      ).toFixed(2) + symbol,
       "Blik",
       "przyjęte do realizacji",
       cookies.jwt ? cookies.jwt : null,
@@ -210,9 +267,26 @@ export default function Adress({}: AdressProps) {
       details
     );
 
-    if (order) {
-      dispatch(clearCart());
-      router.push("/ConfirmationSend?orderConfirmation=true");
+    // if (order) {
+    //   dispatch(clearCart());
+    //   router.push("/ConfirmationSend?orderConfirmation=true");
+    // }
+  };
+
+  const activeCoupon = async (name: string) => {
+    if (couponName !== name) {
+      const coupon = await fetchCoupon(name);
+      if (coupon && coupon?.attributes?.active) {
+        setCouponValue(coupon.attributes.value);
+        setCouponName(coupon.attributes.name);
+        setCouponActive(true);
+        setCouponError(false);
+      } else {
+        setCouponValue(0);
+        setCouponName(name);
+        setCouponError(true);
+        setCouponActive(false);
+      }
     }
   };
 
@@ -346,7 +420,8 @@ export default function Adress({}: AdressProps) {
                               <StyledOneDetailBoldLink
                                 onClick={() => {
                                   router.push({
-                                    pathname: `/product/${item.bikiniCase.id}`,
+                                    pathname: `/product/SpecificProduct/`,
+                                    query: { product: item.bikiniCase.id },
                                   });
                                 }}
                               >
@@ -400,9 +475,27 @@ export default function Adress({}: AdressProps) {
                       onChange={(e: any) => setCode(e.target.value)}
                       label={translation[language].code}
                     />
-                    <BlackButton margin="20px 0 0">
+                    <BlackButton
+                      margin="20px 0 0"
+                      onClick={() => activeCoupon(code)}
+                    >
                       {translation[language].apply}
                     </BlackButton>
+                    {couponActive && (
+                      <StyledCopuonActiveContainer>
+                        <StyledTotal>
+                          {translation[language].activeCoupon}: {couponName}
+                        </StyledTotal>
+                        <StyledTotalPrice>{`-${couponValue}%`}</StyledTotalPrice>
+                      </StyledCopuonActiveContainer>
+                    )}
+                    {couponError && (
+                      <StyledCopuonActiveContainer>
+                        <StyledTotal>
+                          {translation[language].noCoupon}
+                        </StyledTotal>
+                      </StyledCopuonActiveContainer>
+                    )}
                   </StyledCouponContainer>
                 </StyledSummaryTop>
 
@@ -412,16 +505,18 @@ export default function Adress({}: AdressProps) {
                     <StyledTotalPrice>
                       {symbol == "$"
                         ? symbol +
-                          cartItems
-                            .reduce((acc: any, curr: any) => {
+                          (
+                            cartItems.reduce((acc: any, curr: any) => {
                               return acc + Number(curr.price[priceKey]);
-                            }, 0)
-                            .toFixed(2)
-                        : cartItems
-                            .reduce((acc: any, curr: any) => {
+                            }, 0) *
+                            (1 - couponValue * 0.01)
+                          ).toFixed(2)
+                        : (
+                            cartItems.reduce((acc: any, curr: any) => {
                               return acc + Number(curr.price[priceKey]);
-                            }, 0)
-                            .toFixed(2) + symbol}
+                            }, 0) *
+                            (1 - couponValue * 0.01)
+                          ).toFixed(2) + symbol}
                     </StyledTotalPrice>
                   </StyledTotalContainer>
                   <BlackButton margin="20px 0 0" onClick={buy}>

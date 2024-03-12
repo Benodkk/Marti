@@ -198,14 +198,15 @@ export const fetchProductById = async (id) => {
 
 // Auth
 
-export const signUp = async (email, password) => {
+export const signUp = async (email, password, newsletter_en, newsletter_pl) => {
   try {
     const response = await postData("auth/local/register", {
       username: email,
       email,
       password,
+      newsletter_en,
+      newsletter_pl,
     });
-    console.log(response);
     return response;
   } catch (error) {
     console.error(error);
@@ -394,7 +395,9 @@ export const changeAdress = async (
   city,
   phone_number,
   userId,
-  code
+  code,
+  newsletter_en,
+  newsletter_pl
 ) => {
   const formData = {
     first_name: first_name,
@@ -404,6 +407,8 @@ export const changeAdress = async (
     post_code: post_code,
     city: city,
     phone_number,
+    newsletter_en,
+    newsletter_pl,
   };
 
   try {
@@ -481,4 +486,20 @@ export const resetPassword = async (code, password, passwordConfirmation) => {
     console.error(error);
     throw error;
   }
+};
+
+// coupons
+
+export const fetchCoupon = async (name) => {
+  let responseData;
+  try {
+    const response = await getData(`coupons?filters[name][$eq]=${name}`);
+    let data = response.data;
+    if (data && data.length > 0) {
+      responseData = data[0];
+    } else {
+      responseData = null;
+    }
+    return responseData;
+  } catch {}
 };

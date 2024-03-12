@@ -38,6 +38,10 @@ import { BlackButton } from "@/components/BlackButton/BlackButton";
 import { updateFormData } from "@/redux/formSlice";
 import Success from "@/components/Success/Success";
 import { StyledSuccessTitle } from "@/components/Success/Success.styled";
+import {
+  CheckboxLabelNewsletter,
+  StyledCheckboxNewsletter,
+} from "../SignUp/SignUp.styled";
 
 const orderStatusTranslations = [
   {
@@ -74,6 +78,7 @@ export default function SignIn({}: SignInProps) {
   const { email, id, confirmed } = useSelector(selectUserData);
   const dispatch = useDispatch();
 
+  const [isAccepted, setIsAccepted] = useState(false);
   const [name, setName] = useState("");
   const [secondName, setSecondName] = useState("");
   const [street, setStreet] = useState("");
@@ -152,26 +157,24 @@ export default function SignIn({}: SignInProps) {
       }
     }
 
-    if (emptyFields.length === 0) {
-      // Jeśli nie ma pustych pól, wyślij dane
-      dispatch(updateFormData(formData));
+    // Jeśli nie ma pustych pól, wyślij dane
+    dispatch(updateFormData(formData));
 
-      const suc = await changeAdress(
-        name,
-        secondName,
-        country,
-        street,
-        postCode,
-        city,
-        phone,
-        cookies.id,
-        cookies.jwt
-      );
-      if (suc) {
-        setSuccess(true);
-      }
-    } else {
-      // Jeśli są puste pola, ustaw stan błędu i zwróć tablicę z nazwami pustych pól
+    const suc = await changeAdress(
+      name,
+      secondName,
+      country,
+      street,
+      postCode,
+      city,
+      phone,
+      cookies.id,
+      cookies.jwt,
+      isAccepted && language != "pl",
+      isAccepted && language == "pl"
+    );
+    if (suc) {
+      setSuccess(true);
     }
   };
 
@@ -265,6 +268,17 @@ export default function SignIn({}: SignInProps) {
                   onChange={(e: any) => setEmaill(e.target.value)}
                   label={"Email"}
                 />
+                <StyledWideItem>
+                  {" "}
+                  <CheckboxLabelNewsletter>
+                    <StyledCheckboxNewsletter
+                      type="checkbox"
+                      checked={isAccepted}
+                      onChange={() => setIsAccepted(!isAccepted)}
+                    />
+                    {translation[language].newsLetterAccept}
+                  </CheckboxLabelNewsletter>
+                </StyledWideItem>
                 {/* <Input
               type="text"
               value={additionalInfo}

@@ -83,7 +83,7 @@ export default function CheckOutTemplate() {
     <StyledCheckOutContainer>
       <StyledCheckOut>
         <StyledSignInCheckOut>
-          <StyledBackToBag onClick={() => router.push("/Cart")}>
+          <StyledBackToBag onClick={() => router.back()}>
             {"< " + translation[language].backToBag}
           </StyledBackToBag>
           <StyledCheckOutTitle>Check out</StyledCheckOutTitle>

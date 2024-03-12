@@ -97,3 +97,13 @@ export const StyledOneAction = styled.div`
     text-decoration-line: underline;
   }
 `;
+
+export const CheckboxLabelNewsletter = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0 0;
+`;
+export const StyledCheckboxNewsletter = styled.input`
+  cursor: pointer;
+`;

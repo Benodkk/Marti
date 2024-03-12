@@ -80,12 +80,9 @@ export const BikiniForm = ({
           {field.input_photos ? (
             <StyledPhotoInputContainer key={index}>
               <InputIamges
-                onChange={(e: any) =>
-                  updateItemValueById(
-                    field.id,
-                    "https://res.cloudinary.com/deduvxogk/image/upload/v1709238441/40_A08_AB_0_D3_BC_4_C02_9260_F2_ADA_3_EA_1_B64_95428129c6.jpg"
-                  )
-                }
+                onChange={(photos: any) => {
+                  updateItemValueById(field.id, photos);
+                }}
                 label={
                   language == "pl" && field.name_pl ? field.name_pl : field.name
                 }

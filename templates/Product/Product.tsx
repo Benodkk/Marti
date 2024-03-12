@@ -485,6 +485,7 @@ export default function ProductTemplate({}: ProductProps) {
 
         details.push({ name: "Size", value: real });
       }
+      console.log();
 
       const formDetails =
         formData && formData.filter((oneData: any) => oneData.value.length > 0);
@@ -593,9 +594,9 @@ export default function ProductTemplate({}: ProductProps) {
                   })}
               </StyledType>
               <StyledProductName>
-                {productData && language == "pl" && productData.name_pl
-                  ? productData.name_pl
-                  : productData.name}
+                {productData && language == "pl" && productData?.name_pl
+                  ? productData?.name_pl
+                  : productData?.name}
               </StyledProductName>
               <StyledPrize>
                 {productData &&
@@ -618,7 +619,7 @@ export default function ProductTemplate({}: ProductProps) {
                   {productData && productData.rating_count} reviews
                 </StyledSeeAllReviews>
               </StyledOpinionRow> */}
-              {productData.description && (
+              {productData?.description && (
                 <StyledDescription
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  CheckboxLabelNewsletter,
   StyledBack,
   StyledCheckOut,
   StyledCheckOutContainer,
   StyledCheckOutTitle,
+  StyledCheckboxNewsletter,
   StyledInput,
   StyledOneAction,
   StyledOtherActions,
@@ -36,6 +38,8 @@ export default function SignUp({}: SignUpProps) {
 
   const [showEmailError, setShowEmailError] = useState(false);
   const [emailErrors, setEmailErrors] = useState<any>("");
+
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -71,7 +75,12 @@ export default function SignUp({}: SignUpProps) {
       setErrors(newErrors);
       setShowError(true);
     } else {
-      const signUpAction = await signUp(email, password);
+      const signUpAction = await signUp(
+        email,
+        password,
+        isAccepted && language != "pl",
+        isAccepted && language == "pl"
+      );
       if (signUpAction?.user) {
         router.push("/ConfirmationSend?emailConfirmationSend=true");
       } else {
@@ -124,6 +133,14 @@ export default function SignUp({}: SignUpProps) {
               onChange={(e: any) => setRepeatPassword(e.target.value)}
               label={translation[language].repeatPassword}
             />
+            <CheckboxLabelNewsletter>
+              <StyledCheckboxNewsletter
+                type="checkbox"
+                checked={isAccepted}
+                onChange={() => setIsAccepted(!isAccepted)}
+              />
+              {translation[language].newsLetterAccept}
+            </CheckboxLabelNewsletter>
             <BlackButton
               margin={"30px 0"}
               type="submit"

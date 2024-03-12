@@ -88,6 +88,10 @@ export const translation = {
     cookieMessage:
       "We use cookies to provide services at the highest level. By continuing to use the website, you agree to their use.",
     accept: "Accept",
+    activeCoupon: "Coupon",
+    noCoupon: "No coupon",
+    newsLetterAccept:
+      "Subscribe to our newsletter to stay updated with the latest news, exclusive offers, and insights.",
   },
   pl: {
     women: "Kobiety",
@@ -178,5 +182,9 @@ export const translation = {
     resetPasswordSecond: "Sprawdź pocztę email",
     cookieMessage:
       "Korzystamy z plików cookies, aby świadczyć usługi na najwyższym poziomie. Dalsze korzystanie ze strony oznacza, że zgadzasz się na ich użycie.",
+    activeCoupon: "Kupon",
+    noCoupon: "Brak kuponu",
+    newsLetterAccept:
+      "Zapisz się do naszego newslettera, aby być na bieżąco z najnowszymi wiadomościami, wyjątkowymi ofertami i ciekawostkami.",
   },
 };

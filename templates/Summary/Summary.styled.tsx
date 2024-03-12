@@ -102,6 +102,13 @@ export const StyledTotalContainer = styled.div`
   align-items: center;
 `;
 
+export const StyledCopuonActiveContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+`;
+
 export const StyledTotal = styled.div`
   color: #111827;
   font-family: Roboto;
