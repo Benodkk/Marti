@@ -154,14 +154,9 @@ export default function Adress({}: AdressProps) {
   const uploadImageToCloudinary = async (file: any) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      typeof process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME == "string"
-        ? process.env.NEXT_PUBLIC_CLOUDINARY_PRESET_NAME
-        : ""
-    );
+    formData.append("upload_preset", "amsrcruz");
     const uploadResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+      `https://api.cloudinary.com/v1_1/deduvxogk/image/upload`,
       {
         method: "POST",
         body: formData,
