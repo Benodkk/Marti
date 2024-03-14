@@ -57,7 +57,6 @@ import plFlag from "@/assets/plIcon.png";
 import gbFlag from "@/assets/gbIcon.png";
 import { SelectValueFlags } from "../Select/SelectFlags";
 
-import { getDataFurgoentka } from "@/API/furgonetkaConfig";
 import { SearchModal } from "./SearchModal";
 
 const options = [
@@ -244,16 +243,6 @@ const Header = ({}: HeaderProps) => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
-    });
-  };
-
-  const pushToList = (category: any) => {
-    router.push({
-      pathname: "/products",
-      query: {
-        category: category,
-        fromHeader: "true",
-      },
     });
   };
 

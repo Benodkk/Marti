@@ -111,7 +111,7 @@ export const SearchModal = ({ active, setActive }: SearchModalProps) => {
         ) : (
           products?.map((product: any) => {
             return (
-              <StyledOneProduct>
+              <StyledOneProduct key={product.id}>
                 <StyledOneProductPhoto
                   src={ImageComponent(
                     product.attributes?.main_photo?.data?.attributes?.url
