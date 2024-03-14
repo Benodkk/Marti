@@ -81,6 +81,11 @@ export const FormGroup = styled.div`
   width: 100%;
 `;
 
+export const FormNoLabelGroup = styled.div`
+  position: relative;
+  /* width: 100%; */
+`;
+
 export const StyledFiledCol = styled.div`
   display: flex;
   flex-direction: column;
@@ -109,6 +114,35 @@ export const FormField = styled.input`
   color: #36322c;
   font-size: 1.1rem;
   padding: 8px 0 4px;
+  background: transparent;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:focus {
+    font-weight: 500;
+    border-image: linear-gradient(to right, ${primary}, ${secondary});
+    border-image-slice: 1;
+  }
+
+  &:required,
+  &:invalid {
+    box-shadow: none;
+  }
+`;
+
+export const FormNoLabelField = styled.input`
+  text-align: center;
+  width: 50px;
+  font-family: inherit;
+  border: 0;
+  border: 2px solid ${gray};
+  outline: 0;
+  color: #36322c;
+  font-size: 1.1rem;
+  padding: 3px 0;
   background: transparent;
   transition: border-color 0.2s;
 

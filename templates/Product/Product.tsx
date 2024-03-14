@@ -5,6 +5,7 @@ import {
   StyledAddToWishlist,
   StyledDescription,
   StyledInTotal,
+  StyledInTotalRow,
   StyledInfo,
   StyledMainPhoto,
   StyledOneStar,
@@ -38,7 +39,12 @@ import { ProductionTime } from "./components/ProductionTime";
 import { BikiniCase } from "./components/BikiniCase";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { addItem, removeItem } from "@/redux/cartSlice";
+import {
+  addItem,
+  editItem,
+  removeItem,
+  selectCartItems,
+} from "@/redux/cartSlice";
 import { v4 as uuidv4 } from "uuid";
 import { MoonLoader } from "react-spinners";
 import { Loader } from "@/components/Loader/Loader";
@@ -61,13 +67,14 @@ import { selectLanguage } from "@/redux/languageSlice";
 import { translation } from "@/translation";
 import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { ModalPhotos } from "@/components/ModalPhotos/ModalPhotos";
+import { NoLabelInput } from "@/components/Input/NoLabelInput";
 
 interface ProductProps {}
 
 export default function ProductTemplate({}: ProductProps) {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
-
+  const cartItems = useSelector(selectCartItems);
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -138,6 +145,10 @@ export default function ProductTemplate({}: ProductProps) {
   const [errors, setErrors] = useState<any>();
 
   const [success, setSuccess] = useState(false);
+
+  // countproducts
+
+  const [count, setCount] = useState(1);
 
   useEffect(() => {
     if (router.query.product) {
@@ -485,7 +496,6 @@ export default function ProductTemplate({}: ProductProps) {
 
         details.push({ name: "Size", value: real });
       }
-      console.log();
 
       const formDetails =
         formData && formData.filter((oneData: any) => oneData.value.length > 0);
@@ -502,16 +512,85 @@ export default function ProductTemplate({}: ProductProps) {
         formDetails: formDetails,
         bikiniCase: chosenBikiniCase ? chosenBikiniCase : null,
         additionalNotes: additionalNotes,
+        count: count,
       };
 
-      setSuccess(true);
-      dispatch(addItem(product));
-      window.scrollTo({
-        top: 0, // Przewija do pozycji 0px od góry strony
-        behavior: "smooth", // Opcjonalnie, dla płynnego przewijania
-      });
+      const itemIsInBag = findMatchingItemInArray(cartItems, product);
+      if (itemIsInBag) {
+        dispatch(
+          editItem({
+            id: itemIsInBag.id,
+            count: (Number(count) + Number(itemIsInBag.count)).toString(),
+          })
+        );
+        setSuccess(true);
+        window.scrollTo({
+          top: 0, // Przewija do pozycji 0px od góry strony
+          behavior: "smooth", // Opcjonalnie, dla płynnego przewijania
+        });
+      } else {
+        setSuccess(true);
+        dispatch(addItem(product));
+      }
     }
   };
+
+  function findMatchingItemInArray(
+    array: any,
+    itemToMatch: any,
+    excludeKeys = ["id", "count"]
+  ) {
+    return array.find((item: any) =>
+      deepCompare(item, itemToMatch, excludeKeys)
+    );
+  }
+
+  function deepCompare(obj1: any, obj2: any, excludeKeys = ["id", "count"]) {
+    if (Object.keys(obj1).length !== Object.keys(obj2).length) return false;
+
+    for (let key of Object.keys(obj1)) {
+      if (excludeKeys.includes(key)) continue;
+
+      if (
+        typeof obj1[key] === "object" &&
+        obj1[key] !== null &&
+        typeof obj2[key] === "object" &&
+        obj2[key] !== null
+      ) {
+        // Gdy obie wartości są obiektami (w tym tablicami), wykonaj głębokie porównanie
+        if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+          // Dla tablic sprawdź długość i wykonaj głębokie porównanie każdego elementu
+          if (
+            obj1[key].length !== obj2[key].length ||
+            !obj1[key].every((element: any, index: any) =>
+              deepCompare(element, obj2[key][index])
+            )
+          ) {
+            return false;
+          }
+        } else if (!deepCompare(obj1[key], obj2[key])) {
+          // Dla obiektów wykonaj głębokie porównanie
+          return false;
+        }
+      } else if (obj1[key] !== obj2[key]) {
+        // Dla prymitywnych wartości wykonaj proste porównanie
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function areObjectsEqualExceptFor(obj1: any, obj2: any) {
+    for (const key of obj1) {
+      if (obj1[key] !== obj2[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function capitalizeFirstLetter(str: any) {
     if (!str) return str; // Sprawdzenie, czy string nie jest pusty lub undefined
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -798,12 +877,25 @@ export default function ProductTemplate({}: ProductProps) {
                 onChange={(e) => setAdditionalNotes(e.target.value)}
                 placeholder={translation[language].writeHere}
               />
-              <StyledInTotal>
-                {translation[language].inTotal}:{" "}
-                {symbol == "$"
-                  ? symbol + Number(inTotal[priceKey]).toFixed(2)
-                  : Number(inTotal[priceKey]).toFixed(2) + symbol}
-              </StyledInTotal>
+              <StyledInTotalRow>
+                <StyledInTotal>{translation[language].quantity}:</StyledInTotal>
+                <NoLabelInput
+                  name="count"
+                  value={count}
+                  onChange={(e: any) =>
+                    e.target.value < 100 &&
+                    e.target.value > 0 &&
+                    setCount(e.target.value)
+                  }
+                />
+                <StyledInTotal>
+                  {translation[language].inTotal}:{" "}
+                  {symbol == "$"
+                    ? symbol + (count * Number(inTotal[priceKey])).toFixed(2)
+                    : (count * Number(inTotal[priceKey])).toFixed(2) + symbol}
+                </StyledInTotal>
+              </StyledInTotalRow>
+
               <BlackButton onClick={add} margin="10px 0 0">
                 {translation[language].addToBag}
               </BlackButton>

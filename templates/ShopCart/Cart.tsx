@@ -34,7 +34,7 @@ import {
   StyledTotalPrice,
 } from "./Cart.styled";
 import { useSelector } from "react-redux";
-import { removeItem, selectCartItems } from "@/redux/cartSlice";
+import { editItem, removeItem, selectCartItems } from "@/redux/cartSlice";
 import { useEffect, useRef, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { Modal } from "@/components/Modal/Modal";
@@ -46,6 +46,8 @@ import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { selectUserData, resetUser } from "@/redux/userSlice";
 
 import { useCookies } from "react-cookie";
+import { NoLabelInput } from "@/components/Input/NoLabelInput";
+import { StyledInTotalRow } from "../Product/Product.styled";
 
 interface CartProps {}
 
@@ -60,7 +62,6 @@ export default function Cart({}: CartProps) {
   const router = useRouter();
   const cartItems = useSelector(selectCartItems);
   const [isAccepted, setIsAccepted] = useState(false);
-  console.log(cartItems);
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState<any>();
@@ -86,7 +87,10 @@ export default function Cart({}: CartProps) {
     setIsAccepted(!isAccepted);
     setPrivacyError(false);
   };
-  console.log(cartItems);
+
+  const changeCount = (value: any, itemId: any) => {
+    dispatch(editItem({ id: itemId, count: value.toString() }));
+  };
 
   return (
     <CartContainer>
@@ -105,16 +109,35 @@ export default function Cart({}: CartProps) {
                       <StyledOneProductPhoto src={ImageComponent(item.image)} />
                       <StyleOneProductDetails>
                         <StyledTopDetails>
-                          <StyledProductName>
-                            {language == "pl" && item.name_pl
-                              ? item.name_pl.toUpperCase()
-                              : item.name.toUpperCase()}
-                          </StyledProductName>
+                          <StyledInTotalRow>
+                            <NoLabelInput
+                              name="count"
+                              value={Number(item.count)}
+                              onChange={(e: any) =>
+                                e.target.value < 100 &&
+                                e.target.value > 0 &&
+                                changeCount(e.target.value, item.id)
+                              }
+                            />
+                            <StyledProductName>
+                              {language == "pl" && item.name_pl
+                                ? item.name_pl.toUpperCase()
+                                : item.name.toUpperCase()}
+                            </StyledProductName>
+                          </StyledInTotalRow>
+
                           <StyledTopDetailsRight>
                             <StyledPrice>
                               {symbol == "$"
-                                ? symbol + item.price[priceKey].toFixed(2)
-                                : item.price[priceKey].toFixed(2) + symbol}
+                                ? symbol +
+                                  (
+                                    Number(item.count) *
+                                    Number(item.price[priceKey].toFixed(2))
+                                  ).toFixed(2)
+                                : (
+                                    Number(item.count) *
+                                    Number(item.price[priceKey].toFixed(2))
+                                  ).toFixed(2) + symbol}
                             </StyledPrice>
                             <StyledDelete
                               onClick={() => {
@@ -285,12 +308,20 @@ export default function Cart({}: CartProps) {
                           ? symbol +
                             cartItems
                               .reduce((acc: any, curr: any) => {
-                                return acc + Number(curr.price[priceKey]);
+                                return (
+                                  acc +
+                                  Number(curr.count) *
+                                    Number(curr.price[priceKey])
+                                );
                               }, 0)
                               .toFixed(2)
                           : cartItems
                               .reduce((acc: any, curr: any) => {
-                                return acc + Number(curr.price[priceKey]);
+                                return (
+                                  acc +
+                                  Number(curr.count) *
+                                    Number(curr.price[priceKey])
+                                );
                               }, 0)
                               .toFixed(2) + symbol}
                       </StyledTotalPrice>

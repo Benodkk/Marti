@@ -246,3 +246,166 @@ export const StyledIconsMobile = styled.div`
   align-items: center;
   gap: 8px;
 `;
+
+// Search
+
+interface Props {
+  active: boolean;
+}
+
+export const StyledSearchContainer = styled.div<Props>`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  align-self: flex-start;
+  justify-self: flex-end;
+  padding: 15px 10px 10px;
+  left: 0;
+  color: white;
+  transition: 0.5s;
+  z-index: 1;
+  background-color: #caa871;
+  visibility: ${({ active }) => (active ? "visible" : "hidden")};
+  transform: ${({ active }) =>
+    active ? "translateY(-15px)" : "translateY(-130%)"};
+`;
+
+export const StyledInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+`;
+
+export const StyledInputSearch = styled.input`
+  padding: 8px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  width: 70%;
+`;
+
+export const StyledSearchClose = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const StyledSearchResult = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  gap: 10px;
+`;
+
+export const StyledOneProduct = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  gap: 20px;
+`;
+
+export const StyledOneProductPhoto = styled.img`
+  width: 100px;
+  height: 150px;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+`;
+
+export const StyledInfoContaier = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+`;
+
+export const StyledProductType = styled.div`
+  color: #232323;
+  font-family: "Jost";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+`;
+
+export const StyledProductName = styled.div`
+  color: #232323;
+  font-family: "Jost";
+  font-size: 23px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
+  cursor: pointer;
+  /* cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    text-shadow: 2px 2px 3px rgba(109, 109, 109, 0.5);
+  }
+  */
+  @media (max-width: 1020px) {
+    font-size: 15px;
+    line-height: 18px;
+  }
+`;
+
+export const StyledProductPrize = styled.div`
+  color: #3f3f3f;
+  font-family: "Jost";
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+export const StyledLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+// search black button
+
+export const StyledSearchBlackButton = styled.button`
+  appearance: none;
+  background-color: #000000;
+  border: 2px solid #1a1a1a;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-width: 0;
+  outline: none;
+  padding: 4px 6px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  will-change: transform;
+  margin: 0 10px;
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: translateY(0);
+  }
+`;

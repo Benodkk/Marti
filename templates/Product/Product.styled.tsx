@@ -242,6 +242,13 @@ export const StyledMoreInfo = styled.div`
   margin-top: 10px;
 `;
 
+export const StyledInTotalRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+`;
+
 export const StyledInTotal = styled.div`
   display: flex;
   justify-content: space-between;
@@ -251,7 +258,6 @@ export const StyledInTotal = styled.div`
   font-weight: 600;
   line-height: 32px;
   letter-spacing: -0.36px;
-  padding: 8px;
 `;
 
 export const StyledAddToBagButton = styled.button`

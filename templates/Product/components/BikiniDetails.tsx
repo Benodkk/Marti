@@ -104,8 +104,10 @@ export const BikiniDetails = ({
                 secondOnClick={() =>
                   yesOrNoToggle(detail.name, true, detail.id)
                 }
-                firstImage={detail.noImg.src}
-                secondImage={detail.yesImg.src}
+                firstImage={detail.noImg && detail.noImg.data?.attributes?.url}
+                secondImage={
+                  detail.yesImg && detail.yesImg.data?.attributes?.url
+                }
               />
             )}
             <StyledBikiniDetails>

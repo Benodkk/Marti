@@ -18,13 +18,24 @@ const cartSlice = createSlice({
       let newItem = { ...action.payload };
       state.items.push(newItem);
     },
-    removeItem: (state, action: PayloadAction<{ id: number }>) => {
+    removeItem: (state, action: PayloadAction<{ id: any }>) => {
       state.items = state.items.filter(
         (item: any) => item.id !== action.payload.id
       );
     },
     clearCart: (state) => {
       state.items = []; // Resetowanie tablicy items do pustej tablicy
+    },
+    editItem: (state, action: PayloadAction<{ id: any; count: any }>) => {
+      const index = state.items.findIndex(
+        (item: any) => item.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.items[index] = {
+          ...state.items[index],
+          count: action.payload.count,
+        };
+      }
     },
   },
 });
@@ -39,6 +50,6 @@ export const selectTotalPrice = createSelector([selectCartItems], (items) =>
   items.reduce((total: any, item: any) => total + 1 * item.price, 0)
 );
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, clearCart, editItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

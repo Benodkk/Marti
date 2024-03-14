@@ -57,6 +57,8 @@ import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { translation } from "@/translation";
 import { useCookies } from "react-cookie";
 import { fetchCoupon, makeOrder } from "@/API/strapiConfig";
+import { StyledInTotalRow } from "../Product/Product.styled";
+import { NoLabelInput } from "@/components/Input/NoLabelInput";
 
 interface AdressProps {}
 export default function Adress({}: AdressProps) {
@@ -172,7 +174,6 @@ export default function Adress({}: AdressProps) {
 
   const buy = async () => {
     const details: any = [];
-    console.log(cartItems);
 
     if (couponActive) {
       details.push(headingGen("Kupon", 1));
@@ -183,6 +184,8 @@ export default function Adress({}: AdressProps) {
 
     for (const [index, item] of cartItems.entries()) {
       details.push(headingGen(`${index + 1}. ${item.name}`, 3));
+
+      details.push(paragraphGenBold(`Ilość: ${item.count}`));
 
       if (item.personalization.length > 0) {
         details.push(paragraphGenBold("Personalizacja:"));
@@ -245,15 +248,13 @@ export default function Adress({}: AdressProps) {
       }
     }
 
-    console.log(details);
-
     const cartItemsIds = cartItems.map((item: any) => item.strapiId);
     const order = await makeOrder(
       cookies.id,
       cartItemsIds,
       (
         cartItems.reduce((acc: any, curr: any) => {
-          return acc + Number(curr.price[priceKey]);
+          return acc + Number(curr.count) * Number(curr.price[priceKey]);
         }, 0) *
         (1 - couponValue * 0.01)
       ).toFixed(2) + symbol,
@@ -264,7 +265,8 @@ export default function Adress({}: AdressProps) {
       personalData.phone,
       personalData.email,
       `${personalData.name} ${personalData.secondName}`,
-      details
+      details,
+      language
     );
 
     // if (order) {
@@ -290,6 +292,16 @@ export default function Adress({}: AdressProps) {
     }
   };
 
+  function ImageComponent(imageUrl: any) {
+    // Dodaj transformacje do URL-a obrazu
+    const transformedImageUrl = imageUrl.replace(
+      "/upload/",
+      "/upload/w_500,q_80/"
+    );
+
+    return transformedImageUrl;
+  }
+
   return (
     <StyledSummaryContainer>
       <StyledSummary>
@@ -304,49 +316,99 @@ export default function Adress({}: AdressProps) {
                 {cartItems.map((item: any) => {
                   return (
                     <StyledOneProduct key={item.id}>
-                      <StyledOneProductPhoto src={item.image} />
+                      <StyledOneProductPhoto src={ImageComponent(item.image)} />
                       <StyleOneProductDetails>
                         <StyledTopDetails>
-                          <StyledProductName>
-                            {item.name.toUpperCase()}
-                          </StyledProductName>
+                          <StyledInTotalRow>
+                            <StyledProductName>{item.count}x</StyledProductName>
+
+                            <StyledProductName>
+                              {language == "pl" && item.name_pl
+                                ? item.name_pl.toUpperCase()
+                                : item.name.toUpperCase()}
+                            </StyledProductName>
+                          </StyledInTotalRow>
+
                           <StyledTopDetailsRight>
                             <StyledPrice>
                               {symbol == "$"
-                                ? symbol + item.price[priceKey].toFixed(2)
-                                : item.price[priceKey].toFixed(2) + symbol}
+                                ? symbol +
+                                  (
+                                    Number(item.count) *
+                                    Number(item.price[priceKey].toFixed(2))
+                                  ).toFixed(2)
+                                : (
+                                    Number(item.count) *
+                                    Number(item.price[priceKey].toFixed(2))
+                                  ).toFixed(2) + symbol}
                             </StyledPrice>
                           </StyledTopDetailsRight>
                         </StyledTopDetails>
                         <StyledProductListDetails>
-                          {item.personalization && (
-                            <StyledOneDetailCheck
-                              onClick={() => {
-                                setIsOpen(true);
-                                const content = item.personalization.map(
-                                  (element: any) => {
-                                    return (
-                                      <StyledOneDetailContainer>
-                                        {element.type}:{" "}
-                                        <StyledOneDetailFromList>
-                                          {" "}
-                                          {element.name}{" "}
-                                          {element[priceKey]
-                                            ? ` +${element[priceKey]}${symbol}`
-                                            : ""}
-                                        </StyledOneDetailFromList>
-                                      </StyledOneDetailContainer>
-                                    );
-                                  }
-                                );
-                                setModalContent(content);
-                              }}
-                            >
-                              {translation[language].personalization}{" "}
-                              <IoEyeOutline size={18} />
-                            </StyledOneDetailCheck>
-                          )}
-                          {item.details && (
+                          {item?.personalization &&
+                            item?.personalization.length > 0 && (
+                              <StyledOneDetailCheck
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  const content = item.personalization.map(
+                                    (element: any) => {
+                                      return (
+                                        <StyledOneDetailContainer>
+                                          {element.type}:{" "}
+                                          <StyledOneDetailFromList>
+                                            {" "}
+                                            {language == "pl" && element.name_pl
+                                              ? element.name_pl
+                                              : element.name}{" "}
+                                            {element[priceKey]
+                                              ? ` +${element[priceKey]}${symbol}`
+                                              : ""}
+                                          </StyledOneDetailFromList>
+                                        </StyledOneDetailContainer>
+                                      );
+                                    }
+                                  );
+                                  setModalContent(content);
+                                }}
+                              >
+                                {translation[language].personalization}{" "}
+                                <IoEyeOutline size={18} />
+                              </StyledOneDetailCheck>
+                            )}
+
+                          {item?.formDetails &&
+                            item?.formDetails.length > 0 && (
+                              <StyledOneDetailCheck
+                                onClick={() => {
+                                  setIsOpen(true);
+                                  const content = item.formDetails.map(
+                                    (element: any) => {
+                                      return (
+                                        <StyledOneDetailContainer>
+                                          <strong>
+                                            {language == "pl" && element.name_pl
+                                              ? element.name_pl
+                                              : element.name}
+                                            :
+                                          </strong>{" "}
+                                          <StyledOneDetailFromList>
+                                            {" "}
+                                            {element.input_photos
+                                              ? element.value.length
+                                              : element.value}
+                                          </StyledOneDetailFromList>
+                                        </StyledOneDetailContainer>
+                                      );
+                                    }
+                                  );
+                                  setModalContent(content);
+                                }}
+                              >
+                                {translation[language].formDetails}{" "}
+                                <IoEyeOutline size={18} />
+                              </StyledOneDetailCheck>
+                            )}
+                          {item?.details && item.details.length > 0 && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
@@ -366,13 +428,7 @@ export default function Adress({}: AdressProps) {
                                             ? element.value.name_pl
                                             : element.value.name}
                                           {element.value[priceKey]
-                                            ? ` +${
-                                                symbol == "$"
-                                                  ? symbol +
-                                                    element.value[priceKey]
-                                                  : element.value[priceKey] +
-                                                    symbol
-                                              }`
+                                            ? ` +${element.value[priceKey]}${symbol}`
                                             : ""}
                                         </StyledOneDetailFromList>
                                       </StyledOneDetailContainer>
@@ -382,11 +438,11 @@ export default function Adress({}: AdressProps) {
                                 setModalContent(content);
                               }}
                             >
-                              {translation[language].formDetails}{" "}
+                              {translation[language].details}{" "}
                               <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.additionalNotes && (
+                          {item?.additionalNotes && (
                             <StyledOneDetailCheck
                               onClick={() => {
                                 setIsOpen(true);
@@ -403,18 +459,7 @@ export default function Adress({}: AdressProps) {
                               <IoEyeOutline size={18} />
                             </StyledOneDetailCheck>
                           )}
-                          {item.productionTime && (
-                            <StyledOneDetail>
-                              {translation[language].productionTime}
-                              {": "}
-                              <StyledOneDetailBold>
-                                {item.productionTime.name},{" "}
-                                {item.productionTime.description &&
-                                  stripHtml(item.productionTime.description)}
-                              </StyledOneDetailBold>
-                            </StyledOneDetail>
-                          )}
-                          {item.bikiniCase && (
+                          {item?.bikiniCase && (
                             <StyledOneDetail>
                               {translation[language].bikiniCase}:{" "}
                               <StyledOneDetailBoldLink
@@ -425,7 +470,10 @@ export default function Adress({}: AdressProps) {
                                   });
                                 }}
                               >
-                                {item.bikiniCase.attributes.name}
+                                {language == "pl" &&
+                                item?.bikiniCase?.attributes?.name_pl
+                                  ? item?.bikiniCase?.attributes?.name_pl
+                                  : item?.bikiniCase?.attributes?.name}
                               </StyledOneDetailBoldLink>
                             </StyledOneDetail>
                           )}

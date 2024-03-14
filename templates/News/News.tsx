@@ -31,7 +31,6 @@ export default function NewsTemplate() {
 
   const getNews = async (id: any) => {
     const newNews: any = await fetchOneNews(id);
-    console.log(newNews);
 
     if (newNews) {
       setNewsData(newNews);

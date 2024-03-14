@@ -23,6 +23,7 @@ import {
   FaInstagram,
   FaRegHeart,
   FaRegUser,
+  FaSearch,
 } from "react-icons/fa";
 import {
   AiOutlineShopping,
@@ -52,6 +53,12 @@ import { SelectValue } from "../Select/Select";
 import { setCurrency, selectCurrencyDetails } from "@/redux/currencySlice";
 import { selectUserData } from "@/redux/userSlice";
 import { useCookies } from "react-cookie";
+import plFlag from "@/assets/plIcon.png";
+import gbFlag from "@/assets/gbIcon.png";
+import { SelectValueFlags } from "../Select/SelectFlags";
+
+import { getDataFurgoentka } from "@/API/furgonetkaConfig";
+import { SearchModal } from "./SearchModal";
 
 const options = [
   { value: "pln", label: "PLN" },
@@ -60,8 +67,8 @@ const options = [
 ];
 
 const langOptions = [
-  { value: "pl", label: "PL" },
-  { value: "en", label: "EN" },
+  { value: "pl", label: "PL", image: plFlag.src },
+  { value: "en", label: "EN", image: gbFlag.src },
 ];
 
 interface HeaderProps {}
@@ -95,6 +102,10 @@ const Header = ({}: HeaderProps) => {
 
   const [loading, setLoading] = useState(false);
 
+  // search
+
+  const [showSearch, setShowSearch] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPosition = window.pageYOffset;
@@ -105,6 +116,7 @@ const Header = ({}: HeaderProps) => {
       ) {
         // Scroll w dół
         setHeaderVisible(false);
+        setShowSearch(false);
       } else if (currentScrollPosition < lastScrollPosition - 20) {
         // Scroll w górę o więcej niż 20px
         setHeaderVisible(true);
@@ -150,7 +162,6 @@ const Header = ({}: HeaderProps) => {
 
   const getAllCategories = async () => {
     setLoading(true);
-
     try {
       const categories: any = await fetchAllCategories();
       if (categories) {
@@ -265,8 +276,15 @@ const Header = ({}: HeaderProps) => {
       <StyledHeaderContainer $scroll={headerVisible}>
         <StyledTopHeaderContainer>
           <StyledTopHeader>
+            <SearchModal setActive={setShowSearch} active={showSearch} />
             <StyledGroupIconsHeader>
-              {/* <SearchButton /> */}
+              <IconButton
+                onClick={() => {
+                  setShowSearch(true);
+                }}
+              >
+                <FaSearch />
+              </IconButton>
               <IconButton
                 onClick={() => {
                   window.open("https://www.facebook.com/martibikini", "_blank");
@@ -371,7 +389,7 @@ const Header = ({}: HeaderProps) => {
                   localStorage.setItem("userCurrency", selectedOption.value);
                 }}
               />
-              <SelectValue
+              <SelectValueFlags
                 options={langOptions}
                 defaultValue={langOptions.find(
                   (lang: any) => lang.value === language

@@ -436,7 +436,8 @@ export const makeOrder = async (
   phone,
   email,
   client_name,
-  details
+  details,
+  language
 ) => {
   let responseStatus = false;
   const data = {
@@ -451,6 +452,7 @@ export const makeOrder = async (
       email: email,
       client_name: client_name,
       details,
+      language: language,
     },
   };
   try {
@@ -497,6 +499,24 @@ export const fetchCoupon = async (name) => {
     let data = response.data;
     if (data && data.length > 0) {
       responseData = data[0];
+    } else {
+      responseData = null;
+    }
+    return responseData;
+  } catch {}
+};
+
+// search products
+
+export const fetchSearchProducts = async (name) => {
+  let responseData;
+  try {
+    const response = await getData(
+      `products?filters[name][$containsi]=${name}&pagination[limit]=3&populate[main_photo]=*&populate[categories]=*`
+    );
+    let data = response.data;
+    if (data && data.length > 0) {
+      responseData = data;
     } else {
       responseData = null;
     }

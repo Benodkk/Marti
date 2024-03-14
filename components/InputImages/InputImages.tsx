@@ -26,7 +26,6 @@ export const InputIamges = ({ label, onChange }: InputIamgesProps) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       // Dodaj nowe zdjęcia do istniejących, ale nie przekraczaj 3 zdjęć
-      console.log(event.target.files);
 
       const updatedFiles = [...files, ...Array.from(event.target.files)].slice(
         0,
