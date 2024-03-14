@@ -5,7 +5,7 @@ import axios from "axios";
 const prodApi = process.env.NEXT_PUBLIC_STRAPICODE;
 
 export const localHostUrl = "http://localhost:1337/";
-export const prodUrl = process.env.NEXT_PUBLIC_STRAPIBASEURL;
+export const prodUrl = "https://marti-be-88d4b42da163.herokuapp.com/api/";
 
 export const useUrl = prodUrl;
 
