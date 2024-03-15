@@ -338,6 +338,13 @@ export const StyledOneProductPrice = styled.div`
   font-style: normal;
   font-weight: 400;
   letter-spacing: -0.36px;
+  display: flex;
+  gap: 10px;
+`;
+
+export const StyledDiscountPrice = styled.div`
+  text-decoration: line-through;
+  color: red;
 `;
 
 // sort

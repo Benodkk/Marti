@@ -24,6 +24,7 @@ import { MoonLoader } from "react-spinners";
 import { useClickOutside } from "@/hooks/clickOutside";
 import { useRouter } from "next/router";
 import { SearchBlackButton } from "../BlackButton/SearchBlackButton";
+import { StyledDiscountPrice } from "@/templates/ProductList/ProductList.styled";
 
 interface SearchModalProps {
   active: boolean;
@@ -36,6 +37,7 @@ export const SearchModal = ({ active, setActive }: SearchModalProps) => {
 
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
+  const discountPriceKey = `price_${currency}_discount`;
   const language = useSelector(selectLanguage);
 
   const [loading, setLoading] = useState(false);
@@ -128,12 +130,40 @@ export const SearchModal = ({ active, setActive }: SearchModalProps) => {
                       : product.attributes.name}
                   </StyledProductName>
                   <StyledProductPrize>
-                    {" "}
-                    {symbol == "$"
-                      ? symbol +
-                        parseFloat(product.attributes[priceKey]).toFixed(2)
-                      : parseFloat(product.attributes[priceKey]).toFixed(2) +
-                        symbol}
+                    {product.attributes[discountPriceKey] ? (
+                      <>
+                        <div>
+                          {product.attributes[discountPriceKey] &&
+                            (symbol == "$"
+                              ? symbol +
+                                parseFloat(
+                                  product.attributes[discountPriceKey]
+                                ).toFixed(2)
+                              : parseFloat(
+                                  product.attributes[discountPriceKey]
+                                ).toFixed(2) + symbol)}
+                        </div>
+                        <StyledDiscountPrice>
+                          {symbol == "$"
+                            ? symbol +
+                              parseFloat(product.attributes[priceKey]).toFixed(
+                                2
+                              )
+                            : parseFloat(product.attributes[priceKey]).toFixed(
+                                2
+                              ) + symbol}
+                        </StyledDiscountPrice>
+                      </>
+                    ) : (
+                      <div>
+                        {symbol == "$"
+                          ? symbol +
+                            parseFloat(product.attributes[priceKey]).toFixed(2)
+                          : parseFloat(product.attributes[priceKey]).toFixed(
+                              2
+                            ) + symbol}
+                      </div>
+                    )}
                   </StyledProductPrize>
                 </StyledInfoContaier>
               </StyledOneProduct>

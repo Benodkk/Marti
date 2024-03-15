@@ -1,3 +1,4 @@
+import { StyledDiscountPrice } from "@/templates/ProductList/ProductList.styled";
 import {
   StyledOneProduct,
   StyledOneProductPhoto,
@@ -14,6 +15,7 @@ interface OneBestsellerProductProps {
   price: string;
   image: string;
   id: any;
+  discountPrice?: any;
 }
 
 export const OneBestsellerProduct = ({
@@ -22,6 +24,7 @@ export const OneBestsellerProduct = ({
   price,
   image,
   id,
+  discountPrice,
 }: OneBestsellerProductProps) => {
   const router = useRouter();
 
@@ -40,7 +43,17 @@ export const OneBestsellerProduct = ({
       <StyledProductName onClick={() => pushToList(id)}>
         {name.toUpperCase()}
       </StyledProductName>
-      <StyledProductPrize>{price}</StyledProductPrize>
+
+      <StyledProductPrize>
+        {discountPrice ? (
+          <>
+            <div>{discountPrice}</div>{" "}
+            <StyledDiscountPrice>{price}</StyledDiscountPrice>
+          </>
+        ) : (
+          <div>{price}</div>
+        )}
+      </StyledProductPrize>
     </StyledOneProduct>
   );
 };

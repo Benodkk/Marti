@@ -35,6 +35,7 @@ interface BestsellersProps {
 export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
+  const discountPriceKey = `price_${currency}_discount`;
 
   const language = useSelector(selectLanguage);
   const router = useRouter();
@@ -144,6 +145,17 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
                         parseFloat(product.attributes[priceKey]).toFixed(2)
                       : parseFloat(product.attributes[priceKey]).toFixed(2) +
                         symbol
+                  }
+                  discountPrice={
+                    product.attributes[discountPriceKey] &&
+                    (symbol == "$"
+                      ? symbol +
+                        parseFloat(
+                          product.attributes[discountPriceKey]
+                        ).toFixed(2)
+                      : parseFloat(
+                          product.attributes[discountPriceKey]
+                        ).toFixed(2) + symbol)
                   }
                   image={ImageComponent(
                     product.attributes?.main_photo?.data?.attributes?.url

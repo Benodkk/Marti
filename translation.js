@@ -95,6 +95,7 @@ export const translation = {
     newsLetterAccept:
       "Subscribe to our newsletter to stay updated with the latest news, exclusive offers, and insights.",
     search: "Search",
+    last30DaysPrice: "Lowest price in 30 days before the discount:",
   },
   pl: {
     women: "Kobiety",
@@ -192,5 +193,6 @@ export const translation = {
     noCoupon: "Brak kuponu",
     newsLetterAccept:
       "Zapisz się do naszego newslettera, aby być na bieżąco z najnowszymi wiadomościami, wyjątkowymi ofertami i ciekawostkami.",
+    last30DaysPrice: "Najniższa cena w okresie 30 dni przed obniżką:",
   },
 };

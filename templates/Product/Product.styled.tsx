@@ -119,6 +119,13 @@ export const StyledProductName = styled.div`
   font-weight: 500;
   line-height: 28px; /* 112% */
 `;
+
+export const StyledPriceContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 0;
+`;
 export const StyledPrize = styled.div`
   color: #3f3f3f;
   font-family: Jost;
@@ -126,7 +133,8 @@ export const StyledPrize = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  padding: 20px 0;
+  display: flex;
+  gap: 10px;
   @media (max-width: 1020px) {
     padding: 15px 0;
     font-size: 20px;

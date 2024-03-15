@@ -371,6 +371,8 @@ export const StyledProductPrize = styled.div`
   font-weight: 500;
   line-height: normal;
   margin-top: 10px;
+  display: flex;
+  gap: 10px;
 `;
 
 export const StyledIconContainer = styled.div`

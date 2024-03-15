@@ -13,6 +13,7 @@ import {
   StyledOpinionRow,
   StyledPhotoRow,
   StyledPhotos,
+  StyledPriceContainer,
   StyledPrize,
   StyledProduct,
   StyledProductContainer,
@@ -68,12 +69,16 @@ import { translation } from "@/translation";
 import { selectCurrencyDetails } from "@/redux/currencySlice";
 import { ModalPhotos } from "@/components/ModalPhotos/ModalPhotos";
 import { NoLabelInput } from "@/components/Input/NoLabelInput";
+import { StyledDiscountPrice } from "../ProductList/ProductList.styled";
 
 interface ProductProps {}
 
 export default function ProductTemplate({}: ProductProps) {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
+  const discountPriceKey = `price_${currency}_discount`;
+  const discountPriceKey30 = `price_${currency}_discount_last30`;
+
   const cartItems = useSelector(selectCartItems);
   const language = useSelector(selectLanguage);
   const dispatch = useDispatch<AppDispatch>();
@@ -197,9 +202,15 @@ export default function ProductTemplate({}: ProductProps) {
 
     if (productData) {
       const price = {
-        price_usd: Number(productData.price_usd) + newPrice.price_usd,
-        price_pln: Number(productData.price_pln) + newPrice.price_pln,
-        price_eur: Number(productData.price_eur) + newPrice.price_eur,
+        price_pln: productData.price_pln_discount
+          ? Number(productData.price_pln_discount) + newPrice.price_pln
+          : Number(productData.price_pln) + newPrice.price_pln,
+        price_usd: productData.price_usd_discount
+          ? Number(productData.price_usd_discount) + newPrice.price_usd
+          : Number(productData.price_usd) + newPrice.price_usd,
+        price_eur: productData.price_eur_discount
+          ? Number(productData.price_eur_discount) + newPrice.price_eur
+          : Number(productData.price_eur) + newPrice.price_eur,
       };
       setInTotal(price);
     }
@@ -222,11 +233,19 @@ export default function ProductTemplate({}: ProductProps) {
         let photosUrls = [];
         data.attributes.id = data.id;
         setProductData(data.attributes);
+
         const newPrice = {
-          price_usd: Number(data.attributes.price_usd),
-          price_pln: Number(data.attributes.price_pln),
-          price_eur: Number(data.attributes.price_eur),
+          price_usd: data.attributes.price_usd_discount
+            ? data.attributes.price_usd_discount
+            : data.attributes.price_usd,
+          price_pln: data.attributes.price_pln_discount
+            ? data.attributes.price_pln_discount
+            : data.attributes.price_pln,
+          price_eur: data.attributes.price_eur_discount
+            ? data.attributes.price_eur_discount
+            : data.attributes.price_eur,
         };
+
         setInTotal(newPrice);
 
         setMainPhotoSrc(data.attributes?.main_photo?.data?.attributes?.url);
@@ -365,7 +384,8 @@ export default function ProductTemplate({}: ProductProps) {
           (element: any) =>
             element.typeName === "Bra Style" &&
             bikiniDetails.some((element: any) => element.name === "Bra Style")
-        )
+        ) &&
+        bikiniDetails.some((element: any) => element.name === "Bra Style")
       ) {
         errors.push(`${translation[language].personalization} - Bra style`);
       }
@@ -380,7 +400,8 @@ export default function ProductTemplate({}: ProductProps) {
       if (
         !chosenBikiniDetails.some(
           (element: any) => element.typeName === "Push Up"
-        )
+        ) &&
+        bikiniDetails.some((element: any) => element.name === "Push Up")
       ) {
         errors.push(`${translation[language].personalization} - Push up`) &&
           bikiniDetails.some((element: any) => element.name === "Push Up");
@@ -677,12 +698,49 @@ export default function ProductTemplate({}: ProductProps) {
                   ? productData?.name_pl
                   : productData?.name}
               </StyledProductName>
-              <StyledPrize>
-                {productData &&
-                  (symbol == "$"
-                    ? symbol + Number(productData[priceKey]).toFixed(2)
-                    : Number(productData[priceKey]).toFixed(2) + symbol)}
-              </StyledPrize>
+              <StyledPriceContainer>
+                <StyledPrize>
+                  {productData[discountPriceKey] ? (
+                    <>
+                      <div>
+                        {productData[discountPriceKey] &&
+                          (symbol == "$"
+                            ? symbol +
+                              parseFloat(productData[discountPriceKey]).toFixed(
+                                2
+                              )
+                            : parseFloat(productData[discountPriceKey]).toFixed(
+                                2
+                              ) + symbol)}
+                      </div>
+                      <StyledDiscountPrice>
+                        {symbol == "$"
+                          ? symbol +
+                            parseFloat(productData[priceKey]).toFixed(2)
+                          : parseFloat(productData[priceKey]).toFixed(2) +
+                            symbol}
+                      </StyledDiscountPrice>
+                    </>
+                  ) : (
+                    <div>
+                      {symbol == "$"
+                        ? symbol + parseFloat(productData[priceKey]).toFixed(2)
+                        : parseFloat(productData[priceKey]).toFixed(2) + symbol}
+                    </div>
+                  )}
+                </StyledPrize>
+                {productData[discountPriceKey30] && (
+                  <StyledPrize>
+                    {translation[language].last30DaysPrice}{" "}
+                    {symbol == "$"
+                      ? symbol +
+                        parseFloat(productData[discountPriceKey30]).toFixed(2)
+                      : parseFloat(productData[discountPriceKey30]).toFixed(2) +
+                        symbol}
+                  </StyledPrize>
+                )}
+              </StyledPriceContainer>
+
               {/* <StyledOpinionRow>
                 <StyledOpinion>
                   {productData && productData.average_rating == "0.00"

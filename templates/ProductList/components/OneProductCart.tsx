@@ -1,4 +1,5 @@
 import {
+  StyledDiscountPrice,
   StyledFavourite,
   StyledOneProductCart,
   StyledOneProductName,
@@ -27,6 +28,7 @@ interface OneProductCartProps {
 export const OneProductCart = ({ product }: OneProductCartProps) => {
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
+  const discountPriceKey = `price_${currency}_discount`;
   const language = useSelector(selectLanguage);
   const router = useRouter();
 
@@ -71,9 +73,30 @@ export const OneProductCart = ({ product }: OneProductCartProps) => {
         A piece of short description goes in here
       </StyledOneProductShortDesc> */}
       <StyledOneProductPrice>
-        {symbol == "$"
-          ? symbol + parseFloat(product.attributes[priceKey]).toFixed(2)
-          : parseFloat(product.attributes[priceKey]).toFixed(2) + symbol}
+        {product.attributes[discountPriceKey] ? (
+          <>
+            <div>
+              {product.attributes[discountPriceKey] &&
+                (symbol == "$"
+                  ? symbol +
+                    parseFloat(product.attributes[discountPriceKey]).toFixed(2)
+                  : parseFloat(product.attributes[discountPriceKey]).toFixed(
+                      2
+                    ) + symbol)}
+            </div>
+            <StyledDiscountPrice>
+              {symbol == "$"
+                ? symbol + parseFloat(product.attributes[priceKey]).toFixed(2)
+                : parseFloat(product.attributes[priceKey]).toFixed(2) + symbol}
+            </StyledDiscountPrice>
+          </>
+        ) : (
+          <div>
+            {symbol == "$"
+              ? symbol + parseFloat(product.attributes[priceKey]).toFixed(2)
+              : parseFloat(product.attributes[priceKey]).toFixed(2) + symbol}
+          </div>
+        )}
       </StyledOneProductPrice>
     </StyledOneProductCart>
   );
