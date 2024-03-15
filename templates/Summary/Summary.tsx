@@ -157,7 +157,7 @@ export default function Adress({}: AdressProps) {
     formData.append("upload_preset", "amsrcruz");
 
     const uploadResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/deduvxogk/image/upload`,
+      `https://api.cloudinary.com/v1_1/deduvxogk/image/upload/`,
       {
         method: "POST",
         body: formData,
