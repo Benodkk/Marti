@@ -43,6 +43,7 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
   // bestsellers lists
   const [currentBestsellers, setCurrentBestsellers] = useState<any>();
   const [bestsellerTitle, setBestsellerTitle] = useState<any>();
+  const [bestellersProductsList, setBestellersProductsList] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
@@ -53,6 +54,14 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
   useEffect(() => {
     setCurrentBestsellers(bestsellers[0]);
   }, [bestsellers]);
+
+  useEffect(() => {
+    const list = currentBestsellers?.attributes?.products?.data;
+    const filteredList: any = list
+      ?.filter((element: any) => element.attributes.bestseller)
+      .sort((a: any, b: any) => a.id - b.id);
+    setBestellersProductsList(filteredList);
+  }, [currentBestsellers]);
 
   const fetch = async () => {
     const data: any = await fetchBestsellerTitle();
@@ -127,44 +136,42 @@ export const Bestsellers = ({ bestsellers }: BestsellersProps) => {
         {loading ? (
           <Loader />
         ) : (
-          currentBestsellers &&
-          currentBestsellers.attributes.products.data
-            .slice(0, 4)
-            .map((product: any) => {
-              return (
-                <OneBestsellerProduct
-                  name={
-                    language == "pl" && product.attributes.name_pl
-                      ? product.attributes.name_pl
-                      : product.attributes.name
-                  }
-                  type={findLowCategory(product.attributes.categories.data)}
-                  price={
-                    symbol == "$"
-                      ? symbol +
-                        parseFloat(product.attributes[priceKey]).toFixed(2)
-                      : parseFloat(product.attributes[priceKey]).toFixed(2) +
-                        symbol
-                  }
-                  discountPrice={
-                    product.attributes[discountPriceKey] &&
-                    (symbol == "$"
-                      ? symbol +
-                        parseFloat(
-                          product.attributes[discountPriceKey]
-                        ).toFixed(2)
-                      : parseFloat(
-                          product.attributes[discountPriceKey]
-                        ).toFixed(2) + symbol)
-                  }
-                  image={ImageComponent(
-                    product.attributes?.main_photo?.data?.attributes?.url
-                  )}
-                  id={product.id}
-                  key={product.id}
-                />
-              );
-            })
+          bestellersProductsList &&
+          bestellersProductsList.slice(0, 4).map((product: any) => {
+            return (
+              <OneBestsellerProduct
+                name={
+                  language == "pl" && product.attributes.name_pl
+                    ? product.attributes.name_pl
+                    : product.attributes.name
+                }
+                type={findLowCategory(product.attributes.categories.data)}
+                price={
+                  symbol == "$"
+                    ? symbol +
+                      parseFloat(product.attributes[priceKey]).toFixed(2)
+                    : parseFloat(product.attributes[priceKey]).toFixed(2) +
+                      symbol
+                }
+                discountPrice={
+                  product.attributes[discountPriceKey] &&
+                  (symbol == "$"
+                    ? symbol +
+                      parseFloat(product.attributes[discountPriceKey]).toFixed(
+                        2
+                      )
+                    : parseFloat(product.attributes[discountPriceKey]).toFixed(
+                        2
+                      ) + symbol)
+                }
+                image={ImageComponent(
+                  product.attributes?.main_photo?.data?.attributes?.url
+                )}
+                id={product.id}
+                key={product.id}
+              />
+            );
+          })
         )}
       </StyledProductsContainer>
       <StyledMoreProductsButtonCotnainer>

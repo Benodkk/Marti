@@ -94,14 +94,23 @@ export const SearchModal = ({ active, setActive }: SearchModalProps) => {
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={translation[language].search}
         />
-        <SearchBlackButton onClick={() => getProducts(InputValue)}>
+        <SearchBlackButton
+          onClick={() =>
+            router.push({
+              pathname: "/ProductsSearch",
+              query: {
+                search: InputValue,
+              },
+            })
+          }
+        >
           {translation[language].search}
         </SearchBlackButton>
         <StyledSearchClose onClick={() => setActive(false)}>
           <IoIosClose size={40} />
         </StyledSearchClose>
       </StyledInputContainer>
-      <StyledSearchResult>
+      {/* <StyledSearchResult>
         {loading ? (
           <StyledLoaderContainer>
             <MoonLoader color="#000000" />
@@ -170,7 +179,7 @@ export const SearchModal = ({ active, setActive }: SearchModalProps) => {
             );
           })
         )}
-      </StyledSearchResult>
+      </StyledSearchResult> */}
     </StyledSearchContainer>
   );
 };

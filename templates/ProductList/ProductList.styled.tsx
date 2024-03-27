@@ -60,6 +60,8 @@ export const StyledListHeaderTitleContainer = styled.h2`
 
 export const StyledListHeaderTitle = styled.div``;
 
+// search
+
 // body
 
 export const StyledBodyContainer = styled.div`
@@ -232,10 +234,15 @@ export const StyledFilterButton = styled.button`
 
 // body list
 
-export const StyledBodyList = styled.div`
+export const StyledBodyListContainer = styled.div`
   width: 75%;
+`;
+
+export const StyledBodyList = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
+
   @media (max-width: 1020px) {
     width: 100%;
   }
@@ -411,3 +418,101 @@ export const StyledTrack = styled.div`
 export const Track = (props: any, state: any) => (
   <StyledTrack {...props} index={state.index} />
 );
+
+// list sort
+
+export const StyledSortContainer = styled.div`
+  display: flex;
+  align-self: flex-end;
+  flex-direction: column;
+  width: 360px;
+  padding: 5px;
+`;
+
+export const StyledSelectSort = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.grey};
+  cursor: pointer;
+`;
+interface SelectArrowProps {
+  $show?: boolean;
+}
+
+export const StyledSelectArrow = styled.div<SelectArrowProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  transition: 0.5s;
+  transform: ${({ $show }) => ($show ? "rotateX(180deg)" : "rotateX(0)")};
+`;
+
+export const StyledSortElement = styled.div`
+  padding: 5px;
+  display: flex;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey};
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const StyledSortLabelTop = styled.div`
+  color: #7c7c7c;
+  width: 100%;
+`;
+
+export const StyledSortLabel = styled.div`
+  color: #7c7c7c;
+  width: 50%;
+`;
+
+interface SortValuesProps {
+  $flexDirection?: string;
+  $alignItems?: string;
+}
+
+export const StyledSortValues = styled.div<SortValuesProps>`
+  display: flex;
+  flex-direction: ${({ $flexDirection }) =>
+    $flexDirection ? $flexDirection : "column"};
+  align-items: ${({ $alignItems }) => $alignItems};
+  gap: 5px;
+  white-space: nowrap;
+`;
+
+export const StyledSort = styled.div`
+  transition: color 0.2s;
+  cursor: pointer;
+  &:hover {
+    color: #caa871;
+  }
+`;
+
+interface OneDetailsProps {
+  $show?: boolean;
+}
+
+export const StyledSortListContainer = styled.div<OneDetailsProps>`
+  position: absolute;
+  overflow: hidden;
+  visibility: ${({ $show }) => ($show ? "visible" : "hidden")};
+  padding: 0px 10px 10px;
+  transform: translate(-10px);
+  z-index: 2;
+`;
+
+export const StyledSortList = styled.div<OneDetailsProps>`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  transition: 0.5s;
+  box-sizing: border-box;
+  min-width: 350px;
+  padding: 5px;
+  box-shadow: ${({ $show }) =>
+    $show ? "rgba(0, 0, 0, 0.2) 0px 4px 10px" : ""};
+  transform: ${({ $show }) => ($show ? "translateY(0)" : "translateY(-110%)")};
+`;

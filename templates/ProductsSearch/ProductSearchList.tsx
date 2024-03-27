@@ -1,28 +1,22 @@
 import { MoonLoader } from "react-spinners";
+import { OneProductCart } from "../ProductList/components/OneProductCart";
 import {
   StyledBodyList,
   StyledLoaderContainer,
   StyledProductsContainer,
-} from "./ProductList.styled";
-import { OneProductCart } from "./components/OneProductCart";
-import { SortBy } from "./components/SortBy";
+} from "./ProductsSearch.styled";
 
-interface ProductListBodyProps {
+interface ProductSearchListProps {
   products: any;
   loading: boolean;
-  apiValue: string;
-  setApiValue: any;
 }
 
-export const ProductListBody = ({
+export const ProductSearchList = ({
   products,
   loading,
-  apiValue,
-  setApiValue,
-}: ProductListBodyProps) => {
+}: ProductSearchListProps) => {
   return (
     <StyledBodyList>
-      <SortBy apiValue={apiValue} setApiValue={setApiValue}></SortBy>
       {loading ? (
         <StyledLoaderContainer>
           <MoonLoader color="#000000" />

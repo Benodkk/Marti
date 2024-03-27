@@ -28,8 +28,10 @@ export const StyledInfoType = styled.div`
 `;
 
 export const StyledInfoTitleContainer = styled.div`
-  display: flex;
-  transform: translateX(-10%);
+  /* display: flex; */
+  /* transform: translateX(-10%); */
+  width: 100%;
+  text-align: center;
 `;
 
 export const StyledInfoDateConainer = styled.div`
@@ -65,6 +67,7 @@ export const StyledInfoTitle = styled.h2`
   font-style: normal;
   font-weight: 500;
   letter-spacing: -0.96px;
+  text-align: center;
 `;
 
 export const StyledHeaderPhoto = styled.img`

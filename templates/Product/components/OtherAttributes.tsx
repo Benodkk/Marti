@@ -33,7 +33,6 @@ export const OtherAttributes = ({
   const { currency, symbol } = useSelector(selectCurrencyDetails);
   const priceKey = `price_${currency}`;
   const language = useSelector(selectLanguage);
-
   return (
     <StyledOtherAttributesContainer $display={show ? "flex" : "none"}>
       <StyledOtherAttributes>
@@ -62,14 +61,13 @@ export const OtherAttributes = ({
                       : type[priceKey] + symbol}
                   </div>
                 )}
-                {type.small_description_pl ||
-                  (type.small_description && (
-                    <div>
-                      {language == "pl" && type.small_description_pl
-                        ? type.small_description_pl
-                        : type.small_description}
-                    </div>
-                  ))}
+                {type.small_description && (
+                  <div>
+                    {language == "pl" && type.small_description_pl
+                      ? type.small_description_pl
+                      : type.small_description}
+                  </div>
+                )}
               </StyledOneOtherAttributesContainer>
             );
           })

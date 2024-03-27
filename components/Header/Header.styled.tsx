@@ -261,7 +261,7 @@ export const StyledSearchContainer = styled.div<Props>`
   align-self: flex-start;
   justify-self: flex-end;
   padding: 15px 10px 10px;
-  left: 0;
+  right: 0;
   color: white;
   transition: 0.5s;
   z-index: 1;

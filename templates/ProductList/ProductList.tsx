@@ -2,6 +2,7 @@ import {
   ProductListContainer,
   StyledBodyContainer,
   StyledBodyFilters,
+  StyledBodyListContainer,
 } from "./ProductList.styled";
 import { ProductListHeader } from "./ProductListHeader";
 import { ProductListBody } from "./ProductListBody";
@@ -56,6 +57,8 @@ export default function ProductList({}: ProductListProps) {
   const [sizes, setSizes] = useState<any>([]);
   const [colors, setColors] = useState<any>([]);
 
+  const [apiValue, setApiValue] = useState("createdAt:desc");
+
   useEffect(() => {
     if (!category || router.query.fromHeader) {
       getAllCategories(Number(router.query.category));
@@ -86,8 +89,6 @@ export default function ProductList({}: ProductListProps) {
           )
         );
       }
-
-      getProducts(category.id);
     }
   }, [category]);
 
@@ -145,26 +146,9 @@ export default function ProductList({}: ProductListProps) {
     return findRoot(id, items, item.attributes.parent.data.id);
   };
 
-  const getProducts = async (id: any) => {
-    setIsLoading(true);
-    try {
-      const response = await fetchAllCat(id);
-      if (response) {
-        setProducts(response[0].attributes.products.data);
-      }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // price functions
-
-  // const handleSliderChange = (newValue: any) => {
-  //   setSliderValue(newValue);
-  //   setSliderMin(newValue[0]);
-  //   setSliderMax(newValue[1]);
-  // };
+  useEffect(() => {
+    applyFilters();
+  }, [apiValue, category]);
 
   const applyFilters = async () => {
     const sizesNames: any = sizes.map((item: any) => item.attributes.value);
@@ -178,7 +162,8 @@ export default function ProductList({}: ProductListProps) {
         sliderMax,
         sizesNames,
         colorsNames,
-        priceKey
+        priceKey,
+        apiValue
       );
       if (response) {
         setProducts(response);
@@ -242,7 +227,14 @@ export default function ProductList({}: ProductListProps) {
           />
         </StyledBodyFilters>
 
-        <ProductListBody products={products} loading={isLoading} />
+        <StyledBodyListContainer>
+          <ProductListBody
+            apiValue={apiValue}
+            setApiValue={setApiValue}
+            products={products}
+            loading={isLoading}
+          />
+        </StyledBodyListContainer>
       </StyledBodyContainer>
     </ProductListContainer>
   );

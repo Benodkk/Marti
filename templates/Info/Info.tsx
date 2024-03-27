@@ -13,10 +13,14 @@ import {
   StyledInfoType,
 } from "./Info.styled";
 import { StyledBack } from "../Adress/Adress.styled";
+import { selectLanguage } from "@/redux/languageSlice";
+import { useSelector } from "react-redux";
+import { translation } from "@/translation";
 
 interface InfoProps {}
 
 export default function Info({}: InfoProps) {
+  const language = useSelector(selectLanguage);
   const router: any = useRouter();
   const [infoData, setInfoData] = useState<any>();
 
@@ -35,10 +39,15 @@ export default function Info({}: InfoProps) {
     <StyledInfoContainer>
       <StyledInfo>
         {/* <BackButton /> */}
-        <StyledBack onClick={() => router.back()}>{"< Back"}</StyledBack>
+        <StyledBack
+          onClick={() => router.back()}
+        >{`< ${translation[language].back}`}</StyledBack>
         <StyledInfoTitleContainer>
           <StyledInfoTitle>
-            {infoData && infoData?.attributes?.title}
+            {infoData &&
+              (language == "en"
+                ? infoData?.attributes?.title
+                : infoData?.attributes?.title_pl)}
           </StyledInfoTitle>
         </StyledInfoTitleContainer>
         {infoData &&
@@ -58,13 +67,21 @@ export default function Info({}: InfoProps) {
               return (
                 <>
                   <StyledInfoSubtitle>
-                    {oneSection.section_title}
+                    {language == "en"
+                      ? infoData?.attributes?.section_title
+                      : infoData?.attributes?.section_title_pl}
                   </StyledInfoSubtitle>
-                  {oneSection.content.map((paragraph: any) => {
-                    return paragraph.children.map((be: any) => {
-                      return <StyledInfoText>{be.text}</StyledInfoText>;
-                    });
-                  })}
+                  {language == "en"
+                    ? oneSection.content.map((paragraph: any) => {
+                        return paragraph.children.map((be: any) => {
+                          return <StyledInfoText>{be.text}</StyledInfoText>;
+                        });
+                      })
+                    : oneSection.content_pl.map((paragraph: any) => {
+                        return paragraph.children.map((be: any) => {
+                          return <StyledInfoText>{be.text}</StyledInfoText>;
+                        });
+                      })}
                 </>
               );
             })}

@@ -269,13 +269,6 @@ const Header = ({}: HeaderProps) => {
             <StyledGroupIconsHeader>
               <IconButton
                 onClick={() => {
-                  setShowSearch(true);
-                }}
-              >
-                <FaSearch />
-              </IconButton>
-              <IconButton
-                onClick={() => {
                   window.open("https://www.facebook.com/martibikini", "_blank");
                 }}
               >
@@ -292,8 +285,16 @@ const Header = ({}: HeaderProps) => {
                 <FaInstagram />
               </IconButton>
             </StyledGroupIconsHeader>
+
             <StyledLogo onClick={() => router.push("/")} src={HeaderLogo.src} />
             <StyledGroupIconsHeader>
+              <IconButton
+                onClick={() => {
+                  setShowSearch(true);
+                }}
+              >
+                <FaSearch />
+              </IconButton>
               <ShopButton totalItems={totalItems} />
               <IconButton onClick={pushToProfile}>
                 <FaRegUser />

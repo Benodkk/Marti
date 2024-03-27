@@ -54,6 +54,7 @@ const MainPage = ({}: MainPageProps) => {
       const bestSellers = response
         .filter((category: any) => category.attributes.bestseller)
         .sort((a: any, b: any) => a.attributes.order - b.attributes.order);
+
       setBestsellers(bestSellers);
     }
   };

@@ -61,8 +61,11 @@ export const fetchAllCategoriesWithProductDetails = async () => {
 export const fetchAllCat = async (id) => {
   try {
     const response = await getData(
-      `categories?filters[id][$in]=${id}&populate[products][populate][main_photo]=*&populate[products][populate][categories]=*`
+      `products?filters[categories][id][$eq]=${id}&populate=*&sort=createdAt:desc`
     );
+    // const response = await getData(
+    //   `categories?filters[id][$in]=${id}&populate[products][populate][main_photo]=*&populate[products][populate][categories]=*`
+    // );
     const data = response.data;
     return data;
   } catch {}
@@ -100,7 +103,8 @@ export const fetchAllProdWithPriceAndSize = async (
   maxPrice,
   sizes,
   colors,
-  currency
+  currency,
+  sortUrl
 ) => {
   try {
     // Dodawanie parametrów filtrowania ceny do URL
@@ -115,8 +119,7 @@ export const fetchAllProdWithPriceAndSize = async (
     const colorsfilter =
       colors.length > 0 ? createColorsFilterQueryString(colors) : "";
 
-    const url = `products?filters[categories][id][$in]=${id}&populate=*${priceFilter}${sizeFilter}${colorsfilter}`;
-
+    const url = `products?filters[categories][id][$in]=${id}&populate=*${priceFilter}${sizeFilter}${colorsfilter}&sort=${sortUrl}`;
     const response = await getData(url);
     const data = response.data;
 
@@ -512,7 +515,7 @@ export const fetchSearchProducts = async (name) => {
   let responseData;
   try {
     const response = await getData(
-      `products?filters[name][$containsi]=${name}&pagination[limit]=3&populate[main_photo]=*&populate[categories]=*`
+      `products?filters[name][$containsi]=${name}&pagination[limit]=9&populate[main_photo]=*&populate[categories]=*`
     );
     let data = response.data;
     if (data && data.length > 0) {
